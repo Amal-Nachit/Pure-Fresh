@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New PureUser{% endblock %}
+
+{% block body %}
+    <h1>Create new PureUser</h1>
+
+    {{ include('pure_user/_form.html.twig') }}
+
+    <a href="{{ path('user_index') }}">back to list</a>
+{% endblock %}

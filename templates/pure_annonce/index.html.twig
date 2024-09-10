@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PureAnnonce index{% endblock %}
+
+{% block body %}
+    <h1>PureAnnonce index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Titre</th>
+                <th>Quantite</th>
+                <th>Description</th>
+                <th>Disponibilite</th>
+                <th>DatePublication</th>
+                <th>DateExpiration</th>
+                <th>Approuve</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for pure_annonce in pure_annonces %}
+            <tr>
+                <td>{{ pure_annonce.id }}</td>
+                <td>{{ pure_annonce.titre }}</td>
+                <td>{{ pure_annonce.quantite }}</td>
+                <td>{{ pure_annonce.description }}</td>
+                <td>{{ pure_annonce.disponibilite ? 'Yes' : 'No' }}</td>
+                <td>{{ pure_annonce.datePublication ? pure_annonce.datePublication|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ pure_annonce.dateExpiration ? pure_annonce.dateExpiration|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ pure_annonce.approuve ? 'Yes' : 'No' }}</td>
+                <td>
+                    <a href="{{ path('annonce_show', {'id': pure_annonce.id}) }}">show</a>
+                    <a href="{{ path('annonce_edit', {'id': pure_annonce.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="9">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('annonce_new') }}">Create new</a>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+    {% for flash_error in app.flashes('verify_email_error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+
+    <h1>Register</h1>
+
+    {{ form_start(registrationForm) }}
+
+    {% if form_errors(registrationForm) %}
+        <div class="alert alert-danger">
+            {{ form_errors(registrationForm) }}
+        </div>
+    {% endif %}
+
+    {{ form_row(registrationForm.prenom) }}
+    {{ form_row(registrationForm.nom) }}
+    <div>
+        {{ form_row(registrationForm.adresse, {'attr': {'class': 'autocomplete-address', 'id': 'registration_form_adresse'}}) }}
+        <div id="suggestions-box" class="suggestions"></div>
+    </div>
+    {{ form_row(registrationForm.telephone) }}
+    {{ form_row(registrationForm.email) }}
+    {{ form_row(registrationForm.plainPassword.first) }}
+    {{ form_row(registrationForm.plainPassword.second) }}
+    {{ form_row(registrationForm.agreeTerms) }}
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Register</button>
+    </div>
+
+    {{ form_end(registrationForm) }}
+
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDB7guuh8CY_MJasUE7LC5BV4eBTXWaVco&libraries=places"></script>
+    <script>
+        function initAutocomplete() {
+            let input = document.getElementById('registration_form_adresse');
+            let autocomplete = new google.maps.places.Autocomplete(input, {
+                types: ['address'],
+                componentRestrictions: { country: 'fr' }
+            });
+
+            autocomplete.addListener('place_changed', function() {
+                let place = autocomplete.getPlace();
+                if (!place.geometry) {
+                    console.log("No details available for input: '" + place.name + "'");
+                    return;
+                }
+
+                // If the place has a geometry, then present it on a map.
+                // if (place.geometry.viewport) {
+                //     map.fitBounds(place.geometry.viewport);
+                // } else {
+                //     map.setCenter(place.geometry.location);
+                //     map.setZoom(17);
+                // }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initAutocomplete();
+        });
+    </script>
+
+{% endblock %}
+
+

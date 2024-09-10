@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PureProduit index{% endblock %}
+
+{% block body %}
+    <h1>PureProduit index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Description</th>
+                <th>DateCreation</th>
+                <th>Image</th>
+                <th>Prix</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for pure_produit in pure_produits %}
+            <tr>
+                <td>{{ pure_produit.nom }}</td>
+                <td>{{ pure_produit.description }}</td>
+                <td>{{ pure_produit.dateCreation ? pure_produit.dateCreation|date('d-m-Y') : '' }}</td>
+                <td>                    
+                    <img src="{{ '/uploads/images/' ~ pure_produit.image }}" alt="{{ pure_produit.nom }}">
+                </td>
+                <td>{{ pure_produit.prix }}€</td>
+                <td>
+                    <a href="{{ path('produit_show', {'id': pure_produit.id}) }}">show</a>
+                    <a href="{{ path('produit_edit', {'id': pure_produit.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('produit_new') }}">Create new</a>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New PureProduit{% endblock %}
+
+{% block body %}
+    <h1>Create new PureProduit</h1>
+
+    {{ include('pure_produit/_form.html.twig') }}
+
+    <a href="{{ path('produit_index') }}">back to list</a>
+{% endblock %}

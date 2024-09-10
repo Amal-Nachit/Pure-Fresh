@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit PureUser{% endblock %}
+
+{% block body %}
+    <h1>Edit PureUser</h1>
+
+    {{ include('pure_user/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_pure_user_index') }}">back to list</a>
+
+    {{ include('pure_user/_delete_form.html.twig') }}
+{% endblock %}
