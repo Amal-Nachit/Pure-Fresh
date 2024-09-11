@@ -18,21 +18,10 @@ class PureAnnonceType extends AbstractType
             ->add('titre')
             ->add('quantite')
             ->add('description')
-            ->add('disponibilite')
-            ->add('datePublication', null, [
-                'widget' => 'single_text',
-            ])
-            ->add('dateExpiration', null, [
-                'widget' => 'single_text',
-            ])
             ->add('approuve')
             ->add('pureProduit', EntityType::class, [
                 'class' => PureProduit::class,
-                'choice_label' => 'id',
-            ])
-            ->add('pureUser', EntityType::class, [
-                'class' => PureUser::class,
-                'choice_label' => 'id',
+                'choice_label' => 'nom',
             ])
         ;
     }

@@ -12,9 +12,7 @@
                 <th>Titre</th>
                 <th>Quantite</th>
                 <th>Description</th>
-                <th>Disponibilite</th>
                 <th>DatePublication</th>
-                <th>DateExpiration</th>
                 <th>Approuve</th>
                 <th>actions</th>
             </tr>
@@ -26,9 +24,7 @@
                 <td>{{ pure_annonce.titre }}</td>
                 <td>{{ pure_annonce.quantite }}</td>
                 <td>{{ pure_annonce.description }}</td>
-                <td>{{ pure_annonce.disponibilite ? 'Yes' : 'No' }}</td>
                 <td>{{ pure_annonce.datePublication ? pure_annonce.datePublication|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ pure_annonce.dateExpiration ? pure_annonce.dateExpiration|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ pure_annonce.approuve ? 'Yes' : 'No' }}</td>
                 <td>
                     <a href="{{ path('annonce_show', {'id': pure_annonce.id}) }}">show</a>

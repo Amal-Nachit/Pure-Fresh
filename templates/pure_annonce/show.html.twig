@@ -24,18 +24,6 @@
                 <td>{{ pure_annonce.description }}</td>
             </tr>
             <tr>
-                <th>Disponibilite</th>
-                <td>{{ pure_annonce.disponibilite ? 'Yes' : 'No' }}</td>
-            </tr>
-            <tr>
-                <th>DatePublication</th>
-                <td>{{ pure_annonce.datePublication ? pure_annonce.datePublication|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>DateExpiration</th>
-                <td>{{ pure_annonce.dateExpiration ? pure_annonce.dateExpiration|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
                 <th>Approuve</th>
                 <td>{{ pure_annonce.approuve ? 'Yes' : 'No' }}</td>
             </tr>
@@ -46,5 +34,5 @@
 
     <a href="{{ path('annonce_edit', {'id': pure_annonce.id}) }}">edit</a>
 
-    {{ include('annonce/_delete_form.html.twig') }}
+    {{ include('pure_annonce/_delete_form.html.twig') }}
 {% endblock %}

@@ -5,9 +5,9 @@
 {% block body %}
     <h1>Edit PureAnnonce</h1>
 
-    {{ include('annonce/_form.html.twig', {'button_label': 'Update'}) }}
+    {{ include('pure_annonce/_form.html.twig', {'button_label': 'Update'}) }}
 
     <a href="{{ path('annonce_index') }}">back to list</a>
 
-    {{ include('annonce/_delete_form.html.twig') }}
+    {{ include('pure_annonce/_delete_form.html.twig') }}
 {% endblock %}

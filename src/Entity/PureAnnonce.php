@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\UX\Turbo\Attribute\Broadcast;
 
 #[ORM\Entity(repositoryClass: PureAnnonceRepository::class)]
-#[Broadcast]
+// #[Broadcast]
 class PureAnnonce
 {
     #[ORM\Id]
@@ -25,14 +25,8 @@ class PureAnnonce
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    #[ORM\Column]
-    private ?bool $disponibilite = null;
-
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $datePublication = null;
-
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $dateExpiration = null;
 
     #[ORM\Column]
     private ?bool $approuve = null;
@@ -43,7 +37,7 @@ class PureAnnonce
     #[ORM\ManyToOne(inversedBy: 'annonce')]
     #[ORM\JoinColumn(nullable: false)]
     private ?PureUser $pureUser = null;
-
+    
     public function getId(): ?int
     {
         return $this->id;
@@ -84,19 +78,10 @@ class PureAnnonce
 
         return $this;
     }
-
-    public function isDisponibilite(): ?bool
+    public function __construct()
     {
-        return $this->disponibilite;
+        $this->datePublication = new \DateTime('now', new \DateTimeZone('Europe/Paris'));
     }
-
-    public function setDisponibilite(bool $disponibilite): static
-    {
-        $this->disponibilite = $disponibilite;
-
-        return $this;
-    }
-
     public function getDatePublication(): ?\DateTimeInterface
     {
         return $this->datePublication;
@@ -105,18 +90,6 @@ class PureAnnonce
     public function setDatePublication(\DateTimeInterface $datePublication): static
     {
         $this->datePublication = $datePublication;
-
-        return $this;
-    }
-
-    public function getDateExpiration(): ?\DateTimeInterface
-    {
-        return $this->dateExpiration;
-    }
-
-    public function setDateExpiration(\DateTimeInterface $dateExpiration): static
-    {
-        $this->dateExpiration = $dateExpiration;
 
         return $this;
     }
@@ -140,12 +113,10 @@ class PureAnnonce
 
     public function setPureProduit(?PureProduit $pureProduit): static
     {
-        // unset the owning side of the relation if necessary
         if ($pureProduit === null && $this->pureProduit !== null) {
             $this->pureProduit->setAnnonce(null);
         }
 
-        // set the owning side of the relation if necessary
         if ($pureProduit !== null && $pureProduit->getAnnonce() !== $this) {
             $pureProduit->setAnnonce($this);
         }
@@ -167,3 +138,4 @@ class PureAnnonce
         return $this;
     }
 }
+
