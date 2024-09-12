@@ -1,54 +1,54 @@
-{% extends 'base.html.twig' %}
+    {% extends 'base.html.twig' %}
 
-{% block title %}PureUser{% endblock %}
+    {% block title %}PureUser{% endblock %}
 
-{% block body %}
-    <h1>PureUser</h1>
+    {% block body %}
+        <h1>PureUser</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ pure_user.id }}</td>
-            </tr>
-            <tr>
-                <th>Email</th>
-                <td>{{ pure_user.email }}</td>
-            </tr>
-            <tr>
-                <th>Roles</th>
-                <td>{{ pure_user.roles ? pure_user.roles|json_encode : '' }}</td>
-            </tr>
-            <tr>
-                <th>Password</th>
-                <td>{{ pure_user.password }}</td>
-            </tr>
-            <tr>
-                <th>Prenom</th>
-                <td>{{ pure_user.prenom }}</td>
-            </tr>
-            <tr>
-                <th>Nom</th>
-                <td>{{ pure_user.nom }}</td>
-            </tr>
-            <tr>
-                <th>Telephone</th>
-                <td>{{ pure_user.telephone }}</td>
-            </tr>
-            <tr>
-                <th>Adresse</th>
-                <td>{{ pure_user.adresse }}</td>
-            </tr>
-            <tr>
-                <th>Rgpd</th>
-                <td>{{ pure_user.rgpd ? pure_user.rgpd|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-        </tbody>
-    </table>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th>Id</th>
+                    <td>{{ pure_user.id }}</td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td>{{ pure_user.email }}</td>
+                </tr>
+                <tr>
+                    <th>Roles</th>
+                    <td>{{ pure_user.roles ? pure_user.roles|json_encode : '' }}</td>
+                </tr>
+                <tr>
+                    <th>Password</th>
+                    <td>{{ pure_user.password }}</td>
+                </tr>
+                <tr>
+                    <th>Prenom</th>
+                    <td>{{ pure_user.prenom }}</td>
+                </tr>
+                <tr>
+                    <th>Nom</th>
+                    <td>{{ pure_user.nom }}</td>
+                </tr>
+                <tr>
+                    <th>Telephone</th>
+                    <td>{{ pure_user.telephone }}</td>
+                </tr>
+                <tr>
+                    <th>Adresse</th>
+                    <td>{{ pure_user.adresse }}</td>
+                </tr>
+                <tr>
+                    <th>Rgpd</th>
+                    <td>{{ pure_user.rgpd ? pure_user.rgpd|date('Y-m-d H:i:s') : '' }}</td>
+                </tr>
+            </tbody>
+        </table>
 
-    <a href="{{ path('user_index') }}">back to list</a>
+        <a href="{{ path('user_index') }}">back to list</a>
 
-    <a href="{{ path('user_edit', {'id': pure_user.id}) }}">edit</a>
+        <a href="{{ path('user_edit', {'id': pure_user.id}) }}">edit</a>
 
-    {{ include('user/_delete_form.html.twig') }}
-{% endblock %}
+        {{ include('pure_user/_delete_form.html.twig') }}
+    {% endblock %}

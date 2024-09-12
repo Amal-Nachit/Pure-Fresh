@@ -27,25 +27,42 @@ final class PureAnnonceController extends AbstractController
     }   
 
     #[Route('/deposer-une-annonce', name: 'annonce_new', methods: ['GET', 'POST'])]
-    public function new(PureUser $user, Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
+        // Créer une nouvelle annonce
         $pureAnnonce = new PureAnnonce();
+
+        // Créer le formulaire
         $form = $this->createForm(PureAnnonceType::class, $pureAnnonce);
         $form->handleRequest($request);
 
+        // Récupérer l'utilisateur connecté
+        $user = $this->getUser(); // Récupère l'utilisateur actuellement connecté
+
+        if (!$user) {
+            // Si aucun utilisateur n'est connecté, rediriger vers la page de connexion
+            return $this->redirectToRoute('app_login');
+        }
+
         if ($form->isSubmitted() && $form->isValid()) {
+            // Associer l'utilisateur à l'annonce
             $pureAnnonce->setPureUser($user);
+
+            // Persister l'annonce
             $entityManager->persist($pureAnnonce);
             $entityManager->flush();
 
+            // Rediriger vers la liste des annonces après la création
             return $this->redirectToRoute('annonce_index', [], Response::HTTP_SEE_OTHER);
         }
 
+        // Rendre la vue avec le formulaire
         return $this->render('pure_annonce/new.html.twig', [
             'pure_annonce' => $pureAnnonce,
             'form' => $form->createView(),
         ]);
     }
+
 
 
     #[Route('details-annonce/{id}', name: 'annonce_show', methods: ['GET'])]
@@ -59,6 +76,8 @@ final class PureAnnonceController extends AbstractController
     #[Route('/editer-mon-annonce/{id}', name: 'annonce_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, PureAnnonce $pureAnnonce, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $form = $this->createForm(PureAnnonceType::class, $pureAnnonce);
         $form->handleRequest($request);
 

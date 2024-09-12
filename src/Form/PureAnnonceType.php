@@ -18,7 +18,7 @@ class PureAnnonceType extends AbstractType
             ->add('titre')
             ->add('quantite')
             ->add('description')
-            ->add('approuve')
+            // ->add('approuve')
             ->add('pureProduit', EntityType::class, [
                 'class' => PureProduit::class,
                 'choice_label' => 'nom',

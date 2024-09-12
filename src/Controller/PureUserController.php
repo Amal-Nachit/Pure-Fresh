@@ -59,7 +59,7 @@ final class PureUserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_pure_user_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('user_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('pure_user/edit.html.twig', [
@@ -68,14 +68,16 @@ final class PureUserController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'delete', methods: ['POST'])]
+    #[Route('/delete/{id}', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, PureUser $pureUser, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$pureUser->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $pureUser->getId(), $request->request->get('_token'))) {
             $entityManager->remove($pureUser);
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_pure_user_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('user_index', [], Response::HTTP_SEE_OTHER);
     }
+
+
 }

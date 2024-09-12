@@ -28,7 +28,7 @@ class PureAnnonce
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $datePublication = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?bool $approuve = null;
 
     #[ORM\OneToOne(mappedBy: 'annonce', cascade: ['persist', 'remove'])]
@@ -37,7 +37,13 @@ class PureAnnonce
     #[ORM\ManyToOne(inversedBy: 'annonce')]
     #[ORM\JoinColumn(nullable: false)]
     private ?PureUser $pureUser = null;
-    
+
+    public function __construct()
+    {
+        // Initialisation par défaut lors de la création d'une annonce
+        $this->datePublication = new \DateTime('now', new \DateTimeZone('Europe/Paris'));
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -78,10 +84,7 @@ class PureAnnonce
 
         return $this;
     }
-    public function __construct()
-    {
-        $this->datePublication = new \DateTime('now', new \DateTimeZone('Europe/Paris'));
-    }
+
     public function getDatePublication(): ?\DateTimeInterface
     {
         return $this->datePublication;
@@ -113,10 +116,12 @@ class PureAnnonce
 
     public function setPureProduit(?PureProduit $pureProduit): static
     {
+        // Annuler l'association précédente si nécessaire
         if ($pureProduit === null && $this->pureProduit !== null) {
             $this->pureProduit->setAnnonce(null);
         }
 
+        // Assigner la nouvelle association
         if ($pureProduit !== null && $pureProduit->getAnnonce() !== $this) {
             $pureProduit->setAnnonce($this);
         }
@@ -138,4 +143,3 @@ class PureAnnonce
         return $this;
     }
 }
-

@@ -1,10 +1,12 @@
 <?php
+
 namespace App\Controller;
 
 use App\Entity\PureAnnonce;
 use App\Repository\PureAnnonceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -13,50 +15,59 @@ class AdminDashboardController extends AbstractController
     #[Route('/admin/dashboard', name: 'admin_dashboard')]
     public function index(PureAnnonceRepository $pureAnnonceRepository): Response
     {
-        $annonces = $pureAnnonceRepository->findAll();
-        $nbAnnonces = count($annonces);
-        $nbAnnoncesPubliees = 0;
-        $nbAnnoncesSupprimees = 0;
+        // Récupérer uniquement les annonces non approuvées et non supprimées
+        $annonces = $pureAnnonceRepository->findBy(['approuve' => null]);
 
-        foreach ($annonces as $annonce) {
-            if ($annonce->isApprouve()) {
-                $nbAnnoncesPubliees++;
-            } else {
-                $nbAnnoncesSupprimees++;
-            }
-        }
+        // Comptabiliser le nombre total d'annonces non approuvées
+        $nbAnnonces = count($annonces);
+        $nbAnnoncesPubliees = $pureAnnonceRepository->count(['approuve' => true]);
 
         return $this->render('admin_dashboard/index.html.twig', [
             'annonces' => $annonces,
-            'nbAnnonces' => $nbAnnonces,
             'nbAnnoncesPubliees' => $nbAnnoncesPubliees,
-            'nbAnnoncesSupprimees' => $nbAnnoncesSupprimees,
+            'nbAnnonces' => $nbAnnonces,
         ]);
     }
 
-    #[Route('/accepter/{id}', name: 'admin_annonce_approuvee')]
-    public function accepter(PureAnnonce $annonce, EntityManagerInterface $entityManager): Response
+    #[Route('/admin/annonces', name: 'admin_annonces', methods: ['GET'])]
+    public function annonces(EntityManagerInterface $entityManager, PureAnnonceRepository $pureAnnonceRepository): JsonResponse
     {
-        // Si l'annonce n'est pas trouvée, Symfony lancera une exception NotFoundHttpException automatiquement.
+        $annonces = $entityManager->getRepository(PureAnnonce::class)->findAll();
+        $annonces = [];
 
-        $annonce->setApprouve(true); // Utilisez la méthode setApprouve() pour modifier l'état
+        $nbAnnoncesPubliees = $pureAnnonceRepository->count(['approuve' => true]);
+
+        foreach ($annonces as $annonce) {
+            $annonces[] = [
+                'id' => $annonce->getId(),
+                'titre' => $annonce->getTitre(),
+                'quantite' => $annonce->getQuantite(),
+                'datePublication' => $annonce->getDatePublication()->format('Y-m-d H:i'),
+                'approuve' => $annonce->isApprouve(),
+            ];
+        }
+        $data = [
+            'annonces' => $annonces,
+            'nbAnnoncesPubliees' => $nbAnnoncesPubliees,
+        ];
+        return new JsonResponse($data);
+
+    }
+    #[Route('/accepter/{id}', name: 'admin_annonce_approuvee', methods: ['POST'])]
+    public function accepter(PureAnnonce $annonce, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $annonce->setApprouve(true);
         $entityManager->flush();
 
-        $this->addFlash('success', 'L\'annonce a été approuvée avec succès.');
-
-        return $this->redirectToRoute('admin_dashboard');
+        return new JsonResponse(['success' => true], 200);
     }
 
-    #[Route('/refuser/{id}', name: 'admin_annonce_refusee')]
-    public function refuser(PureAnnonce $annonce, EntityManagerInterface $entityManager): Response
+    #[Route('/refuser/{id}', name: 'admin_annonce_refusee', methods: ['POST'])]
+    public function refuser(PureAnnonce $annonce, EntityManagerInterface $entityManager): JsonResponse
     {
-        // Si l'annonce n'est pas trouvée, Symfony lancera une exception NotFoundHttpException automatiquement.
-
         $entityManager->remove($annonce);
         $entityManager->flush();
 
-        $this->addFlash('success', 'L\'annonce a été refusée et supprimée avec succès.');
-
-        return $this->redirectToRoute('admin_dashboard');
+        return new JsonResponse(['success' => true], 200);
     }
 }
