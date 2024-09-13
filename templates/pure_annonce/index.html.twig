@@ -1,20 +1,20 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}PureAnnonce index{% endblock %}
+{% block title %}PureAnnonce Index{% endblock %}
 
 {% block body %}
-    <h1>PureAnnonce index</h1>
+    <h1>PureAnnonce Index</h1>
 
     <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
                 <th>Titre</th>
-                <th>Quantite</th>
+                <th>Quantité</th>
                 <th>Description</th>
-                <th>DatePublication</th>
-                <th>Approuve</th>
-                <th>actions</th>
+                <th>Date de Publication</th>
+                <th>Approuvé</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -25,19 +25,35 @@
                 <td>{{ pure_annonce.quantite }}</td>
                 <td>{{ pure_annonce.description }}</td>
                 <td>{{ pure_annonce.datePublication ? pure_annonce.datePublication|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ pure_annonce.approuve ? 'Yes' : 'No' }}</td>
+                <td>{{ pure_annonce.approuve ? 'Oui' : 'Non' }}</td>
                 <td>
-                    <a href="{{ path('annonce_show', {'id': pure_annonce.id}) }}">show</a>
-                    <a href="{{ path('annonce_edit', {'id': pure_annonce.id}) }}">edit</a>
+                    <a href="{{ path('annonce_show', {'id': pure_annonce.id}) }}">Afficher</a>
+                    <a href="{{ path('annonce_edit', {'id': pure_annonce.id}) }}">Éditer</a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="9">no records found</td>
+                <td colspan="7">Aucun enregistrement trouvé</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('annonce_new') }}">Create new</a>
+    <style>
+        #map {
+            height: 500px;
+            width: 100%;
+        }
+    </style>
+
+    {% block javascripts %}
+
+    <script src="{{ asset('../assets/js/map.js') }}"></script>
+
+
+    {% endblock %}
+    <a href="{{ path('annonce_new') }}">Créer une nouvelle annonce</a>
+
+    <div id="map"></div>
+
 {% endblock %}

@@ -34,7 +34,7 @@ class PureProduit
     #[ORM\ManyToOne(targetEntity: PureAnnonce::class, inversedBy: 'pureProduit', cascade: ['persist', 'remove'])]
     private ?PureAnnonce $annonce = null;
 
-    #[ORM\ManyToOne(targetEntity: PureCategorie::class, inversedBy: 'pureProduit', cascade: ['persist', 'remove'])]
+    #[ORM\ManyToOne(targetEntity: PureCategorie::class, inversedBy: 'pureProduit', cascade: ['persist'])]
     private ?PureCategorie $categorie = null;
 
     #[ORM\ManyToOne(inversedBy: 'produit')]
