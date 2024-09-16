@@ -19,82 +19,64 @@ final class PureAnnonceController extends AbstractController
     {
         $annonces = $pureAnnonceRepository->findBy(['approuve' => true]);
 
-        // Extraire les adresses des annonces
-        $addresses = [];
-        foreach ($annonces as $annonce) {
-            // Extraire l'adresse de l'utilisateur uniquement s'il est vendeur
-            $roles = $annonce->getPureUser()->getRoles();
-            if (in_array('ROLE_VENDEUR', $roles, true)) {
-                $addresses[] = $annonce->getPureUser()->getAdresse();
-            }
-        }
-
-        // Convertir les adresses en coordonnées géographiques (latitude, longitude)
+        // Extraire les adresses et informations des vendeurs
         $coordinates = [];
-        foreach ($addresses as $address) {
-            // Utilisez un service comme Google Geocoding API pour obtenir les coordonnées
-            $coordinate = $this->getCoordinatesFromAddress($address);
-            if ($coordinate) {
-                $coordinates[] = $coordinate;
-            }
-        }
-
-        // Extraire les adresses des annonces
-        $addresses = [];
         foreach ($annonces as $annonce) {
-            $roles = $annonce->getPureUser()->getRoles();
-            if (in_array('ROLE_VENDEUR', $roles, true)) {
-                $addresses[] = $annonce->getPureUser()->getAdresse();
-            }
-        }
+            if (in_array('ROLE_VENDEUR', $annonce->getPureUser()->getRoles(), true)) {
+                $adresse = $annonce->getPureUser()->getAdresse();
+                $coordinate = $this->getCoordinatesFromAddress($adresse);
 
-        // Convertir les adresses en coordonnées géographiques (latitude, longitude)
-        $coordinates = [];
-        foreach ($addresses as $address) {
-            $coordinate = $this->getCoordinatesFromAddress($address);
-            if ($coordinate) {
-                $coordinates[] = $coordinate;
-            } else {
-                // Log or print the address that failed to convert
-                error_log("Failed to get coordinates for address: " . $address);
-            }
-        }
-
-        // Extraire les informations des vendeurs pour l'affichage
-        $vendeurs = [];
-        foreach ($annonces as $annonce) {
-            $vendeur = $annonce->getPureUser();
-            if (in_array('ROLE_VENDEUR', $vendeur->getRoles(), true)) {
-                $vendeurs[] = [
-                    'adresse' => $vendeur->getAdresse()
-                ];
+                if ($coordinate) {
+                    $coordinates[] = [
+                        'lat' => $coordinate[0],
+                        'lng' => $coordinate[1],
+                        'nom' => $annonce->getPureUser()->getNom() // Ajout du nom du vendeur
+                    ];
+                } else {
+                    error_log("Failed to get coordinates for address: " . $adresse);
+                }
             }
         }
 
         return $this->render('pure_annonce/index.html.twig', [
             'pure_annonces' => $annonces,
-            'coordinates' => $coordinates,
-            'vendeurs' => $vendeurs
+            'coordinates' => json_encode($coordinates), // Encoder les coordonnées en JSON pour Twig
         ]);
-
     }
-
 
     public function getCoordinatesFromAddress(string $address): ?array
     {
-        $apiKey = 'AIzaSyDB7guuh8CY_MJasUE7LC5BV4eBTXWaVco';  // Remplacez par votre clé API
+        $apiKey = 'AIzaSyDB7guuh8CY_MJasUE7LC5BV4eBTXWaVco'; // Remplacez par votre clé API
         $url = 'https://maps.googleapis.com/maps/api/geocode/json?address=' . urlencode($address) . '&key=' . $apiKey;
 
-        $response = file_get_contents($url);
+        // Obtenir la réponse de l'API
+        $response = @file_get_contents($url);
+
+        // Vérifier les erreurs de la requête HTTP
+        if ($response === false) {
+            error_log('Failed to fetch data from Google Maps API for address: ' . $address);
+            return null;
+        }
+
+        // Décoder la réponse JSON
         $data = json_decode($response, true);
 
-        if ($data['status'] === 'OK') {
+        // Vérifier que la réponse est correcte et contient les coordonnées
+        if (is_array($data) && isset($data['status']) && $data['status'] === 'OK' && isset($data['results'][0]['geometry']['location'])) {
             $location = $data['results'][0]['geometry']['location'];
             return [$location['lat'], $location['lng']];
         }
 
-        return null; // Retourne null si la géocodage échoue
+        // Journaliser l'erreur si la réponse ne contient pas les informations attendues
+        if (isset($data['status'])) {
+            error_log('Google Maps API error for address ' . $address . ': ' . $data['status']);
+        } else {
+            error_log('Invalid JSON response from Google Maps API for address: ' . $address);
+        }
+
+        return null;
     }
+
 
 
 
@@ -169,7 +151,7 @@ final class PureAnnonceController extends AbstractController
     #[Route('supprimer-mon-annonce/{id}', name: 'annonce_delete', methods: ['POST'])]
     public function delete(Request $request, PureAnnonce $pureAnnonce, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$pureAnnonce->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $pureAnnonce->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($pureAnnonce);
             $entityManager->flush();
         }

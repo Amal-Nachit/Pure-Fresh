@@ -1,0 +1,99 @@
+<main class="bg-lime-900 min-h-screen flex flex-col">
+    <header>
+        {{ include('Includes/Header/index.html.twig') }}
+    </header>
+    <div class="flex flex-col items-center justify-center p-6">
+        <h1 class="text-3xl sm:text-5xl font-bold text-yellow-400 mb-6">
+            Mangez Bio, Mangez Local
+        </h1>
+        <h2 class="text-lg sm:text-3xl text-white text-center max-w-3xl">
+            Savourez la nature et soutenez vos producteurs !
+        </h2>
+    </div>
+
+    <div class="w-full mb-6">
+        <img src="../../table.jpg" alt="Une main tenant un radis" 
+             class="w-full h-auto object-contain rounded-lg shadow-md">
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 p-4 mb-6">
+        <div class="flex items-center space-x-6 p-4 bg-lime-800 rounded-lg shadow-lg">
+            <img src="../../icon-svg/fr.svg" alt="" class="h-14 w-14 sm:h-12 sm:w-12 md:h-16 md:w-16 lg:h-20 lg:w-20 xl:h-24 xl:w-24 object-contain filter-white">
+            <div>
+                <h2 class="text-xl sm:text-2xl text-yellow-400 font-bold">
+                    Des produits locaux partout en France
+                </h2>
+                <p class="text-white text-sm sm:text-base">
+                    Découvrez des produits frais, traçables, directement auprès d'agriculteurs passionnés partout en France.
+                </p>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-6 p-4 bg-lime-800 rounded-lg shadow-lg">
+            <img src="../../icon-svg/basket-shopping-solid.svg" alt="" class="h-16 w-16 object-contain filter-white">
+            <div>
+                <h2 class="text-xl sm:text-2xl text-yellow-400 font-bold">
+                    Le plaisir des saveurs authentiques
+                </h2>
+                <p class="text-white text-sm sm:text-base">
+                    Redécouvrez le goût véritable des produits locaux, pour une alimentation saine qui préserve votre santé et celle de votre famille.
+                </p>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-6 p-4 bg-lime-800 rounded-lg shadow-lg">
+            <img src="../../icon-svg/handshake.svg" alt="" class="h-16 w-16 object-contain filter-white">
+            <div>
+                <h2 class="text-xl sm:text-2xl text-yellow-400 font-bold">
+                    Un échange bénéfique pour tous
+                </h2>
+                <p class="text-white text-sm sm:text-base">
+                    Vendez vos surplus de récoltes et créez un revenu complémentaire tout en offrant des produits frais et locaux à des prix justes.
+                </p>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-6 p-4 bg-lime-800 rounded-lg shadow-lg">
+            <img src="../../icon-svg/trash.svg" alt="" class="h-16 w-16 object-contain filter-white">
+            <div>
+                <h2 class="text-xl sm:text-2xl text-yellow-400 font-bold">
+                    Un engagement contre le gaspillage alimentaire
+                </h2>
+                <p class="text-white text-sm sm:text-base">
+                    Vendez vos surplus de récoltes et créez un revenu complémentaire tout en offrant des produits frais et locaux à des prix justes.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-6 rounded-lg mb-8 xl:mx-10 flex flex-col md:flex-row items-center">
+        <div class="w-full md:w-1/3 mb-4 md:mb-0 md:mr-6">
+            <img src="../../agricultrice.jpg" alt="Une main tenant un radis" 
+                 class="w-full h-auto object-cover rounded-lg shadow-md">
+        </div>
+        <div class="w-full md:w-2/3">
+            <h2 class="text-xl sm:text-2xl md:text-3xl text-yellow-400 font-bold mb-4">
+                Une histoire vraie :
+            </h2>
+            <p class="text-white text-sm sm:text-base md:text-lg leading-relaxed">
+                L'histoire de <span class="italic">Pure&Fresh</span> commence avec Claire, une agricultrice amoureuse de sa terre, qui voyait chaque année une partie de ses récoltes se perdre. 
+                Malgré son dévouement à cultiver des produits bio de qualité, elle n'avait pas assez de clients pour tout écouler. 
+                Un soir, en rentrant épuisée des champs, elle a vu ses enfants manger des légumes qu'elle venait de jeter, “trop abîmés” pour le marché mais encore bons. 
+                Un pincement au cœur l’a envahi : tout ce travail pour que ça finisse à la poubelle.
+                C'est là qu'elle a eu l'idée de <span class="italic">Pure&Fresh</span>, une plateforme pour vendre ces surplus aux familles à la recherche de produits locaux et sains. 
+                Aujourd'hui, elle ne gaspille plus rien et partage le fruit de son travail avec des consommateurs qui en comprennent la valeur.
+            </p>
+        </div>
+    </div>
+
+    <footer>
+        {{ include('Includes/Footer/index.html.twig') }}
+    </footer>
+</main>
+
+<style>
+    .filter-white {
+        filter: brightness(0) invert(1);
+        stroke: white;
+    }
+</style>
