@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <nav class="flex items-center justify-between p-4">
+        <div class="flex-shrink-0">
+        <a href="{{ path('home') }}">
+    <img src="{{ asset('../logo.png') }}" alt="Logo" 
+         class="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 lg:h-32 lg:w-32 xl:h-24 xl:w-24 object-contain"></a>
+</div>
+        <div>
+    <a href="{{ path('app_login') }}" 
+       class="text-lg font-semibold text-lime-900 bg-lime-100 px-4 py-2 rounded-lg transition-transform transform hover:-translate-y-1 hover:bg-lime-200 shadow-md hover:shadow-lg duration-300 ease-in-out">
+        Connexion
+    </a>
+</div>
+    
+    </nav>
+
+{% endblock %}

@@ -107,3 +107,5 @@ function fetchAnnonces() {
 
 fetchAnnonces();
 setInterval(fetchAnnonces, 30000);
+
+

@@ -17,6 +17,7 @@ final class PureUserController extends AbstractController
     #[Route('s',name: 'index', methods: ['GET'])]
     public function index(PureUserRepository $pureUserRepository): Response
     {
+        
         return $this->render('pure_user/index.html.twig', [
             'pure_users' => $pureUserRepository->findAll(),
         ]);

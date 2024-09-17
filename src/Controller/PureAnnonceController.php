@@ -17,14 +17,69 @@ final class PureAnnonceController extends AbstractController
     #[Route('/annonces', name: 'annonce_index', methods: ['GET'])]
     public function index(PureAnnonceRepository $pureAnnonceRepository): Response
     {
-        // $this->denyAccessUnlessGranted('ROLE_USER');
+        $annonces = $pureAnnonceRepository->findBy(['approuve' => true]);
 
-        
+        // Extraire les adresses et informations des vendeurs
+        $coordinates = [];
+        foreach ($annonces as $annonce) {
+            if (in_array('ROLE_VENDEUR', $annonce->getPureUser()->getRoles(), true)) {
+                $adresse = $annonce->getPureUser()->getAdresse();
+                $coordinate = $this->getCoordinatesFromAddress($adresse);
+
+                if ($coordinate) {
+                    $coordinates[] = [
+                        'lat' => $coordinate[0],
+                        'lng' => $coordinate[1],
+                        'nom' => $annonce->getPureUser()->getNom() // Ajout du nom du vendeur
+                    ];
+                } else {
+                    error_log("Failed to get coordinates for address: " . $adresse);
+                }
+            }
+        }
 
         return $this->render('pure_annonce/index.html.twig', [
-            'pure_annonces' => $pureAnnonceRepository->findAll(),
+            'pure_annonces' => $annonces,
+            'coordinates' => json_encode($coordinates), // Encoder les coordonnées en JSON pour Twig
         ]);
-    }   
+    }
+
+    public function getCoordinatesFromAddress(string $address): ?array
+    {
+        $apiKey = 'AIzaSyDB7guuh8CY_MJasUE7LC5BV4eBTXWaVco'; // Remplacez par votre clé API
+        $url = 'https://maps.googleapis.com/maps/api/geocode/json?address=' . urlencode($address) . '&key=' . $apiKey;
+
+        // Obtenir la réponse de l'API
+        $response = @file_get_contents($url);
+
+        // Vérifier les erreurs de la requête HTTP
+        if ($response === false) {
+            error_log('Failed to fetch data from Google Maps API for address: ' . $address);
+            return null;
+        }
+
+        // Décoder la réponse JSON
+        $data = json_decode($response, true);
+
+        // Vérifier que la réponse est correcte et contient les coordonnées
+        if (is_array($data) && isset($data['status']) && $data['status'] === 'OK' && isset($data['results'][0]['geometry']['location'])) {
+            $location = $data['results'][0]['geometry']['location'];
+            return [$location['lat'], $location['lng']];
+        }
+
+        // Journaliser l'erreur si la réponse ne contient pas les informations attendues
+        if (isset($data['status'])) {
+            error_log('Google Maps API error for address ' . $address . ': ' . $data['status']);
+        } else {
+            error_log('Invalid JSON response from Google Maps API for address: ' . $address);
+        }
+
+        return null;
+    }
+
+
+
+
 
     #[Route('/deposer-une-annonce', name: 'annonce_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -96,7 +151,7 @@ final class PureAnnonceController extends AbstractController
     #[Route('supprimer-mon-annonce/{id}', name: 'annonce_delete', methods: ['POST'])]
     public function delete(Request $request, PureAnnonce $pureAnnonce, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$pureAnnonce->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $pureAnnonce->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($pureAnnonce);
             $entityManager->flush();
         }

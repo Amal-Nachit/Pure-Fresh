@@ -55,9 +55,6 @@ class RegistrationController extends AbstractController
                     ->subject('Veuillez confirmer votre email')
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
-
-            // Enregistrement de l'utilisateur connecté
-            // $security->login($user);
             
             // Redirection après la connexion ou l'inscription réussie
             return $this->redirectToRoute('user_index');

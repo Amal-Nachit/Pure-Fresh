@@ -31,7 +31,7 @@ class PureAnnonce
     #[ORM\Column(nullable: true)]
     private ?bool $approuve = null;
 
-    #[ORM\OneToOne(mappedBy: 'annonce', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'annonce', cascade: ['persist'])]
     private ?PureProduit $pureProduit = null;
 
     #[ORM\ManyToOne(inversedBy: 'annonce')]
