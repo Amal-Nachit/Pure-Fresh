@@ -6,6 +6,7 @@ use App\Entity\PureAnnonce;
 use App\Entity\PureUser;
 use App\Form\PureAnnonceType;
 use App\Repository\PureAnnonceRepository;
+use App\Repository\PureProduitRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,17 +16,23 @@ use Symfony\Component\Routing\Attribute\Route;
 final class PureAnnonceController extends AbstractController
 {
     #[Route('/annonces', name: 'annonce_index', methods: ['GET'])]
-    public function index(PureAnnonceRepository $pureAnnonceRepository): Response
+    public function index(PureProduitRepository $produit, PureAnnonceRepository $pureAnnonceRepository): Response
     {
         $annonces = $pureAnnonceRepository->findBy(['approuve' => true]);
 
-        // Extraire les adresses et informations des vendeurs
+        // Extraire les adresses, informations des vendeurs et les images des produits
         $coordinates = [];
+        $produitsImages = [];
+
         foreach ($annonces as $annonce) {
             if (in_array('ROLE_VENDEUR', $annonce->getPureUser()->getRoles(), true)) {
                 $adresse = $annonce->getPureUser()->getAdresse();
                 $coordinate = $this->getCoordinatesFromAddress($adresse);
 
+                // Récupérer l'image du produit lié à l'annonce
+                $produit = $annonce->getPureProduit();
+                $produitsImages[$annonce->getId()] = $produit->getImage();
+                
                 if ($coordinate) {
                     $coordinates[] = [
                         'lat' => $coordinate[0],
@@ -41,8 +48,10 @@ final class PureAnnonceController extends AbstractController
         return $this->render('pure_annonce/index.html.twig', [
             'pure_annonces' => $annonces,
             'coordinates' => json_encode($coordinates), // Encoder les coordonnées en JSON pour Twig
+            'produits_images' => $produitsImages // Envoyer les images des produits à Twig
         ]);
     }
+
 
     public function getCoordinatesFromAddress(string $address): ?array
     {

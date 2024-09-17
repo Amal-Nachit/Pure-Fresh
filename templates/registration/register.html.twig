@@ -1,46 +1,84 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Inscription{% endblock %}
 
 {% block body %}
-    {% for flash_error in app.flashes('verify_email_error') %}
-        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
-    {% endfor %}
+<header class="">
+    {{ include('Includes/Header/index.html.twig') }}
+</header>
 
-    <h1>Register</h1>
+<div class="flex items-center justify-center bg-lime-900 pt-8 px-6">
+    <div class="w-full max-w-md p-8 bg-lime-800 rounded-3xl border-2 border-gray-500 shadow-lg my-10">        
+        <h1 class="text-2xl font-bold text-white mb-4 text-center">Inscription</h1>
+        
+        {% for flash_error in app.flashes('verify_email_error') %}
+            <div class="bg-red-500 text-white p-4 rounded-lg mb-6" role="alert">{{ flash_error }}</div>
+        {% endfor %}
 
-    {{ form_start(registrationForm) }}
+        {{ form_start(registrationForm) }}
 
-    {% if form_errors(registrationForm) %}
-        <div class="alert alert-danger">
-            {{ form_errors(registrationForm) }}
+        {% if form_errors(registrationForm) %}
+            <div class="bg-red-500 text-white p-4 rounded-lg mb-6">
+                {{ form_errors(registrationForm) }}
+            </div>
+        {% endif %}
+
+        <div class="space-y-4">
+            <div>
+                {{ form_label(registrationForm.prenom, 'Prénom', {'label_attr': {'class': 'block text-white text-sm font-medium mb-1'}}) }}
+                {{ form_widget(registrationForm.prenom, {'attr': {'class': 'w-full p-2 bg-lime-100 text-white rounded-lg border border-transparent focus:outline-none focus:ring-2 focus:ring-lime-400 focus:border-transparent'}}) }}
+            </div>
+
+            <div>
+                {{ form_label(registrationForm.nom, 'Nom', {'label_attr': {'class': 'block text-white text-sm font-medium mb-1'}}) }}
+                {{ form_widget(registrationForm.nom, {'attr': {'class': 'w-full p-2 bg-lime-100 text-white rounded-lg border border-transparent focus:outline-none focus:ring-2 focus:ring-lime-400 focus:border-transparent'}}) }}
+            </div>
+
+            <div>
+                {{ form_label(registrationForm.adresse, 'Adresse', {'label_attr': {'class': 'block text-white text-sm font-medium mb-1'}}) }}
+                {{ form_widget(registrationForm.adresse, {'attr': {'class': 'w-full p-2 bg-lime-100 text-white rounded-lg border border-transparent focus:outline-none focus:ring-2 focus:ring-lime-400 focus:border-transparent autocomplete-address'}}) }}
+            </div>
+
+            <div>
+                {{ form_label(registrationForm.telephone, 'Téléphone', {'label_attr': {'class': 'block text-white text-sm font-medium mb-1'}}) }}
+                {{ form_widget(registrationForm.telephone, {'attr': {'class': 'w-full p-2 bg-lime-100 text-white rounded-lg border border-transparent focus:outline-none focus:ring-2 focus:ring-lime-400 focus:border-transparent'}}) }}
+            </div>
+
+            <div>
+                {{ form_label(registrationForm.email, 'Email', {'label_attr': {'class': 'block text-white text-sm font-medium mb-1'}}) }}
+                {{ form_widget(registrationForm.email, {'attr': {'class': 'w-full p-2 bg-lime-100 text-white rounded-lg border border-transparent focus:outline-none focus:ring-2 focus:ring-lime-400 focus:border-transparent'}}) }}
+            </div>
+
+            <div>
+                {{ form_label(registrationForm.plainPassword.first, 'Mot de passe', {'label_attr': {'class': 'block text-white text-sm font-medium mb-1'}}) }}
+                {{ form_widget(registrationForm.plainPassword.first, {'attr': {'class': 'w-full p-2 bg-lime-100 text-white rounded-lg border border-transparent focus:outline-none focus:ring-2 focus:ring-lime-400 focus:border-transparent'}}) }}
+            </div>
+
+            <div>
+                {{ form_label(registrationForm.plainPassword.second, 'Confirmer le mot de passe', {'label_attr': {'class': 'block text-white text-sm font-medium mb-1'}}) }}
+                {{ form_widget(registrationForm.plainPassword.second, {'attr': {'class': 'w-full p-2 bg-lime-100 text-white rounded-lg border border-transparent focus:outline-none focus:ring-2 focus:ring-lime-400 focus:border-transparent'}}) }}
+            </div>
+
+            <div>
+                {{ form_label(registrationForm.role, 'Vous êtes?', {'label_attr': {'class': 'block text-white text-sm font-medium mb-1'}}) }}
+                {{ form_widget(registrationForm.role, {'attr': {'class': 'w-full text-white rounded-lg border border-transparent focus:outline-none focus:ring-2 focus:ring-lime-400 focus:border-transparent space-x-2'}}) }}
+            </div>
+
+            <div>
+                {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'mr-2'}}) }}
+                <label for="agreeTerms" class="text-white text-sm">{{ form_label(registrationForm.agreeTerms, 'Accepter les conditions') }}</label>
+            </div>
         </div>
-    {% endif %}
 
-    {{ form_row(registrationForm.prenom) }}
-    {{ form_row(registrationForm.nom) }}
-    <div>
-        {{ form_row(registrationForm.adresse, {'attr': {'class': 'autocomplete-address', 'id': 'registration_form_adresse'}}) }}
-        <div id="suggestions-box" class="suggestions"></div>
+        <button class="w-full py-2 px-4 bg-lime-100 text-lime-900 font-bold rounded-lg shadow-md hover:bg-lime-300 transition-colors duration-300 mt-4" type="submit">
+            S'inscrire
+        </button>
+
+        {{ form_end(registrationForm) }}
     </div>
-    {{ form_row(registrationForm.telephone) }}
-    {{ form_row(registrationForm.email) }}
-    {{ form_row(registrationForm.plainPassword.first) }}
-    {{ form_row(registrationForm.plainPassword.second) }}
-    {{ form_row(registrationForm.agreeTerms) }}
+</div>
 
-    <div class="form-group">
-        <button type="submit" class="btn btn-primary">Register</button>
-    </div>
-
-    {{ form_end(registrationForm) }}
-
+<footer class="">
+    {{ include('Includes/Footer/index.html.twig') }}
+</footer>
 {% endblock %}
-{% block javascripts %}
-    {{ parent() }}
-
-    <script src="{{ asset('../assets/js/adresse.js') }}"></script>
-
-{% endblock %}
-
-

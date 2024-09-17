@@ -1,8 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block body %}
+
 <main class="bg-lime-900 min-h-screen flex flex-col">
     <header>
         {{ include('Includes/Header/index.html.twig') }}
     </header>
-    <div class="flex flex-col items-center justify-center p-6">
+    <div class="flex flex-col items-center justify-center p-6 mt-3">
         <h1 class="text-3xl sm:text-5xl font-bold text-yellow-400 mb-6">
             Mangez Bio, Mangez Local
         </h1>
@@ -90,10 +96,10 @@
         {{ include('Includes/Footer/index.html.twig') }}
     </footer>
 </main>
-
 <style>
     .filter-white {
         filter: brightness(0) invert(1);
         stroke: white;
     }
 </style>
+{% endblock %}

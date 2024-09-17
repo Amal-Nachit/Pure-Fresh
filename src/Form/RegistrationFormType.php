@@ -53,11 +53,11 @@ class RegistrationFormType extends AbstractType
                 'label' => 'Phone Number',
                 'constraints' => [
                     new NotBlank([
-                        'message' => 'Please enter your phone number',
+                        'message' => 'Entrez votre numéro de téléphone',
                     ]),
                     new Regex([
                         'pattern' => '/^\+?[0-9]{10,15}$/',
-                        'message' => 'Please enter a valid phone number',
+                        'message' => 'Entrez un numéro de téléphone valide',
                     ]),
                 ],
             ])
@@ -66,7 +66,7 @@ class RegistrationFormType extends AbstractType
                 'attr' => [
                     'class' => 'autocomplete-address',
                     'id' => 'adresse_input',
-                    'placeholder' => 'Enter your address'
+                    'placeholder' => 'Entrez votre adresse',
                 ]
             ])
             ->add('email', EmailType::class, [
@@ -117,7 +117,6 @@ class RegistrationFormType extends AbstractType
                 'choices' => [
                     'Vendeur' => 'ROLE_VENDEUR',
                     'Acheteur' => 'ROLE_ACHETEUR',
-                    // 'Admin' => 'ROLE_ADMIN',
                 ],
                 'expanded' => true,  // Affiche les options comme des boutons radio
                 'multiple' => false, // Un seul rôle peut être sélectionné
