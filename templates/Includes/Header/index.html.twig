@@ -1,20 +1,75 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    <!-- Navigation bar -->
+    <nav class="relative flex items-center justify-between py-4 sm:py-6 px-4  bg-lime-900 shadow-lg">
+        <!-- Menu déroulant stylé à gauche, visible sur écrans moyens et grands -->
+        <div class="hidden md:block relative z-10">
+            <div class="relative">
+                <button id="menu-toggle" class="text-lg font-semibold text-lime-900 bg-lime-100 px-4 py-2 rounded-lg hover:bg-lime-200 shadow-md hover:shadow-lg duration-300 ease-in-out">
+                    Menu
+                </button>
+                <!-- Menu dropdown -->
+                <ul id="menu-dropdown" class="absolute left-0 mt-2 w-48 bg-lime-800 rounded-lg shadow-lg opacity-0 invisible transition-all duration-300 transform translate-y-4 z-20">
+                    <li><a href="{{ path('home') }}" class="block px-4 py-2 text-white hover:bg-lime-600 transition-colors duration-200">Accueil</a></li>
+                    <li><a href="{{ path('annonce_index') }}" class="block px-4 py-2 text-white hover:bg-lime-600 transition-colors duration-200">Produits</a></li>
+                    <li><a href="{{ path('panier') }}" class="block px-4 py-2 text-white hover:bg-lime-600 transition-colors duration-200">Panier</a></li>
+                    <li><a href="{{ path('acheteur_dashboard') }}" class="block px-4 py-2 text-white hover:bg-lime-600 transition-colors duration-200">Tableau de bord</a></li>
+                    <li><a href="" class="block px-4 py-2 text-white hover:bg-lime-600 transition-colors duration-200">Contact</a></li>
+                </ul>
+            </div>
+        </div>
 
-    <nav class="flex items-center justify-between p-4">
-        <div class="flex-shrink-0">
-        <a href="{{ path('home') }}">
-    <img src="{{ asset('../logo.png') }}" alt="Logo" 
-         class="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 lg:h-32 lg:w-32 xl:h-24 xl:w-24 object-contain"></a>
-</div>
-        <div>
-    <a href="{{ path('app_login') }}" 
-       class="text-lg font-semibold text-lime-900 bg-lime-100 px-4 py-2 rounded-lg transition-transform transform hover:-translate-y-1 hover:bg-lime-200 shadow-md hover:shadow-lg duration-300 ease-in-out">
-        Connexion
-    </a>
-</div>
-    
+        <!-- Logo centré sur moyens et grands écrans, aligné à gauche sur petits écrans -->
+        <div class="md:absolute md:left-1/2 md:transform md:-translate-x-1/2">
+            <a href="{{ path('home') }}">
+                <img src="{{ asset('../logo.png') }}" alt="Logo" 
+                     class="h-18 w-16 sm:h-20 sm:w-20 md:h-18 md:w-18 lg:h-20 lg:w-20 xl:h-20 xl:w-20 object-contain">
+            </a>
+        </div>
+
+        <!-- Connexion button à droite -->
+        <div class="ml-auto md:ml-0 relative z-10">
+            {% if app.user %}
+                <a href="{{ path('app_logout') }}" 
+                   class="text-lg font-semibold text-lime-900 bg-lime-100 px-4 py-2 rounded-lg transition-transform transform hover:-translate-y-1 hover:bg-lime-200 shadow-md hover:shadow-lg duration-300 ease-in-out">
+                    Déconnexion
+                </a>
+            {% else %}
+                <a href="{{ path('app_login') }}" 
+                   class="text-lg font-semibold text-lime-900 bg-lime-100 px-4 py-2 rounded-lg transition-transform transform hover:-translate-y-1 hover:bg-lime-200 shadow-md hover:shadow-lg duration-300 ease-in-out">
+                    Connexion
+                </a>
+            {% endif %}
+        </div>
     </nav>
+
+    <!-- JavaScript pour afficher/masquer le menu déroulant -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var menuToggle = document.getElementById('menu-toggle');
+        var menuDropdown = document.getElementById('menu-dropdown');
+        var menuContainer = document.querySelector('.relative.z-10');
+
+        menuToggle.addEventListener('click', function (event) {
+            event.stopPropagation(); // Empêche le clic sur le bouton de fermer le menu immédiatement
+            if (menuDropdown.classList.contains('invisible')) {
+                menuDropdown.classList.remove('opacity-0', 'invisible', 'translate-y-4');
+                menuDropdown.classList.add('opacity-100', 'translate-y-0');
+            } else {
+                menuDropdown.classList.add('opacity-0', 'invisible', 'translate-y-4');
+                menuDropdown.classList.remove('opacity-100', 'translate-y-0');
+            }
+        });
+
+        document.addEventListener('click', function (event) {
+            if (!menuContainer.contains(event.target) && !menuDropdown.contains(event.target)) {
+                menuDropdown.classList.add('opacity-0', 'invisible', 'translate-y-4');
+                menuDropdown.classList.remove('opacity-100', 'translate-y-0');
+            }
+        });
+    });
+</script>
+
 
 {% endblock %}

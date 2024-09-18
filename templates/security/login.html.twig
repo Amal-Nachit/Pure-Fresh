@@ -1,37 +1,55 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}Se connecter{% endblock %}
 
 {% block body %}
-<form method="post">
-    {% if error %}
-        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
+<header class="">
+    {{ include('Includes/Header/index.html.twig') }}
+</header>
 
-    {% if app.user %}
-        <div class="mb-3">
-            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
-        </div>
-    {% endif %}
+<div class="flex items-center justify-center bg-lime-900 pt-8 px-6">
+<div class="w-full max-w-md p-8 bg-lime-800 rounded-3xl border-2 border-gray-500 shadow-lg my-10">        
+<h1 class="text-2xl font-bold text-white mb-4 text-center">Connexion</h1>
+        {% if error %}
+            <div class="bg-red-500 text-white p-4 rounded-lg mb-6">
+                {{ error.messageKey|trans(error.messageData, 'security') }}
+            </div>
+        {% endif %}
 
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-    <label for="inputEmail">Email</label>
-    <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
-    <label for="inputPassword">Password</label>
-    <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+        {% if app.user %}
+            <div class="mb-6 text-center">
+                Vous êtes connecté en tant que {{ app.user.userIdentifier }}. <a href="{{ path('app_logout') }}" class="text-yellow-300 hover:underline">Déconnexion</a>
+            </div>
+        {% endif %}
 
-    <input type="hidden" name="_csrf_token"
-           value="{{ csrf_token('authenticate') }}"
-    >
+        <form method="post" class="space-y-4">
+            <div>
+                <label for="inputEmail" class="block text-white text-sm font-medium mb-1">Email</label>
+                <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="w-full p-2 bg-lime-100 text-white rounded-lg border border-transparent focus:outline-none focus:ring-2 focus:ring-lime-400 focus:border-transparent" autocomplete="email" required autofocus>
+            </div>
 
-    <div class="checkbox mb-3">
-        <label>
-            <input type="checkbox" name="_remember_me"> Remember me
-        </label>
+            <div>
+                <label for="inputPassword" class="block text-white text-sm font-medium mb-1">Mot de passe</label>
+                <input type="password" name="password" id="inputPassword" class="w-full p-2 bg-lime-100 text-white rounded-lg border border-transparent focus:outline-none focus:ring-2 focus:ring-lime-400 focus:border-transparent" autocomplete="current-password" required>
+            </div>
+            <a href="" class="text-yellow-300 hover:underline">Mot de passe oublié ?</a>
+
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+            <div class="flex items-center mb-4">
+                <input type="checkbox" name="_remember_me" id="rememberMe" class="mr-2">
+                <label for="rememberMe" class="text-white text-sm">Se souvenir de moi</label>
+            </div>
+
+            <button class="w-full py-2 px-4 bg-lime-100 text-lime-900 font-bold rounded-lg shadow-md hover:bg-lime-300 transition-colors duration-300" type="submit">
+                Se connecter
+            </button>
+            <p class="text-white text-sm">Vous n’êtes pas encore inscrit(e)? <a href="{{ path('app_register') }}" class="text-yellow-300 hover:underline">Inscrivez-vous ici</a></p>
+        </form>
     </div>
+</div>
 
-    <button class="btn btn-lg btn-primary" type="submit">
-        Sign in
-    </button>
-</form>
+<footer class="">
+    {{ include('Includes/Footer/index.html.twig') }}
+</footer>
 {% endblock %}
