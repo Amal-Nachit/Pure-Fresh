@@ -5,6 +5,7 @@
 {% block body %}
 
 <main class="bg-lime-900 min-h-screen flex flex-col">
+<div class="bg-gray-700 bg-opacity-40">
     <header>
         {{ include('Includes/Header/index.html.twig') }}
     </header>
@@ -96,6 +97,7 @@
         {{ include('Includes/Footer/index.html.twig') }}
     </footer>
 </main>
+</div>
 <style>
     .filter-white {
         filter: brightness(0) invert(1);

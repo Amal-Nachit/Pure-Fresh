@@ -17,9 +17,7 @@ class UserDashboardController extends AbstractController
         if (in_array('ROLE_VENDEUR', $this->getUser()->getRoles())) {
             return $this->redirectToRoute('vendeur_dashboard');
         }
-
-
-        return $this->render('home/index.html.twig', [
+        return $this->render(view: 'home/index.html.twig', parameters: [
             'controller_name' => 'HomeController',
         ]);
     }

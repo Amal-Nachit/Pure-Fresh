@@ -1,14 +1,16 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Se connecter{% endblock %}
+{% block title %}Connexion{% endblock %}
 
 {% block body %}
+<main class="bg-lime-900 min-h-screen flex flex-col">
+<div class="bg-gray-700 bg-opacity-40">
 <header class="">
     {{ include('Includes/Header/index.html.twig') }}
 </header>
 
-<div class="flex items-center justify-center bg-lime-900 pt-8 px-6">
-<div class="w-full max-w-md p-8 bg-lime-800 rounded-3xl border-2 border-gray-500 shadow-lg my-10">        
+<div class="flex items-center justify-center pt-8 px-6">
+<div class="w-full max-w-md p-14 bg-white rounded-3xl border-2 border-gray-500 shadow-lg my-10 bg-opacity-20">        
 <h1 class="text-2xl font-bold text-white mb-4 text-center">Connexion</h1>
         {% if error %}
             <div class="bg-red-500 text-white p-4 rounded-lg mb-6">
@@ -25,12 +27,12 @@
         <form method="post" class="space-y-4">
             <div>
                 <label for="inputEmail" class="block text-white text-sm font-medium mb-1">Email</label>
-                <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="w-full p-2 bg-lime-100 text-white rounded-lg border border-transparent focus:outline-none focus:ring-2 focus:ring-lime-400 focus:border-transparent" autocomplete="email" required autofocus>
+                <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="w-full p-2 bg-lime-100 text-white rounded-lg border border-transparent focus:outline-none focus:ring-2 focus:ring-lime-900 focus:border-transparent" autocomplete="email" required autofocus>
             </div>
 
             <div>
                 <label for="inputPassword" class="block text-white text-sm font-medium mb-1">Mot de passe</label>
-                <input type="password" name="password" id="inputPassword" class="w-full p-2 bg-lime-100 text-white rounded-lg border border-transparent focus:outline-none focus:ring-2 focus:ring-lime-400 focus:border-transparent" autocomplete="current-password" required>
+                <input type="password" name="password" id="inputPassword" class="w-full p-2 bg-lime-100 text-white rounded-lg border border-transparent focus:outline-none focus:ring-2 focus:ring-lime-900 focus:border-transparent" autocomplete="current-password" required>
             </div>
             <a href="" class="text-yellow-300 hover:underline">Mot de passe oublié ?</a>
 
@@ -52,4 +54,6 @@
 <footer class="">
     {{ include('Includes/Footer/index.html.twig') }}
 </footer>
+</div>
+</main>
 {% endblock %}

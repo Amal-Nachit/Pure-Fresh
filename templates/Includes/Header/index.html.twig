@@ -2,7 +2,7 @@
 
 {% block body %}
     <!-- Navigation bar -->
-    <nav class="relative flex items-center justify-between py-4 sm:py-6 px-4  bg-lime-900 shadow-lg">
+    <nav class="relative flex items-center justify-between py-4 sm:py-6 px-4 shadow-lg">
         <!-- Menu déroulant stylé à gauche, visible sur écrans moyens et grands -->
         <div class="hidden md:block relative z-10">
             <div class="relative">
@@ -13,8 +13,8 @@
                 <ul id="menu-dropdown" class="absolute left-0 mt-2 w-48 bg-lime-800 rounded-lg shadow-lg opacity-0 invisible transition-all duration-300 transform translate-y-4 z-20">
                     <li><a href="{{ path('home') }}" class="block px-4 py-2 text-white hover:bg-lime-600 transition-colors duration-200">Accueil</a></li>
                     <li><a href="{{ path('annonce_index') }}" class="block px-4 py-2 text-white hover:bg-lime-600 transition-colors duration-200">Produits</a></li>
-                    <li><a href="{{ path('panier') }}" class="block px-4 py-2 text-white hover:bg-lime-600 transition-colors duration-200">Panier</a></li>
-                    <li><a href="{{ path('acheteur_dashboard') }}" class="block px-4 py-2 text-white hover:bg-lime-600 transition-colors duration-200">Tableau de bord</a></li>
+                    {# <li><a href="{{ path('panier') }}" class="block px-4 py-2 text-white hover:bg-lime-600 transition-colors duration-200">Panier</a></li> #}
+                    <li><a href="{{ path('dashboard') }}" class="block px-4 py-2 text-white hover:bg-lime-600 transition-colors duration-200">Tableau de bord</a></li>
                     <li><a href="" class="block px-4 py-2 text-white hover:bg-lime-600 transition-colors duration-200">Contact</a></li>
                 </ul>
             </div>
