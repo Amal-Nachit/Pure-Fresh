@@ -102,7 +102,7 @@ class PureAnnonce
         return $this->approuve;
     }
 
-    public function setApprouve(bool $approuve): static
+    public function setApprouve(?bool $approuve): static
     {
         $this->approuve = $approuve;
 

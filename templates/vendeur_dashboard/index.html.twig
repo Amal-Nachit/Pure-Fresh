@@ -1,20 +1,56 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello VendeurDashboardController!{% endblock %}
+{% block title %}Tableau de bord{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+<header class="bg-lime-900">
+    {{ include('Includes/Header/index.html.twig') }}
+</header>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+<main class="bg-gray-900 min-h-screen flex flex-col lg:flex-row">
+    <!-- Sidebar -->
+    <aside class="w-full lg:w-64 bg-gray-800 p-4 lg:p-6">
+        <nav class="space-y-4">
+            <h2 class="text-yellow-400 font-bold text-xl lg:text-2xl mb-4 lg:mb-6">Tableau de bord</h2>
+            <a href="{{ path('produit_index') }}" class="block py-2 px-4 rounded-lg bg-gray-700 text-white hover:bg-gray-600">Mes produits</a>
+            <a href="{{ path('dashboard_mes_annonces') }}" class="block py-2 px-4 rounded-lg bg-gray-700 text-white hover:bg-gray-600">Mes annonces</a>
+            <a href="#" class="block py-2 px-4 rounded-lg bg-gray-700 text-white hover:bg-gray-600">Mes commandes</a>
+            <a href="#" class="block py-2 px-4 rounded-lg bg-gray-700 text-white hover:bg-gray-600">Mon compte</a>
+        </nav>
+    </aside>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/amal_/pure-fresh/src/Controller/VendeurDashboardController.php</code></li>
-        <li>Your template at <code>C:/Users/amal_/pure-fresh/templates/vendeur_dashboard/index.html.twig</code></li>
-    </ul>
-</div>
+    <!-- Main Content -->
+    <section class="flex-1 p-4 lg:p-8 bg-gray-900 text-white">
+        {% block content %}
+        <h1 class="text-2xl lg:text-3xl font-bold text-yellow-400 mb-4 lg:mb-6">Bienvenue dans votre espace vendeur</h1>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <!-- Card 1: Annonces -->
+            <div class="bg-gray-800 p-4 lg:p-6 rounded-lg shadow-lg">
+                <h2 class="text-lg lg:text-xl text-yellow-400 font-bold mb-2 lg:mb-4">Mes annonces</h2>
+                <p class="text-white mb-2 lg:mb-4">Gérez vos annonces de produits. Ajoutez, modifiez, ou supprimez facilement vos offres.</p>
+                <a href="#" class="text-yellow-400 hover:text-yellow-300">Voir mes annonces →</a>
+            </div>
+
+            <!-- Card 2: Commandes -->
+            <div class="bg-gray-800 p-4 lg:p-6 rounded-lg shadow-lg">
+                <h2 class="text-lg lg:text-xl text-yellow-400 font-bold mb-2 lg:mb-4">Mes commandes</h2>
+                <p class="text-white mb-2 lg:mb-4">Consultez et gérez les commandes de vos produits par vos clients.</p>
+                <a href="#" class="text-yellow-400 hover:text-yellow-300">Voir mes commandes →</a>
+            </div>
+
+            <!-- Card 3: Compte -->
+            <div class="bg-gray-800 p-4 lg:p-6 rounded-lg shadow-lg">
+                <h2 class="text-lg lg:text-xl text-yellow-400 font-bold mb-2 lg:mb-4">Mon compte</h2>
+                <p class="text-white mb-2 lg:mb-4">Modifiez les informations de votre compte et gérez vos paramètres personnels.</p>
+                <a href="#" class="text-yellow-400 hover:text-yellow-300">Gérer mon compte →</a>
+            </div>
+        </div>
+        {% endblock %}
+    </section>
+</main>
+
+<footer class="bg-lime-900">
+    {{ include('Includes/Footer/index.html.twig') }}
+</footer>
+
 {% endblock %}

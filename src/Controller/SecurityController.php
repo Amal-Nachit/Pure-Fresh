@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\PureUser;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,10 +12,13 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class SecurityController extends AbstractController
 {
     #[Route(path: '/login', name: 'app_login')]
-    public function login(AuthenticationUtils $authenticationUtils, Security $security): Response
+    public function login(PureUser $user, AuthenticationUtils $authenticationUtils, Security $security): Response
     {
-        // Vérifier si l'utilisateur est déjà connecté
         $user = $security->getUser();
+        if ($user) {
+            return $this->redirectToRoute('home');
+        }
+        // Vérifier si l'utilisateur est déjà connecté
         // if ($user) {
         //     $roles = $user->getRoles();
 
@@ -27,7 +31,7 @@ class SecurityController extends AbstractController
             // }
 
             // if (in_array('ROLE_VENDEUR', $roles, true)) {
-            //     return $this->redirectToRoute('vendeur_dashboard');
+            //     return $this->redirectToRoute('dashboard');
             // }
 
             // // Redirection par défaut si aucun rôle ne correspond

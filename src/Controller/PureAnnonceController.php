@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\PureAnnonce;
+use App\Entity\PureProduit;
 use App\Entity\PureUser;
 use App\Form\PureAnnonceType;
 use App\Repository\PureAnnonceRepository;
@@ -90,6 +91,8 @@ final class PureAnnonceController extends AbstractController
 
 
 
+
+
     #[Route('/deposer-une-annonce', name: 'annonce_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -140,15 +143,17 @@ final class PureAnnonceController extends AbstractController
     #[Route('/editer-mon-annonce/{id}', name: 'annonce_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, PureAnnonce $pureAnnonce, EntityManagerInterface $entityManager): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        $this->denyAccessUnlessGranted('ROLE_VENDEUR');
 
         $form = $this->createForm(PureAnnonceType::class, $pureAnnonce);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $pureAnnonce->setApprouve(null);
             $entityManager->flush();
 
-            return $this->redirectToRoute('annonce_index', [], Response::HTTP_SEE_OTHER);
+            $this->addFlash('success', 'Votre annonce a bien été modifiée.');
+            return $this->redirectToRoute('user_dashboard', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('pure_annonce/edit.html.twig', [

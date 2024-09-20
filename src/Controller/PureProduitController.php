@@ -19,6 +19,7 @@ final class PureProduitController extends AbstractController
     #[Route('s', name: 'index', methods: ['GET'])]
     public function index(PureProduitRepository $pureProduitRepository): Response
     {
+        
         return $this->render('pure_produit/index.html.twig', [
             'pure_produits' => $pureProduitRepository->findAll(),
         ]);

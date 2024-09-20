@@ -1,11 +1,11 @@
-{% extends 'base.html.twig' %}
+{% extends 'dashboard/index.html.twig' %}
 
-{% block title %}New PureAnnonce{% endblock %}
+{% block content %}
 
-{% block body %}
     <h1>Create new PureAnnonce</h1>
 
     {{ include('pure_annonce/_form.html.twig') }}
 
     <a href="{{ path('annonce_index') }}">back to list</a>
 {% endblock %}
+
