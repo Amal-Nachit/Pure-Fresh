@@ -100,7 +100,7 @@ class RegistrationFormType extends AbstractType
                         ]),
                         new Length([
                             'min' => 6,
-                            'minMessage' => 'Your password should be at least {{ limit }} characters',
+                            'minMessage' => 'Ton mot de passe doit contenir au moins {{ limit }} caractères',
                             'max' => 4096,
                         ]),
                     ],
@@ -110,7 +110,7 @@ class RegistrationFormType extends AbstractType
                     'attr' => ['autocomplete' => 'new-password'],
                 ],
                 'invalid_message' => 'The password fields must match.',
-                'mapped' => false, // The password is not mapped to the entity directly.
+                'mapped' => false,
             ])
             ->add('role', ChoiceType::class, [
                 'label' => 'Role',
@@ -118,9 +118,9 @@ class RegistrationFormType extends AbstractType
                     'Vendeur' => 'ROLE_VENDEUR',
                     'Acheteur' => 'ROLE_ACHETEUR',
                 ],
-                'expanded' => true,  // Affiche les options comme des boutons radio
-                'multiple' => false, // Un seul rôle peut être sélectionné
-                'mapped' => false,   // Ce champ ne doit pas être mappé à l'entité PureUser
+                'expanded' => true,
+                'multiple' => false,
+                'mapped' => false, 
             ])
         ;
     }

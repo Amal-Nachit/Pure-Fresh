@@ -3,16 +3,27 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{% block title %}Welcome!{% endblock %}</title>
-<link rel="icon" href="{{ asset('favicon.png') }}">
+        <link rel="icon" href="{{ asset('favicon.png') }}">
+
+        <script src="https://cdn.tailwindcss.com"></script>
 
         {% block stylesheets %}
-          {% endblock %}
-
-        {% block javascripts %}
         {% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+
+        {% for type, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ type }} bg-{{ type == 'success' ? 'green' : (type == 'error' ? 'red' : 'yellow') }}-500 text-white p-4 rounded-lg">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        {% block body %}
+        {% endblock %}
+
+        {% block javascripts %}
+        {% endblock %}
     </body>
-    <script src="https://cdn.tailwindcss.com"></script>
 </html>

@@ -23,25 +23,25 @@ final class PureUserController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $pureUser = new PureUser();
-        $form = $this->createForm(PureUserType::class, $pureUser);
-        $form->handleRequest($request);
+    // #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
+    // public function new(Request $request, EntityManagerInterface $entityManager): Response
+    // {
+    //     $pureUser = new PureUser();
+    //     $form = $this->createForm(PureUserType::class, $pureUser);
+    //     $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($pureUser);
-            $entityManager->flush();
+    //     if ($form->isSubmitted() && $form->isValid()) {
+    //         $entityManager->persist($pureUser);
+    //         $entityManager->flush();
 
-            return $this->redirectToRoute('app_pure_user_index', [], Response::HTTP_SEE_OTHER);
-        }
+    //         return $this->redirectToRoute('app_pure_user_index', [], Response::HTTP_SEE_OTHER);
+    //     }
 
-        return $this->render('pure_user/new.html.twig', [
-            'pure_user' => $pureUser,
-            'form' => $form,
-        ]);
-    }
+    //     return $this->render('pure_user/new.html.twig', [
+    //         'pure_user' => $pureUser,
+    //         'form' => $form,
+    //     ]);
+    // }
 
     #[Route('/{id}', name: 'show', methods: ['GET'])]
     public function show(PureUser $pureUser): Response
@@ -52,22 +52,24 @@ final class PureUserController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, PureUser $pureUser, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(PureUserType::class, $pureUser);
-        $form->handleRequest($request);
+   public function edit(Request $request, PureUser $pureUser, EntityManagerInterface $entityManager): Response
+{
+    $form = $this->createForm(PureUserType::class, $pureUser);
+    $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+    if ($form->isSubmitted() && $form->isValid()) {
+        $entityManager->flush();
 
-            return $this->redirectToRoute('user_index', [], Response::HTTP_SEE_OTHER);
-        }
+        $this->addFlash('success', 'Vos informations ont été mises à jour avec succès.');
 
-        return $this->render('pure_user/edit.html.twig', [
-            'pure_user' => $pureUser,
-            'form' => $form,
-        ]);
+        return $this->redirectToRoute('dashboard_mon_compte', [], Response::HTTP_SEE_OTHER);
     }
+
+    return $this->render('pure_user/edit.html.twig', [
+        'pure_user' => $pureUser,
+        'form' => $form,
+    ]);
+}
 
     #[Route('/delete/{id}', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, PureUser $pureUser, EntityManagerInterface $entityManager): Response
@@ -75,10 +77,12 @@ final class PureUserController extends AbstractController
         if ($this->isCsrfTokenValid('delete' . $pureUser->getId(), $request->request->get('_token'))) {
             $entityManager->remove($pureUser);
             $entityManager->flush();
+
+            $this->addFlash('success', 'L\'utilisateur a été supprimé avec succès.');
+        } else {
+            $this->addFlash('error', 'Échec de la suppression de l\'utilisateur.');
         }
 
-        return $this->redirectToRoute('user_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('home', [], Response::HTTP_SEE_OTHER);
     }
-
-
 }

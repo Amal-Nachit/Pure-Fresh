@@ -1,0 +1,44 @@
+{% extends 'dashboard/vendeur.html.twig' %}
+
+{% block content %}
+    <h1 class="text-3xl font-bold text-yellow-400 mb-6">Mon Compte</h1>
+
+    <div class="bg-gray-800 p-6 rounded-lg text-white">
+        <h2 class="text-xl font-semibold mb-4">Informations personnelles</h2>
+        <div class="mb-4">
+            <label class="block text-yellow-400 font-bold mb-2" for="prenom">Prénom:</label>
+            <p class="bg-gray-700 p-2 rounded-lg">{{ user.prenom }}</p>
+        </div>
+        <div class="mb-4">
+            <label class="block text-yellow-400 font-bold mb-2" for="nom">Nom:</label>
+            <p class="bg-gray-700 p-2 rounded-lg">{{ user.nom }}</p>
+        </div>
+        <div class="mb-4">
+            <label class="block text-yellow-400 font-bold mb-2" for="telephone">Téléphone:</label>
+            <p class="bg-gray-700 p-2 rounded-lg">{{ user.telephone }}</p>
+        </div>
+        <div class="mb-4">
+            <label class="block text-yellow-400 font-bold mb-2" for="adresse">Adresse:</label>
+            <p class="bg-gray-700 p-2 rounded-lg">{{ user.adresse }}</p>
+        </div>
+        <div class="mb-4">
+            <label class="block text-yellow-400 font-bold mb-2" for="email">Email:</label>
+            <p class="bg-gray-700 p-2 rounded-lg">{{ user.email }}</p>
+        </div>
+        <div class="mb-4">
+            <label class="block text-yellow-400 font-bold mb-2" for="password">Mot de passe:</label>
+            <p class="bg-gray-700 p-2 rounded-lg">********</p>
+        </div>
+
+        <a href="{{ path('user_edit', {'id': user.id}) }}" class="inline-block py-2 px-4 bg-yellow-500 text-black rounded-lg hover:bg-yellow-400 transition duration-300">Modifier mes informations</a>
+    </div>
+
+    <div class="mt-6">
+        <h2 class="text-xl font-semibold text-yellow-400 mb-4">Suppression du compte</h2>
+        <p class="text-red-400 mb-4">Attention : Cette action est irréversible.</p>
+        <form action="{{ path('user_delete', {'id': user.id}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre compte ?');">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+            <button type="submit" class="py-2 px-4 bg-red-600 text-white rounded-lg hover:bg-red-500 transition duration-300">Supprimer mon compte</button>
+        </form>
+    </div>
+{% endblock %}

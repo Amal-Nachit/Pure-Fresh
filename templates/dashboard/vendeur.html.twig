@@ -3,19 +3,17 @@
 {% block title %}Tableau de bord{% endblock %}
 
 {% block body %}
-<header class="bg-lime-900">
-    {{ include('Includes/Header/index.html.twig') }}
-</header>
 
 <main class="bg-gray-900 min-h-screen flex flex-col lg:flex-row">
     <!-- Sidebar -->
     <aside class="w-full lg:w-64 bg-gray-800 p-4 lg:p-6">
         <nav class="space-y-4">
             <h2 class="text-yellow-400 font-bold text-xl lg:text-2xl mb-4 lg:mb-6">Tableau de bord</h2>
+            <a href="{{ path('home') }}" class="block py-2 px-4 rounded-lg bg-gray-700 text-white hover:bg-gray-600">Accueil</a>
             <a href="{{ path('produit_index') }}" class="block py-2 px-4 rounded-lg bg-gray-700 text-white hover:bg-gray-600">Mes produits</a>
             <a href="{{ path('dashboard_mes_annonces') }}" class="block py-2 px-4 rounded-lg bg-gray-700 text-white hover:bg-gray-600">Mes annonces</a>
             <a href="#" class="block py-2 px-4 rounded-lg bg-gray-700 text-white hover:bg-gray-600">Mes commandes</a>
-            <a href="#" class="block py-2 px-4 rounded-lg bg-gray-700 text-white hover:bg-gray-600">Mon compte</a>
+            <a href="{{ path('dashboard_mon_compte') }}" class="block py-2 px-4 rounded-lg bg-gray-700 text-white hover:bg-gray-600">Mon compte</a>
         </nav>
     </aside>
 
@@ -48,9 +46,4 @@
         {% endblock %}
     </section>
 </main>
-
-<footer class="bg-lime-900">
-    {{ include('Includes/Footer/index.html.twig') }}
-</footer>
-
 {% endblock %}

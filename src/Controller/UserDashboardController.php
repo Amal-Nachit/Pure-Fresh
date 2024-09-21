@@ -2,30 +2,31 @@
 
 namespace App\Controller;
 
+use App\Entity\PureUser;
 use App\Repository\PureAnnonceRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/dashboard', name: 'dashboard_')]
+#[Route('/dashboard', name: 'dashboard')]
 class UserDashboardController extends AbstractController
 {
-    #[Route('/', name: 'user_dashboard_')]
-    #[IsGranted('ROLE_ACHETEUR')]
-    #[IsGranted('ROLE_VENDEUR')]
+    // #[IsGranted('ROLE_ACHETEUR')]
+    // #[IsGranted('ROLE_VENDEUR')]
+    #[Route('/', name: '')]
     public function index(): Response
     {
         if (in_array('ROLE_ACHETEUR', $this->getUser()->getRoles())) {
-            return $this->render('acheteur_dashboard/index.html.twig');
+            return $this->render('dashboard/acheteur.html.twig');
         } else if (in_array('ROLE_VENDEUR', $this->getUser()->getRoles())) {
-            return $this->render('dashboard/index.html.twig');
+            return $this->render('dashboard/vendeur.html.twig');
         } else {
             return $this->render('home/index.html.twig');
         }
     }
 
-    #[Route('/mes-annonces', name: 'mes_annonces')]
+    #[Route('/mes-annonces', name: '_mes_annonces')]
     public function mesAnnonces(PureAnnonceRepository $pureAnnonceRepository): Response
     {
         // Récupérer l'utilisateur connecté
@@ -57,4 +58,16 @@ class UserDashboardController extends AbstractController
         // Redirection si l'utilisateur n'est pas autorisé
         return $this->redirectToRoute('home');
     }
+
+        #[Route('/mon-compte', name: '_mon_compte')]
+    public function monCompte(PureUser $user): Response
+    {
+        // Récupérer l'utilisateur connecté
+        $user = $this->getUser();
+        return $this->render('dashboard/moncompte.html.twig', [
+            'user' => $user
+        ]);  
+    }
+
+
 }
