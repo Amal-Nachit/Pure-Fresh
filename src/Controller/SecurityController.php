@@ -18,26 +18,6 @@ class SecurityController extends AbstractController
         if ($user) {
             return $this->redirectToRoute('home');
         }
-        // Vérifier si l'utilisateur est déjà connecté
-        // if ($user) {
-        //     $roles = $user->getRoles();
-
-            // if (in_array('ROLE_ADMIN', $roles, true)) {
-            //     return $this->redirectToRoute('admin_dashboard');
-            // }
-
-            // if (in_array('ROLE_ACHETEUR', $roles, true)) {
-            //     return $this->redirectToRoute('acheteur_dashboard');
-            // }
-
-            // if (in_array('ROLE_VENDEUR', $roles, true)) {
-            //     return $this->redirectToRoute('dashboard');
-            // }
-
-            // // Redirection par défaut si aucun rôle ne correspond
-            // return $this->redirectToRoute('app_home');
-        // }
-
         // Obtenir l'erreur de connexion s'il y en a
         $error = $authenticationUtils->getLastAuthenticationError();
         // Dernier nom d'utilisateur entré par l'utilisateur
@@ -53,6 +33,6 @@ class SecurityController extends AbstractController
     #[Route(path: '/logout', name: 'app_logout')]
     public function logout(): void
     {
-        throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
+        throw new \LogicException();
     }
 }

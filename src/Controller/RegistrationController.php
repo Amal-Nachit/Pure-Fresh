@@ -56,8 +56,8 @@ class RegistrationController extends AbstractController
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
             
-            // Redirection après la connexion ou l'inscription réussie
-            return $this->redirectToRoute('user_index');
+            // Redirection après la connexion réussie
+            return $this->redirectToRoute('dashboard');
         }
 
         // Affichage du formulaire d'inscription si non soumis ou non valide

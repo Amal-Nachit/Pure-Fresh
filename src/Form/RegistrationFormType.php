@@ -31,7 +31,7 @@ class RegistrationFormType extends AbstractType
                     ]),
                     new Length([
                         'min' => 2,
-                        'minMessage' => 'Your first name should be at least {{ limit }} characters',
+                        'minMessage' => 'Ton prénom doit contenir au moins {{ limit }} caractères',
                         'max' => 50,
                     ]),
                 ],
@@ -44,7 +44,7 @@ class RegistrationFormType extends AbstractType
                     ]),
                     new Length([
                         'min' => 2,
-                        'minMessage' => 'Your last name should be at least {{ limit }} characters',
+                        'minMessage' => 'Ton nom doit contenir au moins {{ limit }} caractères',
                         'max' => 50,
                     ]),
                 ],

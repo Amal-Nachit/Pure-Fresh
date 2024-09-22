@@ -1,20 +1,47 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello AcheteurDashboardController!{% endblock %}
+{% block title %}Tableau de bord de l'acheteur{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+<header class="bg-lime-900">
+    {{ include('Includes/Header/index.html.twig') }}
+</header>
+<main class="bg-lime-900 min-h-screen p-6">
+    <div class="bg-gray-700 bg-opacity-40 rounded-lg shadow-lg p-6">
+        <h1 class="text-3xl sm:text-4xl font-bold text-yellow-400 mb-6">Tableau de bord</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+            <section class="bg-lime-800 p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold text-yellow-400 mb-4">Mes commandes</h2>
+                <ul class="text-white space-y-4">
+                    <li class="flex justify-between items-center p-4 bg-gray-700 rounded-lg shadow-md">
+                        <span>Commande #12345</span>
+                        <span class="text-yellow-400">Livrée</span>
+                    </li>
+                    <li class="flex justify-between items-center p-4 bg-gray-700 rounded-lg shadow-md">
+                        <span>Commande #67890</span>
+                        <span class="text-yellow-400">En cours</span>
+                    </li>
+                    <li class="flex justify-between items-center p-4 bg-gray-700 rounded-lg shadow-md">
+                        <span>Commande #54321</span>
+                        <span class="text-yellow-400">Annulée</span>
+                    </li>
+                </ul>
+            </section>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/amal_/pure-fresh/src/Controller/AcheteurDashboardController.php</code></li>
-        <li>Your template at <code>C:/Users/amal_/pure-fresh/templates/acheteur_dashboard/index.html.twig</code></li>
-    </ul>
-</div>
+            <section class="bg-lime-800 p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold text-yellow-400 mb-4">Mon compte</h2>
+                <div class="text-white">
+                    <p class="mb-4"><strong>Nom :</strong> {{ app.user.nom }}</p>
+                    <p class="mb-4"><strong>Email :</strong> {{ app.user.email }}</p>
+                    <a href="{{ path('user_edit', {'id': app.user.id}) }}" class="text-yellow-400 hover:underline">Modifier mes informations personnelles</a>
+                </div>
+            </section>
+        </div>
+    </div>
+</main>
+<footer class="bg-lime-900">
+    {{ include('Includes/Footer/index.html.twig') }}
+</footer>
 {% endblock %}

@@ -21,7 +21,19 @@ security:
       logout:
         path: app_logout
         # where to redirect after logout
-        # target: app_home
+        target: home
+
+    admin_area:
+      pattern: ^/admin
+      login_path: admin_login
+      provider: app_user_provider
+      form_login:
+        check_path: admin_login_check
+        default_target_path: admin_dashboard
+        login_path: admin_login
+      logout:
+        path: admin_logout
+        target: home
 
       remember_me:
         secret: "%kernel.secret%"
@@ -41,8 +53,8 @@ security:
   # Note: Only the *first* access control that matches will be used
   access_control:
     - { path: ^/admin, roles: ROLE_ADMIN }
-    - { path: ^/vendeur, roles: ROLE_VENDEUR }
-    - { path: ^/acheteur, roles: ROLE_ACHETEUR }
+    # - { path: ^/vendeur, roles: ROLE_VENDEUR }
+    # - { path: ^/acheteur, roles: ROLE_ACHETEUR }
 
 when@test:
   security:
