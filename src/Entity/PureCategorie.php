@@ -20,12 +20,12 @@ class PureCategorie
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
-    #[ORM\OneToMany(mappedBy: 'categorie', targetEntity: PureProduit::class, cascade: ['persist', 'remove'])]
-    private iterable $pureProduits;
+    #[ORM\OneToMany(mappedBy: 'categorie', targetEntity: PureAnnonce::class, cascade: ['persist', 'remove'])]
+    private iterable $pureAnnonces;
 
     public function __construct()
     {
-        $this->pureProduits = new ArrayCollection();
+        $this->pureAnnonces = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -46,29 +46,29 @@ class PureCategorie
     }
 
     /**
-     * @return Collection<int, PureProduit>
+     * @return Collection<int, PureAnnonce>
      */
-    public function getPureProduits(): Collection
+    public function getPureAnnonces(): Collection
     {
-        return $this->pureProduits;
+        return $this->pureAnnonces;
     }
 
-    public function addPureProduit(PureProduit $pureProduit): static
+    public function addPureAnnonce(PureAnnonce $pureAnnonce): static
     {
-        if (!$this->pureProduits->contains($pureProduit)) {
-            $this->pureProduits->add($pureProduit);
-            $pureProduit->setCategorie($this);
+        if (!$this->pureAnnonces->contains($pureAnnonce)) {
+            $this->pureAnnonces->add($pureAnnonce);
+            $pureAnnonce->setCategorie($this);
         }
 
         return $this;
     }
 
-    public function removePureProduit(PureProduit $pureProduit): static
+    public function removePureAnnonce(PureAnnonce $pureAnnonce): static
     {
-        if ($this->pureProduits->removeElement($pureProduit)) {
+        if ($this->pureAnnonces->removeElement($pureAnnonce)) {
             // set the owning side to null (unless already changed)
-            if ($pureProduit->getCategorie() === $this) {
-                $pureProduit->setCategorie(null);
+            if ($pureAnnonce->getCategorie() === $this) {
+                $pureAnnonce->setCategorie(null);
             }
         }
 

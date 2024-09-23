@@ -1,38 +1,71 @@
 {% extends 'base.html.twig' %}
-
-{% block title %}PureAnnonce{% endblock %}
+{% block title %}Détails de l'annonce - {{ pure_annonce.nom }}{% endblock %}
 
 {% block body %}
-    <h1>PureAnnonce</h1>
+<header class="bg-lime-900">
+    {{ include('Includes/Header/index.html.twig') }}
+</header>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ pure_annonce.id }}</td>
-            </tr>
-            <tr>
-                <th>Titre</th>
-                <td>{{ pure_annonce.titre }}</td>
-            </tr>
-            <tr>
-                <th>Quantite</th>
-                <td>{{ pure_annonce.quantite }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ pure_annonce.description }}</td>
-            </tr>
-            <tr>
-                <th>Approuve</th>
-                <td>{{ pure_annonce.approuve ? 'Yes' : 'No' }}</td>
-            </tr>
-        </tbody>
-    </table>
+<div class="bg-gray-100 py-12">
+    <div class="container mx-auto px-4 lg:px-8">
+        <h1 class="text-4xl font-bold text-lime-800 mb-6 text-center">{{ pure_annonce.nom }}</h1>
 
-    <a href="{{ path('annonce_index') }}">back to list</a>
+        <div class="bg-white shadow-2xl rounded-2xl p-8 lg:p-12 mb-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                <div>
+                    <img src="{{ '/uploads/images/' ~ pure_annonce.image }}" alt="{{ pure_annonce.nom }}" class="w-full h-auto object-cover rounded-xl shadow-lg">
+                </div>
 
-    <a href="{{ path('annonce_edit', {'id': pure_annonce.id}) }}">edit</a>
+                <div>
+                    <h2 class="text-3xl font-bold text-lime-900 mb-6">Description</h2>
+                    <p class="text-gray-600 text-lg mb-8 leading-relaxed">{{ pure_annonce.description }}</p>
 
-    {{ include('pure_annonce/_delete_form.html.twig') }}
+                    <h3 class="text-2xl font-semibold text-lime-800 mb-6">Détails de l'annonce</h3>
+                    <ul class="space-y-6">
+                        <li class="flex justify-between text-gray-700 text-lg">
+                            <span class="font-medium">Publiée le :</span>
+                            <span>{{ pure_annonce.dateCreation ? pure_annonce.dateCreation|date('d-m-Y H:i') : 'Non précisée' }}</span>
+                        </li>
+
+                        <li class="flex justify-between text-gray-700 text-lg">
+                            <span class="font-medium">Quantité :</span>
+                            <span>{{ pure_annonce.quantite }} kg</span>
+                        </li>
+
+                        <li class="flex justify-between text-gray-700 text-lg">
+                            <span class="font-medium">Prix :</span>
+                            <span class="text-lime-600 font-bold text-2xl">{{ pure_annonce.prix }} €/kg</span>
+                        </li>
+
+                        <li class="flex justify-between text-gray-700 text-lg">
+                            <span class="font-medium">Vendeur :</span>
+                            <span>{{ pure_annonce.pureUser.prenom }} {{ pure_annonce.pureUser.nom }}</span>
+                        </li>
+
+                        <li class="flex justify-between text-gray-700 text-lg">
+                            <span class="font-medium">Téléphone :</span>
+                            <span>{{ pure_annonce.pureUser.telephone }}</span>
+                        </li>
+
+                        <li class="flex justify-between text-gray-700 text-lg">
+                            <span class="font-medium">Adresse :</span>
+                            <span>{{ pure_annonce.pureUser.adresse }}</span>
+                        </li>
+                    </ul>
+
+                    <div class="mt-10 flex flex-col lg:flex-row lg:items-center space-y-4 lg:space-y-0 lg:space-x-6">
+                        <a href="{{ path('annonce_index') }}" class="inline-block bg-lime-700 text-white text-lg px-8 py-4 rounded-full hover:bg-lime-800 transition duration-300">Retour à la liste</a>
+
+                        <a href="#" class="inline-block bg-yellow-500 text-white text-lg px-8 py-4 rounded-full hover:bg-yellow-600 transition duration-300">Commander</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="bg-lime-900">
+    {{ include('Includes/Footer/index.html.twig') }}
+</footer>
+
 {% endblock %}

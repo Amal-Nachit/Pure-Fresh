@@ -3,8 +3,6 @@ document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll(".approuver-btn").forEach((button) => {
     button.addEventListener("click", function () {
       const annonceId = this.dataset.id;
-      console.log("Annonce ID:", annonceId);
-
       fetch(`/accepter/${annonceId}`, {
         method: "POST",
         headers: {
@@ -29,14 +27,15 @@ document.addEventListener("DOMContentLoaded", function () {
         method: "POST",
         headers: {
           "X-Requested-With": "XMLHttpRequest",
+          "Content-Type": "application/json",
         },
       })
-        .then((response) => {
-          if (response.ok) {
-            document.getElementById(`annonce-${annonceId}`).remove();
-          }
-        })
-        .catch((error) => console.error("Erreur:", error));
+      .then((response) => {
+        if (response.ok) {
+          document.getElementById(`annonce-${annonceId}`).remove();
+        }
+      })
+      .catch((error) => console.error("Erreur:", error));
     });
   });
 });
@@ -100,7 +99,7 @@ function fetchAnnonces() {
     .then(async (response) => await response.json())
     .then((data) => {
       const nbAnnoncesPubliees = document.querySelector(".annonceCount");
-      nbAnnoncesPubliees.innerHTML = `Annonces publiées ${data.nbAnnoncesPubliees}`;
+      nbAnnoncesPubliees.innerHTML = `${data.nbAnnoncesPubliees}`;
     })
     .catch((error) => console.error("Erreur:", error));
 }

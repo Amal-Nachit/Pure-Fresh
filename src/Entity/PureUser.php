@@ -46,12 +46,6 @@ class PureUser implements UserInterface, PasswordAuthenticatedUserInterface
     private ?\DateTimeInterface $rgpd = null;
 
     /**
-     * @var Collection<int, PureProduit>
-     */
-    #[ORM\OneToMany(targetEntity: PureProduit::class, mappedBy: 'pureUser', orphanRemoval: true)]
-    private Collection $produit;
-
-    /**
      * @var Collection<int, PureAnnonce>
      */
     #[ORM\OneToMany(targetEntity: PureAnnonce::class, mappedBy: 'pureUser', orphanRemoval: true)]
@@ -68,7 +62,6 @@ class PureUser implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
-        $this->produit = new ArrayCollection();
         $this->annonce = new ArrayCollection();
         $this->commande = new ArrayCollection();
         $this->rgpd = new \DateTime('now', new \DateTimeZone('Europe/Paris'));    }
@@ -209,29 +202,29 @@ class PureUser implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, PureProduit>
+     * @return Collection<int, PureAnnonce>
      */
     public function getProduit(): Collection
     {
-        return $this->produit;
+        return $this->annonce;
     }
 
-    public function addProduit(PureProduit $produit): static
+    public function addProduit(PureAnnonce $annonce): static
     {
-        if (!$this->produit->contains($produit)) {
-            $this->produit->add($produit);
-            $produit->setPureUser($this);
+        if (!$this->annonce->contains($annonce)) {
+            $this->annonce->add($annonce);
+            $annonce->setPureUser($this);
         }
 
         return $this;
     }
 
-    public function removeProduit(PureProduit $produit): static
+    public function removeProduit(PureAnnonce $annonce): static
     {
-        if ($this->produit->removeElement($produit)) {
+        if ($this->annonce->removeElement($annonce)) {
             // set the owning side to null (unless already changed)
-            if ($produit->getPureUser() === $this) {
-                $produit->setPureUser(null);
+            if ($annonce->getPureUser() === $this) {
+                $annonce->setPureUser(null);
             }
         }
 

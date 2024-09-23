@@ -12,15 +12,15 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class AdminDashboardController extends AbstractController
 {
-    #[Route('/admin', name: 'admin_dashboard')]
+    #[Route('/admin/dashboard', name: 'admin_dashboard')]
     public function index(PureAnnonceRepository $pureAnnonceRepository): Response
     {
         // Récupérer uniquement les annonces non approuvées et non supprimées
-        $annonces = $pureAnnonceRepository->findBy(['approuve' => null]);
+        $annonces = $pureAnnonceRepository->findBy(['approuvee' => null]);
 
         // Comptabiliser le nombre total d'annonces non approuvées
         $nbAnnonces = count($annonces);
-        $nbAnnoncesPubliees = $pureAnnonceRepository->count(['approuve' => true]);
+        $nbAnnoncesPubliees = $pureAnnonceRepository->count(['approuvee' => true]);
 
         return $this->render('admin_dashboard/index.html.twig', [
             'annonces' => $annonces,
@@ -35,7 +35,7 @@ class AdminDashboardController extends AbstractController
         $annonces = $entityManager->getRepository(PureAnnonce::class)->findAll();
         $annonces = [];
 
-        $nbAnnoncesPubliees = $pureAnnonceRepository->count(['approuve' => true]);
+        $nbAnnoncesPubliees = $pureAnnonceRepository->count(['approuvee' => true]);
 
         foreach ($annonces as $annonce) {
             $annonces[] = [
@@ -51,12 +51,11 @@ class AdminDashboardController extends AbstractController
             'nbAnnoncesPubliees' => $nbAnnoncesPubliees,
         ];
         return new JsonResponse($data);
-
     }
     #[Route('/accepter/{id}', name: 'admin_annonce_approuvee', methods: ['POST'])]
     public function accepter(PureAnnonce $annonce, EntityManagerInterface $entityManager): JsonResponse
     {
-        $annonce->setApprouve(true);
+        $annonce->setApprouvee(true);
         $entityManager->flush();
 
         return new JsonResponse(['success' => true], 200);

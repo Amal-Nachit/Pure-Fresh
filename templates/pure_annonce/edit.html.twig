@@ -1,19 +1,17 @@
 {% extends 'dashboard/vendeur.html.twig' %}
 
 {% block content %}
-    <div class="p-8 bg-gray-900 min-h-screen flex flex-col">
-        <h1 class="text-2xl font-bold mb-4 text-yellow-400">Modifier l'annonce</h1>
+<a href="{{ path('dashboard_mes_annonces') }}" class="inline-block mb-4 bg-gray-200 text-gray-800 font-semibold p-2 rounded-full hover:bg-gray-300 transition duration-300">
+    <svg class="w-5 h-5 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7" />
+    </svg>
+</a>
 
-        <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
-            {{ include('pure_annonce/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
-        </div>
+    <h1 class="text-2xl font-bold mb-4 text-yellow-400">Modifier le produit</h1>
 
-        <div class="mt-6">
-            <a href="{{ path('annonce_index') }}" class="text-yellow-400 hover:text-yellow-300">Retour à la liste</a>
-        </div>
+    {{ include('pure_annonce/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
 
-        <div class="mt-6">
-            {{ include('pure_annonce/_delete_form.html.twig') }}
-        </div>
-    </div>
+
+
+    {{ include('pure_annonce/_delete_form.html.twig') }}
 {% endblock %}

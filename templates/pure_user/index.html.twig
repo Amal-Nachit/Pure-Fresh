@@ -8,10 +8,8 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
                 <th>Email</th>
                 <th>Roles</th>
-                <th>Password</th>
                 <th>Prenom</th>
                 <th>Nom</th>
                 <th>Telephone</th>
@@ -23,10 +21,8 @@
         <tbody>
         {% for pure_user in pure_users %}
             <tr>
-                <td>{{ pure_user.id }}</td>
                 <td>{{ pure_user.email }}</td>
                 <td>{{ pure_user.roles ? pure_user.roles|json_encode : '' }}</td>
-                <td>{{ pure_user.password }}</td>
                 <td>{{ pure_user.prenom }}</td>
                 <td>{{ pure_user.nom }}</td>
                 <td>{{ pure_user.telephone }}</td>
@@ -34,7 +30,6 @@
                 <td>{{ pure_user.rgpd ? pure_user.rgpd|date('Y-m-d H:i:s') : '' }}</td>
                 <td>
                     <a href="{{ path('user_show', {'id': pure_user.id}) }}">show</a>
-                    <a href="{{ path('user_edit', {'id': pure_user.id}) }}">edit</a>
                 </td>
             </tr>
         {% else %}
@@ -44,6 +39,4 @@
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('user_new') }}">Create new</a>
-{% endblock %}
+    {% endblock %}

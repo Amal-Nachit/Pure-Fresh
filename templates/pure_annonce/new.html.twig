@@ -1,11 +1,9 @@
 {% extends 'dashboard/vendeur.html.twig' %}
 
 {% block content %}
-
-    <h1>Create new PureAnnonce</h1>
+    <h1 class="text-2xl font-bold mb-4 text-yellow-400">Créer une nouvelle annonce</h1>
 
     {{ include('pure_annonce/_form.html.twig') }}
 
-    <a href="{{ path('annonce_index') }}">back to list</a>
+    <a href="{{ path('dashboard') }}">Retour</a>
 {% endblock %}
-

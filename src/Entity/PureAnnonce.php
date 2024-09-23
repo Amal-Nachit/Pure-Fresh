@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\UX\Turbo\Attribute\Broadcast;
 
 #[ORM\Entity(repositoryClass: PureAnnonceRepository::class)]
-// #[Broadcast]
+#[Broadcast]
 class PureAnnonce
 {
     #[ORM\Id]
@@ -16,32 +16,38 @@ class PureAnnonce
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $titre = null;
-
-    #[ORM\Column]
-    private ?int $quantite = null;
+    #[ORM\Column(length: 255)]
+    private ?string $nom = null;
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
+    #[ORM\Column]
+    private ?int $quantite = null;
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $datePublication = null;
+    private ?\DateTimeInterface $dateCreation = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?bool $approuve = null;
+    #[ORM\Column(length: 255)]
+    private ?string $image = null;
 
-    #[ORM\OneToOne(mappedBy: 'annonce', cascade: ['persist'])]
-    private ?PureProduit $pureProduit = null;
+    #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2)]
+    private ?string $prix = null;
 
-    #[ORM\ManyToOne(inversedBy: 'annonce')]
+    #[ORM\ManyToOne(targetEntity: PureCategorie::class, inversedBy: 'pureAnnonce', cascade: ['persist'])]
+    private ?PureCategorie $categorie = null;
+
+    #[ORM\ManyToOne(inversedBy: 'produit')]
     #[ORM\JoinColumn(nullable: false)]
     private ?PureUser $pureUser = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $approuvee = null;
+
+    // Le constructeur initialise la date de création
     public function __construct()
     {
-        // Initialisation par défaut lors de la création d'une annonce
-        $this->datePublication = new \DateTime('now', new \DateTimeZone('Europe/Paris'));
+        $this->dateCreation = new \DateTime('now', new \DateTimeZone('Europe/Paris'));    
     }
 
     public function getId(): ?int
@@ -49,26 +55,14 @@ class PureAnnonce
         return $this->id;
     }
 
-    public function getTitre(): ?string
+    public function getNom(): ?string
     {
-        return $this->titre;
+        return $this->nom;
     }
 
-    public function setTitre(?string $titre): static
+    public function setNom(string $nom): static
     {
-        $this->titre = $titre;
-
-        return $this;
-    }
-
-    public function getQuantite(): ?int
-    {
-        return $this->quantite;
-    }
-
-    public function setQuantite(int $quantite): static
-    {
-        $this->quantite = $quantite;
+        $this->nom = $nom;
 
         return $this;
     }
@@ -85,48 +79,62 @@ class PureAnnonce
         return $this;
     }
 
-    public function getDatePublication(): ?\DateTimeInterface
+    public function getQuantite(): ?int
     {
-        return $this->datePublication;
+        return $this->quantite;
     }
 
-    public function setDatePublication(\DateTimeInterface $datePublication): static
+    public function setQuantite(int $quantite): static
     {
-        $this->datePublication = $datePublication;
+        $this->quantite = $quantite;
 
         return $this;
     }
 
-    public function isApprouve(): ?bool
+    public function getDateCreation(): ?\DateTimeInterface
     {
-        return $this->approuve;
+        return $this->dateCreation;
     }
 
-    public function setApprouve(?bool $approuve): static
+    public function setDateCreation(\DateTimeInterface $dateCreation): static
     {
-        $this->approuve = $approuve;
+        $this->dateCreation = $dateCreation;
 
         return $this;
     }
 
-    public function getPureProduit(): ?PureProduit
+    public function getImage(): ?string
     {
-        return $this->pureProduit;
+        return $this->image;
     }
 
-    public function setPureProduit(?PureProduit $pureProduit): static
+    public function setImage(string $image): static
     {
-        // Annuler l'association précédente si nécessaire
-        if ($pureProduit === null && $this->pureProduit !== null) {
-            $this->pureProduit->setAnnonce(null);
-        }
+        $this->image = $image;
 
-        // Assigner la nouvelle association
-        if ($pureProduit !== null && $pureProduit->getAnnonce() !== $this) {
-            $pureProduit->setAnnonce($this);
-        }
+        return $this;
+    }
 
-        $this->pureProduit = $pureProduit;
+    public function getPrix(): ?string
+    {
+        return $this->prix;
+    }
+
+    public function setPrix(string $prix): static
+    {
+        $this->prix = $prix;
+
+        return $this;
+    }
+
+    public function getCategorie(): ?PureCategorie
+    {
+        return $this->categorie;
+    }
+
+    public function setCategorie(?PureCategorie $categorie): static
+    {
+        $this->categorie = $categorie;
 
         return $this;
     }
@@ -142,4 +150,17 @@ class PureAnnonce
 
         return $this;
     }
+
+    public function isApprouvee(): ?bool
+    {
+        return $this->approuvee;
+    }
+
+    public function setApprouvee(?bool $approuvee): static
+    {
+        $this->approuvee = $approuvee;
+
+        return $this;
+    }
 }
+

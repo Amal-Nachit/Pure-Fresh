@@ -3,136 +3,102 @@
 namespace App\Controller;
 
 use App\Entity\PureAnnonce;
-use App\Entity\PureProduit;
-use App\Entity\PureUser;
 use App\Form\PureAnnonceType;
 use App\Repository\PureAnnonceRepository;
-use App\Repository\PureProduitRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
+#[Route('/annonce', name: 'annonce_')]
 final class PureAnnonceController extends AbstractController
 {
-    #[Route('/annonces', name: 'annonce_index', methods: ['GET'])]
-    public function index(PureProduitRepository $produit, PureAnnonceRepository $pureAnnonceRepository): Response
+    #[Route('s', name: 'index', methods: ['GET'])]
+    public function index(PureAnnonceRepository $pureAnnonceRepository): Response
     {
-        $annonces = $pureAnnonceRepository->findBy(['approuve' => true]);
-
-        // Extraire les adresses, informations des vendeurs et les images des produits
-        $coordinates = [];
-        $produitsImages = [];
-
-        foreach ($annonces as $annonce) {
-            if (in_array('ROLE_VENDEUR', $annonce->getPureUser()->getRoles(), true)) {
-                $adresse = $annonce->getPureUser()->getAdresse();
-                $coordinate = $this->getCoordinatesFromAddress($adresse);
-
-                // Récupérer l'image du produit lié à l'annonce
-                $produit = $annonce->getPureProduit();
-                $produitsImages[$annonce->getId()] = $produit->getImage();
-                
-                if ($coordinate) {
-                    $coordinates[] = [
-                        'lat' => $coordinate[0],
-                        'lng' => $coordinate[1],
-                        'nom' => $annonce->getPureUser()->getNom() // Ajout du nom du vendeur
-                    ];
-                } else {
-                    error_log("Failed to get coordinates for address: " . $adresse);
-                }
-            }
-        }
+        // Récupérer les annonces approuvées uniquement
+        $annoncesApprouvees = $pureAnnonceRepository->findBy(['approuvee' => true]);
 
         return $this->render('pure_annonce/index.html.twig', [
-            'pure_annonces' => $annonces,
-            'coordinates' => json_encode($coordinates), // Encoder les coordonnées en JSON pour Twig
-            'produits_images' => $produitsImages // Envoyer les images des produits à Twig
+            'pure_annonces' => $annoncesApprouvees,
         ]);
     }
 
 
-    public function getCoordinatesFromAddress(string $address): ?array
+    #[Route('/creer-un-annonce', name: 'new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
-        $apiKey = 'AIzaSyDB7guuh8CY_MJasUE7LC5BV4eBTXWaVco'; // Remplacez par votre clé API
-        $url = 'https://maps.googleapis.com/maps/api/geocode/json?address=' . urlencode($address) . '&key=' . $apiKey;
-
-        // Obtenir la réponse de l'API
-        $response = @file_get_contents($url);
-
-        // Vérifier les erreurs de la requête HTTP
-        if ($response === false) {
-            error_log('Failed to fetch data from Google Maps API for address: ' . $address);
-            return null;
-        }
-
-        // Décoder la réponse JSON
-        $data = json_decode($response, true);
-
-        // Vérifier que la réponse est correcte et contient les coordonnées
-        if (is_array($data) && isset($data['status']) && $data['status'] === 'OK' && isset($data['results'][0]['geometry']['location'])) {
-            $location = $data['results'][0]['geometry']['location'];
-            return [$location['lat'], $location['lng']];
-        }
-
-        // Journaliser l'erreur si la réponse ne contient pas les informations attendues
-        if (isset($data['status'])) {
-            error_log('Google Maps API error for address ' . $address . ': ' . $data['status']);
-        } else {
-            error_log('Invalid JSON response from Google Maps API for address: ' . $address);
-        }
-
-        return null;
-    }
-
-
-
-
-
-
-
-    #[Route('/deposer-une-annonce', name: 'annonce_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        // Créer une nouvelle annonce
         $pureAnnonce = new PureAnnonce();
-
-        // Créer le formulaire
         $form = $this->createForm(PureAnnonceType::class, $pureAnnonce);
         $form->handleRequest($request);
 
         // Récupérer l'utilisateur connecté
-        $user = $this->getUser(); // Récupère l'utilisateur actuellement connecté
-
-        if (!$user) {
-            // Si aucun utilisateur n'est connecté, rediriger vers la page de connexion
+        $user = $this->getUser();
+        if ($user) {
+            $pureAnnonce->setPureUser($user);
+        } else {
             return $this->redirectToRoute('app_login');
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Associer l'utilisateur à l'annonce
-            $pureAnnonce->setPureUser($user);
+            $brochureFile = $form['image']->getData();
 
-            // Persister l'annonce
+            if ($brochureFile) {
+                // Validation de l'extension
+                $allowedExtensions = ['jpg', 'jpeg', 'png'];
+                $fileExtension = $brochureFile->guessExtension();
+
+                if (!in_array($fileExtension, $allowedExtensions)) {
+                    $this->addFlash('error', 'Erreur: L\'extension du fichier doit être une des suivantes: ' . implode(', ', $allowedExtensions) . '.');
+                    return $this->redirectToRoute('annonce_new');
+                }
+
+                // Limiter la taille du fichier (ex. 5MB max)
+                if ($brochureFile->getSize() > 5000000) {
+                    $this->addFlash('error', 'File is too large. Maximum size is 5MB.');
+                    return $this->redirectToRoute('annonce_new');
+                }
+
+                // 1. Récupérer le nom du fichier sans l'extension
+                $originalFilename = pathinfo($brochureFile->getClientOriginalName(), PATHINFO_FILENAME);
+
+                // 2. Nettoyer le nom du fichier (supprime les caractères dangereux)
+                $safeFilename = $slugger->slug($originalFilename);
+
+                // 3. Créer un nom de fichier unique avec une extension sécurisée
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $fileExtension;
+
+                try {
+                    // 4. Déplacer le fichier vers le répertoire sécurisé
+                    $brochureFile->move(
+                        $this->getParameter('images_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    throw new \Exception('Failed to upload the image.');
+                }
+
+                // 5. Assigner le nouveau nom de fichier à l'entité
+                $pureAnnonce->setImage($newFilename);
+            }
+
             $entityManager->persist($pureAnnonce);
             $entityManager->flush();
 
-            // Rediriger vers la liste des annonces après la création
-            return $this->redirectToRoute('annonce_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('dashboard_mes_annonces', [], Response::HTTP_SEE_OTHER);
         }
 
-        // Rendre la vue avec le formulaire
         return $this->render('pure_annonce/new.html.twig', [
             'pure_annonce' => $pureAnnonce,
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 
 
-
-    #[Route('details-annonce/{id}', name: 'annonce_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'show', methods: ['GET'])]
     public function show(PureAnnonce $pureAnnonce): Response
     {
         return $this->render('pure_annonce/show.html.twig', [
@@ -140,20 +106,16 @@ final class PureAnnonceController extends AbstractController
         ]);
     }
 
-    #[Route('/editer-mon-annonce/{id}', name: 'annonce_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, PureAnnonce $pureAnnonce, EntityManagerInterface $entityManager): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_VENDEUR');
-
         $form = $this->createForm(PureAnnonceType::class, $pureAnnonce);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $pureAnnonce->setApprouve(null);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Votre annonce a bien été modifiée.');
-            return $this->redirectToRoute('user_dashboard', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('annonce_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('pure_annonce/edit.html.twig', [
@@ -162,14 +124,31 @@ final class PureAnnonceController extends AbstractController
         ]);
     }
 
-    #[Route('supprimer-mon-annonce/{id}', name: 'annonce_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, PureAnnonce $pureAnnonce, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $pureAnnonce->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $pureAnnonce->getId(), $request->get('_token'))) {
+
+            // Récupérer le nom du fichier image associé au annonce
+            $imageFilename = $pureAnnonce->getImage();
+
+            if ($imageFilename) {
+                // Chemin complet vers le fichier image
+                $imagePath = $this->getParameter('images_directory') . '/' . $imageFilename;
+
+                // Vérifier si le fichier existe avant de le supprimer
+                if (file_exists($imagePath)) {
+                    // Supprimer le fichier du répertoire local
+                    unlink($imagePath);
+                }
+            }
+
+            // Supprimer le annonce de la base de données
             $entityManager->remove($pureAnnonce);
             $entityManager->flush();
         }
 
         return $this->redirectToRoute('annonce_index', [], Response::HTTP_SEE_OTHER);
     }
+
 }
