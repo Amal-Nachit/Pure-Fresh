@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mettre à jour{% endblock %}
+{% block body %}
+<header class="bg-lime-900">
+    {{ include('Includes/Header/index.html.twig') }}
+</header>
+    <div class="p-8 bg-gray-900 min-h-screen flex flex-col">
+        <h1 class="text-2xl font-bold mb-4 text-yellow-400">Mettre à jour</h1>
+
+        <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                {{ include('pure_user/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+        </div>
+    </div>
+
+    <footer class="bg-lime-900">
+        {{ include('Includes/Footer/index.html.twig') }}
+
+    </footer>
+{% endblock %}

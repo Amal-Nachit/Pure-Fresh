@@ -99,7 +99,7 @@ function fetchAnnonces() {
     .then(async (response) => await response.json())
     .then((data) => {
       const nbAnnoncesPubliees = document.querySelector(".annonceCount");
-      nbAnnoncesPubliees.innerHTML = `${data.nbAnnoncesPubliees}`;
+      nbAnnoncesPubliees.innerHTML = `Annonces publiées : ${data.nbAnnoncesPubliees}`;
     })
     .catch((error) => console.error("Erreur:", error));
 }

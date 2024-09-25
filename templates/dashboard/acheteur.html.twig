@@ -35,7 +35,7 @@
                 <div class="text-white">
                     <p class="mb-4"><strong>Nom :</strong> {{ app.user.nom }}</p>
                     <p class="mb-4"><strong>Email :</strong> {{ app.user.email }}</p>
-                    <a href="{{ path('user_edit', {'id': app.user.id}) }}" class="text-yellow-400 hover:underline">Modifier mes informations personnelles</a>
+                    <a href="{{ path('user_editAcheteur', {'id': app.user.id}) }}" class="text-yellow-400 hover:underline">Modifier mes informations personnelles</a>
                 </div>
             </section>
         </div>

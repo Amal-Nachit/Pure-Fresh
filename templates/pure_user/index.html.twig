@@ -1,42 +1,78 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}PureUser index{% endblock %}
-
 {% block body %}
-    <h1>PureUser index</h1>
+<div class="bg-gray-900 text-gray-200 min-h-screen flex flex-col">
+    <!-- Top Bar -->
+    <header class="bg-gray-800 p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <h2 class="text-2xl font-bold">Dashboard</h2>
+            <nav>
+                <ul class="flex space-x-6">
+                    <li>
+                        <a href="{{ path('admin_dashboard') }}" class="text-lg hover:text-lime-400">Annonces à approuver</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('user_index') }}" class="text-lg hover:text-lime-400">Utilisateurs</a>
+                    </li>
+                    <li>
+                        <a href="" class="text-lg hover:text-lime-400">Transactions</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Email</th>
-                <th>Roles</th>
-                <th>Prenom</th>
-                <th>Nom</th>
-                <th>Telephone</th>
-                <th>Adresse</th>
-                <th>Rgpd</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for pure_user in pure_users %}
-            <tr>
-                <td>{{ pure_user.email }}</td>
-                <td>{{ pure_user.roles ? pure_user.roles|json_encode : '' }}</td>
-                <td>{{ pure_user.prenom }}</td>
-                <td>{{ pure_user.nom }}</td>
-                <td>{{ pure_user.telephone }}</td>
-                <td>{{ pure_user.adresse }}</td>
-                <td>{{ pure_user.rgpd ? pure_user.rgpd|date('Y-m-d H:i:s') : '' }}</td>
-                <td>
-                    <a href="{{ path('user_show', {'id': pure_user.id}) }}">show</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="10">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    {% endblock %}
+    <!-- Main Content -->
+    <main class="flex-1 p-6">
+        <h1 class="text-3xl font-bold mb-6 text-center">Liste des Utilisateurs</h1>
+
+        <table class="min-w-full bg-gray-800 border border-gray-700">
+            <thead>
+                <tr class="bg-gray-700 border-b">
+                    <th class="py-3 px-4 text-left text-sm font-medium text-gray-300">Email</th>
+                    <th class="py-3 px-4 text-left text-sm font-medium text-gray-300">Roles</th>
+                    <th class="py-3 px-4 text-left text-sm font-medium text-gray-300">Prénom</th>
+                    <th class="py-3 px-4 text-left text-sm font-medium text-gray-300">Nom</th>
+                    <th class="py-3 px-4 text-left text-sm font-medium text-gray-300">Téléphone</th>
+                    <th class="py-3 px-4 text-left text-sm font-medium text-gray-300">Adresse</th>
+                    <th class="py-3 px-4 text-left text-sm font-medium text-gray-300">RGPD</th>
+                    <th class="py-3 px-4 text-left text-sm font-medium text-gray-300">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pure_user in pure_users %}
+                    <tr class="border-b border-gray-600 hover:bg-gray-700">
+                        <td class="py-3 px-4 text-sm text-gray-200">{{ pure_user.email }}</td>
+                        <td class="py-3 px-4 text-sm text-gray-200">
+                            {% set rolesMapping = {
+                                'ROLE_USER': '',
+                                'ROLE_ADMIN': 'Administrateur',
+                                'ROLE_VENDEUR': 'Vendeur',
+                                'ROLE_ACHETEUR': 'Acheteur',
+                            } %}
+                            {% for role in pure_user.roles %}
+                                {{ rolesMapping[role] is defined ? rolesMapping[role] : role }}
+                                {% if not loop.last %} {% endif %}
+                            {% else %}
+                                Aucun rôle attribué
+                            {% endfor %}
+                        </td>
+                        <td class="py-3 px-4 text-sm text-gray-200">{{ pure_user.prenom }}</td>
+                        <td class="py-3 px-4 text-sm text-gray-200">{{ pure_user.nom }}</td>
+                        <td class="py-3 px-4 text-sm text-gray-200">{{ pure_user.telephone }}</td>
+                        <td class="py-3 px-4 text-sm text-gray-200">{{ pure_user.adresse }}</td>
+                        <td class="py-3 px-4 text-sm text-gray-200">{{ pure_user.rgpd ? pure_user.rgpd|date('Y-m-d H:i:s') : '' }}</td>
+                        <td class="py-3 px-4 text-sm text-gray-200">
+                            <a href="{{ path('user_show', {'id': pure_user.id}) }}" class="text-lime-400 hover:underline">Voir</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="8" class="py-3 px-4 text-center text-gray-400">Aucun utilisateur trouvé.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+</div>
+{% endblock %}

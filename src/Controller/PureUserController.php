@@ -14,10 +14,10 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/user', name: 'user_')]
 final class PureUserController extends AbstractController
 {
-    #[Route('s',name: 'index', methods: ['GET'])]
+    #[Route('s', name: 'index', methods: ['GET'])]
     public function index(PureUserRepository $pureUserRepository): Response
     {
-        
+
         return $this->render('pure_user/index.html.twig', [
             'pure_users' => $pureUserRepository->findAll(),
         ]);
@@ -51,25 +51,46 @@ final class PureUserController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
-   public function edit(Request $request, PureUser $pureUser, EntityManagerInterface $entityManager): Response
-{
-    $form = $this->createForm(PureUserType::class, $pureUser);
-    $form->handleRequest($request);
+    #[Route('/{id}/edit', name: 'editVendeur', methods: ['GET', 'POST'])]
+    public function edit(Request $request, PureUser $pureUser, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(PureUserType::class, $pureUser);
+        $form->handleRequest($request);
 
-    if ($form->isSubmitted() && $form->isValid()) {
-        $entityManager->flush();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
 
-        $this->addFlash('success', 'Vos informations ont été mises à jour avec succès.');
+            $this->addFlash('success', 'Vos informations ont été mises à jour avec succès.');
 
-        return $this->redirectToRoute('dashboard_mon_compte', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('dashboard_mon_compte', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('pure_user/editAcheteur.html.twig', [
+            'pure_user' => $pureUser,
+            'form' => $form,
+        ]);
     }
 
-    return $this->render('pure_user/edit.html.twig', [
-        'pure_user' => $pureUser,
-        'form' => $form,
-    ]);
-}
+    #[Route('/{id}/edit', name: 'editAcheteur', methods: ['GET', 'POST'])]
+    public function editAcheteur(Request $request, PureUser $pureUser, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(PureUserType::class, $pureUser);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Vos informations ont été mises à jour avec succès.');
+
+            return $this->redirectToRoute('dashboard', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('pure_user/editAcheteur.html.twig', [
+            'pure_user' => $pureUser,
+            'form' => $form,
+        ]);
+    }
+
 
     #[Route('/delete/{id}', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, PureUser $pureUser, EntityManagerInterface $entityManager): Response

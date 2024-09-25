@@ -8,7 +8,7 @@
             <nav>
                 <ul class="flex space-x-6">
                     <li>
-                        <a href="{{ path('') }}" class="text-lg hover:text-lime-400">Annonces à approuver</a>
+                        <a href="{{ path('admin_dashboard') }}" class="text-lg hover:text-lime-400">Annonces à approuver</a>
                     </li>
                     <li>
                         <a href="{{ path('user_index') }}" class="text-lg hover:text-lime-400">Utilisateurs</a>
@@ -23,9 +23,9 @@
 
     <!-- Main Content -->
     <main class="flex-1 p-6">
-        <h1 class="text-3xl font-bold mb-6 text-center">Annonces à Approuver</h1>
+        <h1 class="text-3xl font-bold mb-6 text-center">Annonces à approuver</h1>
         <div class="mb-4 text-center">
-            <a href="{{ path('annonce_index') }}" class="text-lg annonceCount">Annonces publiées: <span class="font-bold" id="nbAnnoncesPubliees">{{ nbAnnoncesPubliees }}</span></a>
+            <a href="{{ path('annonce_index') }}" class="text-lg annonceCount"><span class="font-bold" id="nbAnnoncesPubliees">{{ nbAnnoncesPubliees }}</span></a>
         </div>
 
         {% if annonces|length > 0 %}

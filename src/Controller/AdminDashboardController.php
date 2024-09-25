@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\PureAnnonce;
+use App\Entity\PureUser;
 use App\Repository\PureAnnonceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -69,4 +70,4 @@ class AdminDashboardController extends AbstractController
 
         return new JsonResponse(['success' => true], 200);
     }
-}
+}   
