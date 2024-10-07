@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block body %}  
+    <main class="bg-lime-900 flex flex-col min-h-screen">
+        <div class="bg-gray-700 bg-opacity-40 flex-grow">
+
+            <header>
+                <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
+                {{ include('Includes/Header/index.html.twig') }}
+            </header>
+
+            <div class="flex-grow flex items-center justify-center">
+                <div class="flex flex-col items-center justify-center rounded-lg mx-4 p-8 sm:max-w-md sm:mx-auto min-h-[80vh]">
+                    <h1 class="text-3xl font-extrabold text-yellow-300 mb-6 text-center tracking-wide">
+                        Vérification de votre email réussie
+                    </h1>
+                    <p class="text-lg text-gray-300 mb-8 text-center leading-relaxed">
+                        Votre adresse email a été vérifiée avec succès !
+                    </p>
+                    <p class="text-md text-gray-300 mb-10 text-center leading-relaxed">
+                        Vous pouvez maintenant vous connecter à votre compte et profiter de toutes nos fonctionnalités.
+                    </p>
+                    <a href="{{ path('app_login') }}" class="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold py-3 px-6 rounded-full shadow-lg transition-transform transform hover:-translate-y-1 duration-300 ease-in-out">
+                        Se connecter
+                    </a>
+                </div>
+            </div>
+
+            <footer>
+                {{ include('Includes/Footer/index.html.twig') }}
+            </footer>
+        </div>
+    </main>
+{% endblock %}

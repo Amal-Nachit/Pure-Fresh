@@ -3,23 +3,22 @@
 namespace App\Controller;
 
 use App\Entity\PureAnnonce;
-use App\Entity\PureUser;
 use App\Repository\PureAnnonceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class AdminDashboardController extends AbstractController
 {
+    // #[IsGranted('ROLE_ADMIN')]
     #[Route('/admin/dashboard', name: 'admin_dashboard')]
     public function index(PureAnnonceRepository $pureAnnonceRepository): Response
     {
-        // Récupérer uniquement les annonces non approuvées et non supprimées
         $annonces = $pureAnnonceRepository->findBy(['approuvee' => null]);
 
-        // Comptabiliser le nombre total d'annonces non approuvées
         $nbAnnonces = count($annonces);
         $nbAnnoncesPubliees = $pureAnnonceRepository->count(['approuvee' => true]);
 
@@ -29,7 +28,7 @@ class AdminDashboardController extends AbstractController
             'nbAnnonces' => $nbAnnonces,
         ]);
     }
-
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/admin/annonces', name: 'admin_annonces', methods: ['GET'])]
     public function annonces(EntityManagerInterface $entityManager, PureAnnonceRepository $pureAnnonceRepository): JsonResponse
     {
@@ -53,7 +52,9 @@ class AdminDashboardController extends AbstractController
         ];
         return new JsonResponse($data);
     }
-    #[Route('/accepter/{id}', name: 'admin_annonce_approuvee', methods: ['POST'])]
+
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route('/admin/accepter/{id}', name: 'admin_annonce_approuvee', methods: ['POST'])]
     public function accepter(PureAnnonce $annonce, EntityManagerInterface $entityManager): JsonResponse
     {
         $annonce->setApprouvee(true);
@@ -62,7 +63,8 @@ class AdminDashboardController extends AbstractController
         return new JsonResponse(['success' => true], 200);
     }
 
-    #[Route('/refuser/{id}', name: 'admin_annonce_refusee', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route('/admin/refuser/{id}', name: 'admin_annonce_refusee', methods: ['POST'])]
     public function refuser(PureAnnonce $annonce, EntityManagerInterface $entityManager): JsonResponse
     {
         $entityManager->remove($annonce);
@@ -70,4 +72,4 @@ class AdminDashboardController extends AbstractController
 
         return new JsonResponse(['success' => true], 200);
     }
-}   
+}

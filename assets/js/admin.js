@@ -1,44 +1,3 @@
-document.addEventListener("DOMContentLoaded", function () {
-  // Gérer l'approbation des annonces
-  document.querySelectorAll(".approuver-btn").forEach((button) => {
-    button.addEventListener("click", function () {
-      const annonceId = this.dataset.id;
-      fetch(`/accepter/${annonceId}`, {
-        method: "POST",
-        headers: {
-          "X-Requested-With": "XMLHttpRequest",
-        },
-      })
-        .then((response) => {
-          if (response.ok) {
-            // document.getElementById(`annonce-${annonceId}`).remove();
-            fetchAnnonces();
-          }
-        })
-        .catch((error) => console.error("Erreur:", error));
-    });
-  });
-
-  // Gérer le refus des annonces
-  document.querySelectorAll(".refuser-btn").forEach((button) => {
-    button.addEventListener("click", function () {
-      const annonceId = this.dataset.id;
-      fetch(`/refuser/${annonceId}`, {
-        method: "POST",
-        headers: {
-          "X-Requested-With": "XMLHttpRequest",
-          "Content-Type": "application/json",
-        },
-      })
-      .then((response) => {
-        if (response.ok) {
-          document.getElementById(`annonce-${annonceId}`).remove();
-        }
-      })
-      .catch((error) => console.error("Erreur:", error));
-    });
-  });
-});
 
 function checkIfEmpty() {
   const annonceList = document.getElementById("annonce-list");
@@ -52,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll(".approuver-btn").forEach((button) => {
     button.addEventListener("click", function () {
       const annonceId = this.dataset.id;
-      fetch(`/accepter/${annonceId}`, {
+      fetch(`/admin/accepter/${annonceId}`, {
         method: "POST",
         headers: {
           "X-Requested-With": "XMLHttpRequest",
@@ -77,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll(".refuser-btn").forEach((button) => {
     button.addEventListener("click", function () {
       const annonceId = this.dataset.id;
-      fetch(`/refuser/${annonceId}`, {
+      fetch(`/admin/refuser/${annonceId}`, {
         method: "POST",
         headers: {
           "X-Requested-With": "XMLHttpRequest",

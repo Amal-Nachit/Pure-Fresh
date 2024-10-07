@@ -9,7 +9,6 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PureUserType extends AbstractType
@@ -19,27 +18,28 @@ class PureUserType extends AbstractType
         $builder
             ->add('email', EmailType::class, [
                 'attr' => [
-                    'class' => 'form-input bg-gray-700 text-white border-gray-600 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-yellow-400 mb-6',
+                    'class' => 'form-input bg-gray-800 text-white border border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-yellow-400 mb-6 transition duration-200 ease-in-out',
                     'placeholder' => 'Entrez votre email'
                 ],
                 'label' => 'Email',
                 'label_attr' => [
-                    'class' => 'block text-yellow-400 font-semibold mb-2'
+                    'class' => 'w-full block text-yellow-400 font-semibold mb-2'
                 ],
             ])
             ->add('password', PasswordType::class, [
-                'attr' => [
-                    'class' => 'form-input bg-gray-700 text-white border-gray-600 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-yellow-400 mb-6',
+               'attr' => [
+                    'class' => 'form-input bg-gray-800 text-white border border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-yellow-400 mb-6 transition duration-200 ease-in-out',
                     'placeholder' => 'Entrez un mot de passe'
                 ],
                 'label' => 'Mot de passe',
                 'label_attr' => [
                     'class' => 'block text-yellow-400 font-semibold mb-2'
                 ],
+                'required' => false
             ])
             ->add('prenom', TextType::class, [
                 'attr' => [
-                    'class' => 'form-input bg-gray-700 text-white border-gray-600 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-yellow-400 mb-6',
+                    'class' => 'form-input bg-gray-800 text-white border border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-yellow-400 mb-6 transition duration-200 ease-in-out',
                     'placeholder' => 'Entrez votre prénom'
                 ],
                 'label' => 'Prénom',
@@ -49,7 +49,7 @@ class PureUserType extends AbstractType
             ])
             ->add('nom', TextType::class, [
                 'attr' => [
-                    'class' => 'form-input bg-gray-700 text-white border-gray-600 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-yellow-400 mb-6',
+                    'class' => 'form-input bg-gray-800 text-white border border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-yellow-400 mb-6 transition duration-200 ease-in-out',
                     'placeholder' => 'Entrez votre nom'
                 ],
                 'label' => 'Nom',
@@ -59,7 +59,7 @@ class PureUserType extends AbstractType
             ])
             ->add('telephone', TelType::class, [
                 'attr' => [
-                    'class' => 'form-input bg-gray-700 text-white border-gray-600 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-yellow-400 mb-6',
+                    'class' => 'form-input bg-gray-800 text-white border border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-yellow-400 mb-6 transition duration-200 ease-in-out',
                     'placeholder' => 'Entrez votre numéro de téléphone'
                 ],
                 'label' => 'Téléphone',
@@ -69,15 +69,16 @@ class PureUserType extends AbstractType
             ])
             ->add('adresse', TextType::class, [
                 'attr' => [
-                    'class' => 'form-input bg-gray-700 text-white border-gray-600 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-yellow-400 mb-6',
-                    'placeholder' => 'Entrez votre adresse'
+                    'class' => 'form-input bg-gray-800 text-white border border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-yellow-400 mb-6 transition duration-200 ease-in-out',
+                    'placeholder' => 'Entrez votre adresse',
                 ],
                 'label' => 'Adresse',
                 'label_attr' => [
                     'class' => 'block text-yellow-400 font-semibold mb-2'
                 ],
-            ])      ;
+            ]);
     }
+
 
     public function configureOptions(OptionsResolver $resolver): void
     {

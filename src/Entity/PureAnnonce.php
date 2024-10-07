@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PureAnnonceRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\UX\Turbo\Attribute\Broadcast;
@@ -22,9 +24,6 @@ class PureAnnonce
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    #[ORM\Column]
-    private ?int $quantite = null;
-
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateCreation = null;
 
@@ -37,17 +36,23 @@ class PureAnnonce
     #[ORM\ManyToOne(targetEntity: PureCategorie::class, inversedBy: 'pureAnnonce', cascade: ['persist'])]
     private ?PureCategorie $categorie = null;
 
-    #[ORM\ManyToOne(inversedBy: 'produit')]
+    #[ORM\ManyToOne(inversedBy: 'pureAnnonce')]
     #[ORM\JoinColumn(nullable: false)]
     private ?PureUser $pureUser = null;
 
     #[ORM\Column(nullable: true)]
     private ?bool $approuvee = null;
 
-    // Le constructeur initialise la date de création
+    /**
+     * @var Collection<int, PureCommande>
+     */
+    #[ORM\OneToMany(targetEntity: PureCommande::class, mappedBy: 'pureAnnonce')]
+    private Collection $commande;
+
     public function __construct()
     {
-        $this->dateCreation = new \DateTime('now', new \DateTimeZone('Europe/Paris'));    
+        $this->dateCreation = new \DateTime('now', new \DateTimeZone('Europe/Paris'));
+        $this->commande = new ArrayCollection();    
     }
 
     public function getId(): ?int
@@ -75,18 +80,6 @@ class PureAnnonce
     public function setDescription(string $description): static
     {
         $this->description = $description;
-
-        return $this;
-    }
-
-    public function getQuantite(): ?int
-    {
-        return $this->quantite;
-    }
-
-    public function setQuantite(int $quantite): static
-    {
-        $this->quantite = $quantite;
 
         return $this;
     }
@@ -159,6 +152,36 @@ class PureAnnonce
     public function setApprouvee(?bool $approuvee): static
     {
         $this->approuvee = $approuvee;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PureCommande>
+     */
+    public function getCommande(): Collection
+    {
+        return $this->commande;
+    }
+
+    public function addCommande(PureCommande $commande): static
+    {
+        if (!$this->commande->contains($commande)) {
+            $this->commande->add($commande);
+            $commande->setPureAnnonce($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommande(PureCommande $commande): static
+    {
+        if ($this->commande->removeElement($commande)) {
+            // set the owning side to null (unless already changed)
+            if ($commande->getPureAnnonce() === $this) {
+                $commande->setPureAnnonce(null);
+            }
+        }
 
         return $this;
     }

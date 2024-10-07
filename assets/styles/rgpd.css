@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@400;600&display=swap');
+
+@import '~@fortawesome/fontawesome-free/css/all.css';
+
+.main-content  {
+    background-color: #365314;
+    font-family: 'Open Sans', sans-serif;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.main-content h1, 
+.main-content h2, 
+.main-content h3, 
+.main-content h4  {
+    color: #ECFCCB;
+    font-family: 'Raleway', sans-serif;
+    margin-bottom: 10px;
+}
+
+.main-content h1 {
+    font-size: 2.2rem;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.main-content h2 {
+    font-size: 1.8rem;
+    margin-top: 40px;
+    border-bottom: 2px solid #ECFCCB;
+    padding-bottom: 10px;
+}
+
+.main-content h3 {
+    font-size: 1.4rem;
+    margin-top: 30px;
+}
+
+.main-content h4 {
+    font-size: 1.2rem;
+    margin-top: 20px;
+}
+
+.main-content p {
+    margin-bottom: 20px;
+    padding: 0 20%;
+    font-size: 1rem;
+    color: #fff;
+}
+
+.main-content ul {
+    margin: 20px 0;
+    padding-left: 20px;
+}
+
+.main-content ul,
+.main-content li {
+    margin-bottom: 10px;
+}
+
+.main-content strong {
+    color: #e76f51;
+}
+
+.main-content a {
+    color: #e76f51;
+    text-decoration: none;
+}
+
+.main-content a:hover {
+    text-decoration: underline;
+}
+
+.main-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.main-content table th, table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.main-content table th {
+    background-color: #ECFCCB;
+    color: #fff;
+
+}

@@ -27,7 +27,7 @@ class RegistrationFormType extends AbstractType
                 'label' => 'First Name',
                 'constraints' => [
                     new NotBlank([
-                        'message' => 'Please enter your first name',
+                        'message' => 'Votre prénom est obligatoire',
                     ]),
                     new Length([
                         'min' => 2,
@@ -40,7 +40,7 @@ class RegistrationFormType extends AbstractType
                 'label' => 'Last Name',
                 'constraints' => [
                     new NotBlank([
-                        'message' => 'Please enter your last name',
+                        'message' => 'Votre nom est obligatoire',
                     ]),
                     new Length([
                         'min' => 2,
@@ -70,14 +70,14 @@ class RegistrationFormType extends AbstractType
                 ]
             ])
             ->add('email', EmailType::class, [
-                'label' => 'Email Address',
+                'label' => 'Adresse Email',
                 'constraints' => [
                     new NotBlank([
-                        'message' => 'Please enter your email address',
+                        'message' => 'Entrez votre adresse email',
                     ]),
                     new Email([
-                        'message' => 'Please enter a valid email address',
-                    ]),
+                        'message' => 'Entrez une adresse email valide',
+                    ]), 
                 ],
             ])
             ->add('agreeTerms', CheckboxType::class, [
@@ -85,7 +85,7 @@ class RegistrationFormType extends AbstractType
                 'mapped' => false,
                 'constraints' => [
                     new IsTrue([
-                        'message' => 'You should agree to our terms.',
+                        'message' => 'Vous devez accepter les conditions d\'utilisation.',
                     ]),
                 ],
             ])
@@ -93,10 +93,11 @@ class RegistrationFormType extends AbstractType
                 'type' => PasswordType::class,
                 'first_options' => [
                     'label' => 'Password',
+                    'mapped' => false,
                     'attr' => ['autocomplete' => 'new-password'],
                     'constraints' => [
                         new NotBlank([
-                            'message' => 'Please enter a password',
+                            'message' => 'Entrez un mot de passe',
                         ]),
                         new Length([
                             'min' => 6,
@@ -109,7 +110,7 @@ class RegistrationFormType extends AbstractType
                     'label' => 'Confirm Password',
                     'attr' => ['autocomplete' => 'new-password'],
                 ],
-                'invalid_message' => 'The password fields must match.',
+                'invalid_message' => 'Les mots de passe ne sont pas identiques.',
                 'mapped' => false,
             ])
             ->add('role', ChoiceType::class, [

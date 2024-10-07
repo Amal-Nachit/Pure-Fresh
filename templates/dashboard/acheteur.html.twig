@@ -33,8 +33,11 @@
             <section class="bg-lime-800 p-6 rounded-lg shadow-lg">
                 <h2 class="text-2xl font-bold text-yellow-400 mb-4">Mon compte</h2>
                 <div class="text-white">
-                    <p class="mb-4"><strong>Nom :</strong> {{ app.user.nom }}</p>
+                    <p class="mb-4"><strong>Nom et prénom :</strong> {{ app.user.nom }} {{ app.user.prenom }}</p>
                     <p class="mb-4"><strong>Email :</strong> {{ app.user.email }}</p>
+                    <p class="mb-4"><strong>Adresse :</strong> {{ app.user.adresse }}</p>
+                    <p class="mb-4"><strong>Téléphone :</strong> {{ app.user.telephone }}</p>
+                    <p class="mb-4"><strong>Mot de passe :</strong> *********</p>
                     <a href="{{ path('user_editAcheteur', {'id': app.user.id}) }}" class="text-yellow-400 hover:underline">Modifier mes informations personnelles</a>
                 </div>
             </section>

@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit PureCommande{% endblock %}
+
+{% block body %}
+    <h1>Edit PureCommande</h1>
+
+    {{ include('pure_commande/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('commande_index') }}">back to list</a>
+
+    {{ include('pure_commande/_delete_form.html.twig') }}
+{% endblock %}

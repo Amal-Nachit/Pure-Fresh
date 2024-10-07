@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PureCommande{% endblock %}
+
+{% block body %}
+    <h1>PureCommande</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ pure_commande.id }}</td>
+            </tr>
+            <tr>
+                <th>DateCommande</th>
+                <td>{{ pure_commande.dateCommande }}</td>
+            </tr>
+            <tr>
+                <th>Total</th>
+                <td>{{ pure_commande.total }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('commande_index') }}">back to list</a>
+
+    <a href="{{ path('commande_edit', {'id': pure_commande.id}) }}">edit</a>
+
+    {{ include('pure_commande/_delete_form.html.twig') }}
+{% endblock %}

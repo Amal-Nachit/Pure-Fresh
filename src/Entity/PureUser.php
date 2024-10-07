@@ -10,10 +10,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PureUserRepository::class)]
-#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
-#[UniqueEntity(fields: ['email'], message: 'Il existe déjà un compte avec cette adresse email.')]
+// #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+// #[UniqueEntity(fields: ['email'], message: 'Il existe déjà un compte avec cette adresse email.')]
+
 class PureUser implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -22,24 +24,35 @@ class PureUser implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
+    // #[Assert\Email(message: 'L\'adresse email n\'est pas valide.')]
+    // #[Assert\NotBlank(message: 'L\'email ne doit pas être vide.')]
     private ?string $email = null;
 
     #[ORM\Column]
     private array $roles = [];
 
     #[ORM\Column]
+    // #[Assert\NotBlank(message: 'Le mot de passe ne doit pas être vide.')]
+    // #[Assert\Length(min: 6, minMessage: 'Le mot de passe doit contenir au moins {{ limit }} caractères.')]
     private ?string $password = null;
 
+    private $plainPassword;
+
     #[ORM\Column(length: 255)]
+    // #[Assert\NotBlank(message: 'Le prénom ne doit pas être vide.')]
     private ?string $prenom = null;
 
     #[ORM\Column(length: 255)]
+    // #[Assert\NotBlank(message: 'Le nom ne doit pas être vide.')]
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
+    // #[Assert\NotBlank(message: 'Le numéro de téléphone ne doit pas être vide.')]
+    // #[Assert\Regex(pattern: '/^\+?[1-9]\d{1,14}$/', message: 'Numéro de téléphone invalide.')]
     private ?string $telephone = null;
 
     #[ORM\Column(length: 255)]
+    // #[Assert\NotBlank(message: 'L\'adresse ne doit pas être vide.')]
     private ?string $adresse = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
@@ -48,23 +61,23 @@ class PureUser implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, PureAnnonce>
      */
-    #[ORM\OneToMany(targetEntity: PureAnnonce::class, mappedBy: 'pureUser', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: PureAnnonce::class, mappedBy: 'pureUser', cascade: ['remove'])]
     private Collection $annonce;
-
-    /**
-     * @var Collection<int, PureCommande>
-     */
-    #[ORM\OneToMany(targetEntity: PureCommande::class, mappedBy: 'pureUser', orphanRemoval: true)]
-    private Collection $commande;
 
     #[ORM\Column]
     private bool $isVerified = false;
 
+    /**
+     * @var Collection<int, PureCommande>
+     */
+    #[ORM\OneToMany(targetEntity: PureCommande::class, mappedBy: 'pureUser', cascade: ['remove'])]
+    private Collection $commande;
+
     public function __construct()
     {
         $this->annonce = new ArrayCollection();
-        $this->commande = new ArrayCollection();
-        $this->rgpd = new \DateTime('now', new \DateTimeZone('Europe/Paris'));    }
+        $this->rgpd = new \DateTime('now', new \DateTimeZone('Europe/Paris'));
+        $this->commande = new ArrayCollection();    }
 
     public function getId(): ?int
     {
@@ -133,13 +146,25 @@ class PureUser implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(?string $plainPassword): self
+    {
+        $this->plainPassword = $plainPassword;
+
+        return $this;
+    }
+
     /**
      * @see UserInterface
      */
     public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+        $this->plainPassword = null;
     }
 
     public function getPrenom(): ?string
@@ -204,36 +229,6 @@ class PureUser implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, PureAnnonce>
      */
-    public function getProduit(): Collection
-    {
-        return $this->annonce;
-    }
-
-    public function addProduit(PureAnnonce $annonce): static
-    {
-        if (!$this->annonce->contains($annonce)) {
-            $this->annonce->add($annonce);
-            $annonce->setPureUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeProduit(PureAnnonce $annonce): static
-    {
-        if ($this->annonce->removeElement($annonce)) {
-            // set the owning side to null (unless already changed)
-            if ($annonce->getPureUser() === $this) {
-                $annonce->setPureUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, PureAnnonce>
-     */
     public function getAnnonce(): Collection
     {
         return $this->annonce;
@@ -259,6 +254,28 @@ class PureUser implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setVerified(bool $isVerified): static
+    {
+        $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function serialize(): string
+    {
+        return serialize([$this->id, $this->email, $this->password]);
+    }
+
+    public function unserialize($serialized): void
+    {
+        [$this->id, $this->email, $this->password] = unserialize($serialized, ['allowed_classes' => false]);
     }
 
     /**
@@ -289,27 +306,5 @@ class PureUser implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
-    }
-
-    public function isVerified(): bool
-    {
-        return $this->isVerified;
-    }
-
-    public function setVerified(bool $isVerified): static
-    {
-        $this->isVerified = $isVerified;
-
-        return $this;
-    }
-
-    public function serialize(): string
-    {
-        return serialize([$this->id, $this->email, $this->password]);
-    }
-
-    public function unserialize($serialized): void
-    {
-        [$this->id, $this->email, $this->password] = unserialize($serialized, ['allowed_classes' => false]);
     }
 }

@@ -36,7 +36,6 @@
                             <th class="py-3 px-4 text-left text-sm font-medium text-gray-300">Vendeur</th>
                             <th class="py-3 px-4 text-left text-sm font-medium text-gray-300">Nom</th>
                             <th class="py-3 px-4 text-left text-sm font-medium text-gray-300">Description</th>
-                            <th class="py-3 px-4 text-left text-sm font-medium text-gray-300">Quantité</th>
                             <th class="py-3 px-4 text-left text-sm font-medium text-gray-300">Date de Publication</th>
                             <th class="py-3 px-4 text-left text-sm font-medium text-gray-300">Image</th>
                             <th class="py-3 px-4 text-left text-sm font-medium text-gray-300">Actions</th>
@@ -52,7 +51,6 @@
                                     <a href="{{ path('annonce_show', {'id': annonce.id}) }}" class="hover:underline">{{ annonce.nom }}</a>
                                 </td>
                                 <td class="py-3 px-4 text-sm text-gray-200">{{ annonce.description }}</td>
-                                <td class="py-3 px-4 text-sm text-gray-200">{{ annonce.quantite }}</td>
                                 <td class="py-3 px-4 text-sm text-gray-200">{{ annonce.dateCreation ? annonce.dateCreation|date('d-m-Y') : '' }}</td>
                                 <td class="py-3 px-4 text-sm text-gray-200">
                                     <img src="{{ '/uploads/images/' ~ annonce.image }}" alt="{{ annonce.nom }}" class="w-16 h-16 object-cover rounded-lg">

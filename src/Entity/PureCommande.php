@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\PureCommandeRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\UX\Turbo\Attribute\Broadcast;
@@ -21,22 +19,24 @@ class PureCommande
     #[ORM\Column(length: 255)]
     private ?string $dateCommande = null;
 
-    /**
-     * @var Collection<int, PureStatut>
-     */
-    #[ORM\OneToMany(targetEntity: PureStatut::class, mappedBy: 'pureCommande', orphanRemoval: true)]
-    private Collection $statut;
-
-    #[ORM\ManyToOne(inversedBy: 'commande')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?PureUser $pureUser = null;
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $quantite = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     private ?string $total = null;
 
+    #[ORM\ManyToOne(inversedBy: 'pureCommandes')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?PureStatut $statut = null;
+
+    #[ORM\ManyToOne(inversedBy: 'commande')]
+    private ?PureAnnonce $pureAnnonce = null;
+
+    #[ORM\ManyToOne(inversedBy: 'commande')]
+    private ?PureUser $pureUser = null;
+
     public function __construct()
     {
-        $this->statut = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -56,12 +56,51 @@ class PureCommande
         return $this;
     }
 
-    /**
-     * @return Collection<int, PureStatut>
-     */
-    public function getStatut(): Collection
+    public function getQuantite(): ?int
+    {
+        return $this->quantite;
+    }
+
+    public function setQuantite(int $quantite): static
+    {
+        $this->quantite = $quantite;
+        return $this;
+    }
+    
+    public function getTotal(): ?string
+    {
+        return $this->total;
+    }
+
+    public function setTotal(string $total): static
+    {
+        $this->total = $total;
+
+        return $this;
+    }
+
+    public function getStatut(): ?PureStatut
     {
         return $this->statut;
+    }
+
+    public function setStatut(?PureStatut $statut): static
+    {
+        $this->statut = $statut;
+
+        return $this;
+    }
+
+    public function getPureAnnonce(): ?PureAnnonce
+    {
+        return $this->pureAnnonce;
+    }
+
+    public function setPureAnnonce(?PureAnnonce $pureAnnonce): static
+    {
+        $this->pureAnnonce = $pureAnnonce;
+
+        return $this;
     }
 
     public function getPureUser(): ?PureUser
@@ -72,18 +111,6 @@ class PureCommande
     public function setPureUser(?PureUser $pureUser): static
     {
         $this->pureUser = $pureUser;
-
-        return $this;
-    }
-
-    public function getTotal(): ?string
-    {
-        return $this->total;
-    }
-
-    public function setTotal(string $total): static
-    {
-        $this->total = $total;
 
         return $this;
     }

@@ -6,6 +6,7 @@
 <main class="bg-lime-900 min-h-screen flex flex-col">
     <div class="bg-gray-700 bg-opacity-40">
         <header class="">
+        <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
             {{ include('Includes/Header/index.html.twig') }}
         </header>
 
@@ -28,43 +29,43 @@
                 <div class="space-y-4">
                     <div>
                         {{ form_label(registrationForm.prenom, 'Prénom', {'label_attr': {'class': 'block text-white text-sm font-medium mb-1'}}) }}
-                        {{ form_widget(registrationForm.prenom, {'attr': {'class': 'w-full p-2 bg-lime-100 text-black rounded-lg'}}) }}
+                        {{ form_widget(registrationForm.prenom, {'attr': {'class': 'w-full p-2 bg-lime-100 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent'}}) }}
                     </div>
 
                     <div>
                         {{ form_label(registrationForm.nom, 'Nom', {'label_attr': {'class': 'block text-white text-sm font-medium mb-1'}}) }}
-                        {{ form_widget(registrationForm.nom, {'attr': {'class': 'w-full p-2 bg-lime-100 text-black rounded-lg'}}) }}
+                        {{ form_widget(registrationForm.nom, {'attr': {'class': 'w-full p-2 bg-lime-100 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent'}}) }}
                     </div>
 
                     <div>
                         {{ form_label(registrationForm.adresse, 'Adresse', {'label_attr': {'class': 'block text-white text-sm font-medium mb-1'}}) }}
-                        {{ form_widget(registrationForm.adresse, {'attr': {'class': 'w-full p-2 bg-lime-100 text-black rounded-lg autocomplete-address', 'id': 'registration_form_adresse'}}) }}
+                        {{ form_widget(registrationForm.adresse, {'attr': {'class': 'w-full p-2 bg-lime-100 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent autocomplete-address', 'id': 'registration_form_adresse'}}) }}
                         <div id="suggestions-box" class="suggestions"></div>
                     </div>
 
                     <div>
                         {{ form_label(registrationForm.telephone, 'Téléphone', {'label_attr': {'class': 'block text-white text-sm font-medium mb-1'}}) }}
-                        {{ form_widget(registrationForm.telephone, {'attr': {'class': 'w-full p-2 bg-lime-100 text-black rounded-lg'}}) }}
+                        {{ form_widget(registrationForm.telephone, {'attr': {'class': 'w-full p-2 bg-lime-100 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent'}}) }}
                     </div>
 
                     <div>
                         {{ form_label(registrationForm.email, 'Email', {'label_attr': {'class': 'block text-white text-sm font-medium mb-1'}}) }}
-                        {{ form_widget(registrationForm.email, {'attr': {'class': 'w-full p-2 bg-lime-100 text-black rounded-lg'}}) }}
+                        {{ form_widget(registrationForm.email, {'attr': {'class': 'w-full p-2 bg-lime-100 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent'}}) }}
                     </div>
 
                     <div>
                         {{ form_label(registrationForm.plainPassword.first, 'Mot de passe', {'label_attr': {'class': 'block text-white text-sm font-medium mb-1'}}) }}
-                        {{ form_widget(registrationForm.plainPassword.first, {'attr': {'class': 'w-full p-2 bg-lime-100 text-black rounded-lg'}}) }}
+                        {{ form_widget(registrationForm.plainPassword.first, {'attr': {'class': 'w-full p-2 bg-lime-100 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent'}}) }}
                     </div>
 
                     <div>
                         {{ form_label(registrationForm.plainPassword.second, 'Confirmer le mot de passe', {'label_attr': {'class': 'block text-white text-sm font-medium mb-1'}}) }}
-                        {{ form_widget(registrationForm.plainPassword.second, {'attr': {'class': 'w-full p-2 bg-lime-100 text-black rounded-lg'}}) }}
+                        {{ form_widget(registrationForm.plainPassword.second, {'attr': {'class': 'w-full p-2 bg-lime-100 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent'}}) }}
                     </div>
 
                     <div>
                         {{ form_label(registrationForm.role, 'Vous êtes?', {'label_attr': {'class': 'block text-white text-sm font-medium mb-1'}}) }}
-                        {{ form_widget(registrationForm.role, {'attr': {'class': 'w-full text-white rounded-lg'}}) }}
+                        {{ form_widget(registrationForm.role, {'attr': {'class': 'w-full text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent'}}) }}
                     </div>
 
                     <div>
@@ -88,6 +89,5 @@
 {% endblock %}
 
 {% block javascripts %}
-    {{ parent() }}
     <script src="{{ asset('../assets/js/adresse.js') }}"></script>
 {% endblock %}

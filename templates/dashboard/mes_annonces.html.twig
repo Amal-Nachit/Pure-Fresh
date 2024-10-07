@@ -1,5 +1,4 @@
 {% extends 'dashboard/vendeur.html.twig' %}
-
 {% block content %}
 <div class="container mx-auto px-4 py-8">
     <h1 class="text-3xl font-extrabold mb-6 text-yellow-500">Mes Annonces</h1>
@@ -10,7 +9,6 @@
                 <h2 class="text-xl text-yellow-400 font-semibold mb-2">{{ data.annonce.nom }}</h2>
                 <div class="mb-4">
                     <img src="{{ asset(data.imagePath) }}" alt="{{ data.annonce.nom }}" class="w-full h-32 object-cover rounded-lg">
-                    <p class="text-gray-300"><span class="font-bold text-white">Quantité :</span> {{ data.annonce.quantite }}</p>
                     <p class="text-gray-300"><span class="font-bold text-white">Description :</span> {{ data.annonce.description | nl2br }}</p>
                     <p class="text-gray-300"><span class="font-bold text-white">Date de publication :</span> {{ data.annonce.dateCreation ? data.annonce.dateCreation|date('d M Y, H:i') : 'Non publiée' }}</p>
                 </div>

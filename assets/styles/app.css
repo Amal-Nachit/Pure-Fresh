@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-    background-color: '#334B35';
+@import '~@fortawesome/fontawesome-free/css/all.css';
+
+h1, h2, h3 {
+font-family: 'Raleway', sans-serif;
+}
+
+p {
+font-family: 'Open Sans', sans-serif;
 }

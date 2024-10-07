@@ -8,13 +8,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-
-#[Route('/dashboard', name: 'dashboard')]
+#[Route('/user/dashboard', name: 'dashboard')]
 class UserDashboardController extends AbstractController
 {
-    // #[IsGranted('ROLE_ACHETEUR')]
-    // #[IsGranted('ROLE_VENDEUR')]
     #[Route('/', name: '')]
     public function index(): Response
 {
@@ -27,28 +23,22 @@ class UserDashboardController extends AbstractController
             return $this->render('dashboard/vendeur.html.twig');
         }
     }
-    // Si l'utilisateur n'est pas authentifié ou n'a pas de rôle approprié
     return $this->render('home/index.html.twig');
 }
 
-
+    #[IsGranted('ROLE_VENDEUR')]
     #[Route('/mes-annonces', name: '_mes_annonces')]
     public function mesAnnonces(PureAnnonceRepository $pureAnnonceRepository): Response
     {
-        // Récupérer l'utilisateur connecté
         $user = $this->getUser();
 
-        // Vérifier si l'utilisateur est bien un vendeur (ROLE_VENDEUR)
         if ($user && in_array('ROLE_VENDEUR', $user->getRoles(), true)) {
-            // Récupérer les annonces de ce vendeur
             $annonces = $pureAnnonceRepository->findBy(['pureUser' => $user]);
 
-            // Préparer les données des annonces avec les chemins d'image
             $annoncesData = [];
             foreach ($annonces as $annonce) {
-                // Accéder à l'image directement depuis l'annonce
-                $imageFilename = $annonce->getImage() ?? 'default.png'; // Image par défaut si aucune image n'est définie
-                $imagePath = '/uploads/images/' . $imageFilename; // Ajustez le chemin selon votre configuration
+                $imageFilename = $annonce->getImage() ?? 'default.png';
+                $imagePath = '/uploads/images/' . $imageFilename;
 
                 $annoncesData[] = [
                     'annonce' => $annonce,
@@ -61,12 +51,10 @@ class UserDashboardController extends AbstractController
                 'annoncesData' => $annoncesData
             ]);
         }
-
-        // Redirection si l'utilisateur n'est pas vendeur ou pas connecté
         return $this->redirectToRoute('home');
     }
 
-
+    #[IsGranted('ROLE_VENDEUR')]
     #[Route('/mon-compte', name: '_mon_compte')]
     public function monCompte(PureUser $user): Response
     {

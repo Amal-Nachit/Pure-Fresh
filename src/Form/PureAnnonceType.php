@@ -38,20 +38,6 @@ class PureAnnonceType extends AbstractType
                     'class' => 'block text-yellow-400 font-semibold mb-2'
                 ],
             ])
-            ->add(
-                'quantite',
-                NumberType::class,
-                [
-                    'attr' => [
-                        'class' => 'form-input bg-gray-700 text-white border-gray-600 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-yellow-400 mb-6',
-                        'placeholder' => 'Entrez la quantité du produit'
-                    ],
-                    'label' => 'Quantité (kg)',
-                    'label_attr' => [
-                        'class' => 'block text-yellow-400 font-semibold mb-2'
-                    ],
-                ]
-            )
 
             ->add('image', FileType::class, [
                 'required' => false,

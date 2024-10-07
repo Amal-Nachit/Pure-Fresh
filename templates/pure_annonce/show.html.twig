@@ -1,71 +1,116 @@
-{% extends 'base.html.twig' %}
-{% block title %}Détails de l'annonce - {{ pure_annonce.nom }}{% endblock %}
+    {% extends 'base.html.twig' %}
+    {% block title %}Détails de l'annonce - {{ pure_annonce.nom }}{% endblock %}
 
-{% block body %}
-<header class="bg-lime-900">
-    {{ include('Includes/Header/index.html.twig') }}
-</header>
+    {% block body %}
+    <header class="bg-lime-900">
+        {{ include('Includes/Header/index.html.twig') }}
+    </header>
+    <div class="bg-gray-100 py-12">
+        <div class="container mx-auto px-4 lg:px-8 flex justify-center">
+            <div class="bg-white shadow-2xl rounded-2xl p-4 lg:p-6 mb-10 max-w-lg">
+                {% if app.session.flashBag.get('success') %}
+                    <div class="alert alert-success mb-4">
+                        {{ app.session.flashBag.get('success')[0] }}
+                    </div>
+                {% endif %}
 
-<div class="bg-gray-100 py-12">
-    <div class="container mx-auto px-4 lg:px-8">
-        <h1 class="text-4xl font-bold text-lime-800 mb-6 text-center">{{ pure_annonce.nom }}</h1>
-
-        <div class="bg-white shadow-2xl rounded-2xl p-8 lg:p-12 mb-10">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-                <div>
-                    <img src="{{ '/uploads/images/' ~ pure_annonce.image }}" alt="{{ pure_annonce.nom }}" class="w-full h-auto object-cover rounded-xl shadow-lg">
+                <div class="flex justify-center mb-6">
+                    {% if pure_annonce.image %}
+                        <img src="{{ '/uploads/images/' ~ pure_annonce.image }}" alt="{{ pure_annonce.nom }}" class="w-full h-auto object-cover rounded-xl shadow-lg">
+                    {% else %}
+                        <img src="/path/to/default/image.jpg" alt="Image par défaut" class="w-full h-auto object-cover rounded-xl shadow-lg">
+                    {% endif %}
                 </div>
 
-                <div>
-                    <h2 class="text-3xl font-bold text-lime-900 mb-6">Description</h2>
-                    <p class="text-gray-600 text-lg mb-8 leading-relaxed">{{ pure_annonce.description }}</p>
+                <h1 class="text-4xl font-bold text-lime-800 mb-6 text-center">{{ pure_annonce.nom }}</h1>
 
-                    <h3 class="text-2xl font-semibold text-lime-800 mb-6">Détails de l'annonce</h3>
-                    <ul class="space-y-6">
-                        <li class="flex justify-between text-gray-700 text-lg">
-                            <span class="font-medium">Publiée le :</span>
-                            <span>{{ pure_annonce.dateCreation ? pure_annonce.dateCreation|date('d-m-Y H:i') : 'Non précisée' }}</span>
-                        </li>
+                <div class="grid grid-cols-1 gap-12 items-start">
+                    <div>
+                        <h2 class="text-3xl font-bold text-lime-900 mb-6">Description</h2>
+                        <p class="text-gray-600 text-lg mb-8 leading-relaxed">{{ pure_annonce.description }}</p>
 
-                        <li class="flex justify-between text-gray-700 text-lg">
-                            <span class="font-medium">Quantité :</span>
-                            <span>{{ pure_annonce.quantite }} kg</span>
-                        </li>
-
-                        <li class="flex justify-between text-gray-700 text-lg">
-                            <span class="font-medium">Prix :</span>
-                            <span class="text-lime-600 font-bold text-2xl">{{ pure_annonce.prix }} €/kg</span>
-                        </li>
-
-                        <li class="flex justify-between text-gray-700 text-lg">
-                            <span class="font-medium">Vendeur :</span>
-                            <span>{{ pure_annonce.pureUser.prenom }} {{ pure_annonce.pureUser.nom }}</span>
-                        </li>
-
-                        <li class="flex justify-between text-gray-700 text-lg">
-                            <span class="font-medium">Téléphone :</span>
-                            <span>{{ pure_annonce.pureUser.telephone }}</span>
-                        </li>
-
-                        <li class="flex justify-between text-gray-700 text-lg">
-                            <span class="font-medium">Adresse :</span>
-                            <span>{{ pure_annonce.pureUser.adresse }}</span>
-                        </li>
-                    </ul>
-
-                    <div class="mt-10 flex flex-col lg:flex-row lg:items-center space-y-4 lg:space-y-0 lg:space-x-6">
-                        <a href="{{ path('annonce_index') }}" class="inline-block bg-lime-700 text-white text-lg px-8 py-4 rounded-full hover:bg-lime-800 transition duration-300">Retour à la liste</a>
-
-                        <a href="#" class="inline-block bg-yellow-500 text-white text-lg px-8 py-4 rounded-full hover:bg-yellow-600 transition duration-300">Commander</a>
+                        <h3 class="text-2xl font-semibold text-lime-800 mb-6">Détails de l'annonce</h3>
+                        <ul class="space-y-6">
+                            <li class="flex justify-between text-gray-700 text-lg">
+                                <span class="font-medium">Publiée le :</span>
+                                <span>{{ pure_annonce.dateCreation ? pure_annonce.dateCreation|date('d-m-Y H:i') : 'Non précisée' }}</span>
+                            </li>
+                            <li class="flex justify-between text-gray-700 text-lg">
+                                <span class="font-medium">Prix :</span>
+                                <span class="text-lime-600 font-bold text-2xl">{{ pure_annonce.prix }} €/kg</span>
+                            </li>
+                            <li class="flex justify-between text-gray-700 text-lg">
+                                <span class="font-medium">Vendeur :</span>
+                                <span>{{ pure_annonce.pureUser.prenom|default('Inconnu') }} {{ pure_annonce.pureUser.nom|default('Inconnu') }}</span>
+                            </li>
+                            <li class="flex justify-between text-gray-700 text-lg">
+                                <span class="font-medium">Téléphone :</span>
+                                <span>{{ pure_annonce.pureUser.telephone|default('Non précisé') }}</span>
+                            </li>
+                            <li class="flex justify-between text-gray-700 text-lg">
+                                <span class="font-medium">Adresse :</span>
+                                <span>{{ pure_annonce.pureUser.adresse|default('Non précisée') }}</span>
+                            </li>
+                        </ul>
                     </div>
                 </div>
+
+                <div class="flex justify-center mt-8">
+                    <h2 class="text-3xl font-bold text-lime-800 mb-6 text-center">Commander</h2>
+                </div>
+
+                {{ form_start(form) }}
+
+                <div class="mb-4">
+                    {{ form_label(form.quantite, 'Quantité (en kg) :', {'label_attr': {'class': 'block text-lg font-semibold text-gray-700 quantite' }}) }}
+                    {{ form_widget(form.quantite, {'attr': {'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm', 'oninput': 'updatePrice()'}}) }}
+                </div>
+
+                <div class="mb-4">
+                    {{ form_label(form.total, 'Prix Total :', {'label_attr': {'class': 'block text-lg font-semibold text-gray-700' }}) }}
+                    {{ form_widget(form.total, {'attr': {'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm', 'id': 'prix-total', 'readonly': 'readonly'}}) }}
+                </div>
+
+                <div class="flex justify-center">
+                    <button type="submit" class="px-4 py-2 bg-lime-800 text-white font-semibold rounded-lg shadow-md hover:bg-lime-700">Passer la commande</button>
+                </div>
+
+                {{ form_end(form) }}
+
             </div>
         </div>
     </div>
-</div>
 
-<footer class="bg-lime-900">
-    {{ include('Includes/Footer/index.html.twig') }}
-</footer>
+    <footer class="bg-lime-900">
+        {{ include('Includes/Footer/index.html.twig') }}
+    </footer>
 
-{% endblock %}
+   <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const quantiteInput = document.querySelector('input[name="pure_commande[quantite]"]');
+    const prixTotalInput = document.getElementById('prix-total');    
+    if (prixTotalInput) {
+        quantiteInput.addEventListener('input', updatePrice);
+    }
+        console.log(prixTotalInput); 
+        console.log('Prix unitaire :', {{ pure_annonce.prix }});
+       
+
+});
+
+function updatePrice() {
+    const quantiteInput = document.querySelector('input[name="pure_commande[quantite]"]');
+    const prixTotalInput = document.getElementById('prix-total');
+    const prixUnitaire = {{ pure_annonce.prix }};
+
+    let quantity = parseInt(quantiteInput.value) || 0;
+    const totalPrice = (prixUnitaire * quantity).toFixed(2);
+    
+    prixTotalInput.value = totalPrice + ' €';
+}
+
+</script>
+
+
+    {% endblock %}
+

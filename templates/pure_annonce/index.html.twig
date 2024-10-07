@@ -1,17 +1,26 @@
 {% extends 'base.html.twig' %}
-
-{% block title %}Nos produits{% endblock %}
-
 {% block body %}
 <div class="bg-lime-900">
-        <header class="">
-            {{ include('Includes/Header/index.html.twig') }}
-        </header>
+    <header>
+        {{ include('Includes/Header/index.html.twig') }}
+    </header>
 </div>
 
 <div class="bg-gray-100 py-8 min-h-screen">
     <div class="container mx-auto px-6">
         <h1 class="text-4xl font-bold text-center text-lime-800 mb-8">Nos produits</h1>
+
+        <form method="get" action="{{ path('annonce_index') }}" class="mb-6">
+            <label for="category" class="mr-2">Filtrer par catégorie :</label>
+            <select name="category" id="category" onchange="this.form.submit()">
+                <option value="">--Toutes les catégories--</option>
+                {% for category in categories %}
+                    <option value="{{ category.id }}" {% if category.id == selectedCategory %}selected{% endif %}>
+                        {{ category.nom|capitalize }}
+                    </option>
+                {% endfor %}
+            </select>
+        </form>
 
         {% if pure_annonces is empty %}
             <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4" role="alert">
@@ -23,14 +32,14 @@
                     <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300">
                         <div class="relative mb-4">
                             <a href="{{ path('annonce_show', {'id': pure_annonce.id}) }}" class="block">
-                            <img src="{{ '/uploads/images/' ~ pure_annonce.image }}" alt="{{ pure_annonce.nom }}" class="w-full h-48 object-cover rounded-t-lg">
-                            <div class="absolute bottom-2 right-2 bg-lime-600 text-white text-xs px-2 py-1 rounded">Nouveau</div>
+                                <img src="{{ '/uploads/images/' ~ pure_annonce.image }}" alt="{{ pure_annonce.nom }}" class="w-full h-48 object-cover rounded-t-lg">
+                                <div class="absolute bottom-2 right-2 bg-lime-600 text-white text-xs px-2 py-1 rounded">Nouveau</div>
                             </a>
                         </div>
                         <div class="px-4 py-2">
-                        <a href="{{ path('annonce_show', {'id': pure_annonce.id}) }}" class="block">
-                            <h2 class="text-xl font-semibold text-lime-900 mb-2">{{ pure_annonce.nom }}</h2></a>
-                            <p class="text-gray-700 text-sm mb-2"><strong>Quantité :</strong> {{ pure_annonce.quantite }} kg</p>
+                            <a href="{{ path('annonce_show', {'id': pure_annonce.id}) }}" class="block">
+                                <h2 class="text-xl font-semibold text-lime-900 mb-2">{{ pure_annonce.nom }}</h2>
+                            </a>
                             <p class="text-gray-600 text-sm mb-4">{{ pure_annonce.description|slice(0, 100) }}...</p>
                             <p class="text-gray-500 text-xs">{{ pure_annonce.dateCreation ? pure_annonce.dateCreation|date('d-m-Y') : '' }}</p>
                             <div class="mt-4 flex justify-between items-center">
@@ -46,8 +55,8 @@
 </div>
 
 <div class="bg-lime-900">
-        <footer class="">
-            {{ include('Includes/Footer/index.html.twig') }}
-        </footer>
+    <footer>
+        {{ include('Includes/Footer/index.html.twig') }}
+    </footer>
 </div>
 {% endblock %}

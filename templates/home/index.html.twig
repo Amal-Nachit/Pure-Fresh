@@ -1,9 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Accueil{% endblock %}
+{% block title %}Accueil - Pure&Fresh{% endblock %}
+{% block meta %}
+    <meta name="description" content="Découvrez des produits bio et locaux sur Pure&Fresh, votre plateforme de confiance pour soutenir les agriculteurs." />
+    <meta name="keywords" content="bio, local, agriculture, produits frais, Pure&Fresh" />
+{% endblock %}
 
 {% block body %}
-
 <main class="bg-lime-900 min-h-screen flex flex-col">
 <div class="bg-gray-700 bg-opacity-40">
     <header>
@@ -19,8 +22,8 @@
     </div>
 
     <div class="w-full mb-6">
-        <img src="../../table.jpg" alt="Une main tenant un radis" 
-             class="w-full h-auto object-contain rounded-lg shadow-md">
+        <img src="../../table.jpg" alt="Main tenant un radis frais, représentant l'agriculture biologique" loading="lazy"
+     class="w-full h-auto object-contain rounded-lg shadow-md">
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 p-4 mb-6">

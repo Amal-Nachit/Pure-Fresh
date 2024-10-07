@@ -1,5 +1,14 @@
 // Charger l'API Google Maps avec ta clé
 function loadGoogleMaps(apiKey) {
+  if (
+    document.querySelector(
+      `script[src^="https://maps.googleapis.com/maps/api/js"]`
+    )
+  ) {
+    console.warn("Google Maps API is already loaded.");
+    return;
+  }
+
   const script = document.createElement("script");
   script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initAutocomplete`;
   script.async = true;
@@ -9,8 +18,12 @@ function loadGoogleMaps(apiKey) {
 
 // Initialiser l'autocompletion
 function initAutocomplete() {
-  const input = document.getElementById("registration_form_adresse");
-  if (!input) {
+  const inputCreate = document.getElementById("registration_form_adresse");
+  const inputEdit = document.getElementById("pure_user_adresse");
+  let input = "";
+  if (inputCreate || inputEdit) {
+    input = inputCreate || inputEdit;
+  } else {
     console.error('Element with ID "registration_form_adresse" not found.');
     return;
   }

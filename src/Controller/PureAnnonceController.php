@@ -3,7 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\PureAnnonce;
+use App\Entity\PureCategorie;
+use App\Entity\PureCommande;
 use App\Form\PureAnnonceType;
+use App\Form\PureCommandeType;
 use App\Repository\PureAnnonceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -11,31 +14,47 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
-#[Route('/annonce', name: 'annonce_')]
 final class PureAnnonceController extends AbstractController
 {
-    #[Route('s', name: 'index', methods: ['GET'])]
-    public function index(PureAnnonceRepository $pureAnnonceRepository): Response
+    // #[IsGranted('ROLE_USER')]
+    #[Route('annonces', name: 'annonce_index', methods: ['GET'])]
+    public function index(Request $request, EntityManagerInterface $entityManager, PureAnnonceRepository $pureAnnonceRepository): Response
     {
-        // Récupérer les annonces approuvées uniquement
         $annoncesApprouvees = $pureAnnonceRepository->findBy(['approuvee' => true]);
 
+        $categories = $entityManager->getRepository(PureCategorie::class)->findAll();
+
+        $selectedCategory = $request->query->get('category');
+
+        $queryBuilder = $entityManager->getRepository(PureAnnonce::class)->createQueryBuilder('a')
+            ->where('a.approuvee = true');
+
+        if ($selectedCategory) {
+            $queryBuilder->andWhere('a.categorie = :category')
+                ->setParameter('category', $selectedCategory);
+        }
+
+        $pure_annonces = $queryBuilder->getQuery()->getResult();
+
         return $this->render('pure_annonce/index.html.twig', [
-            'pure_annonces' => $annoncesApprouvees,
+            'categories' => $categories,
+            'selectedCategory' => $selectedCategory,
+            'pure_annonces' => $pure_annonces,
+            'annoncesApprouvees' => $annoncesApprouvees
         ]);
     }
 
-
-    #[Route('/creer-un-annonce', name: 'new', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_VENDEUR')]
+    #[Route('/user/creer-une-annonce', name: 'annonce_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $pureAnnonce = new PureAnnonce();
         $form = $this->createForm(PureAnnonceType::class, $pureAnnonce);
         $form->handleRequest($request);
 
-        // Récupérer l'utilisateur connecté
         $user = $this->getUser();
         if ($user) {
             $pureAnnonce->setPureUser($user);
@@ -47,7 +66,6 @@ final class PureAnnonceController extends AbstractController
             $brochureFile = $form['image']->getData();
 
             if ($brochureFile) {
-                // Validation de l'extension
                 $allowedExtensions = ['jpg', 'jpeg', 'png'];
                 $fileExtension = $brochureFile->guessExtension();
 
@@ -56,32 +74,25 @@ final class PureAnnonceController extends AbstractController
                     return $this->redirectToRoute('annonce_new');
                 }
 
-                // Limiter la taille du fichier (ex. 5MB max)
                 if ($brochureFile->getSize() > 5000000) {
-                    $this->addFlash('error', 'File is too large. Maximum size is 5MB.');
+                    $this->addFlash('error', 'Le fichier est trop volumineux. La taille maximale est de 5 Mo.');
                     return $this->redirectToRoute('annonce_new');
                 }
 
-                // 1. Récupérer le nom du fichier sans l'extension
                 $originalFilename = pathinfo($brochureFile->getClientOriginalName(), PATHINFO_FILENAME);
 
-                // 2. Nettoyer le nom du fichier (supprime les caractères dangereux)
                 $safeFilename = $slugger->slug($originalFilename);
 
-                // 3. Créer un nom de fichier unique avec une extension sécurisée
                 $newFilename = $safeFilename . '-' . uniqid() . '.' . $fileExtension;
 
                 try {
-                    // 4. Déplacer le fichier vers le répertoire sécurisé
                     $brochureFile->move(
                         $this->getParameter('images_directory'),
                         $newFilename
                     );
                 } catch (FileException $e) {
-                    throw new \Exception('Failed to upload the image.');
+                    throw new \Exception('Echec lors de la tentative de sauvegarde du fichier.');
                 }
-
-                // 5. Assigner le nouveau nom de fichier à l'entité
                 $pureAnnonce->setImage($newFilename);
             }
 
@@ -98,56 +109,118 @@ final class PureAnnonceController extends AbstractController
     }
 
 
-    #[Route('/{id}', name: 'show', methods: ['GET'])]
-    public function show(PureAnnonce $pureAnnonce): Response
+    #[Route('annonce/{id}', name: 'annonce_show', methods: ['GET', 'POST'])]
+    public function show(PureAnnonce $pureAnnonce, Request $request, EntityManagerInterface $entityManager): Response
     {
+        $commande = new PureCommande();
+        $commande->setPureAnnonce($pureAnnonce);
+
+        $form = $this->createForm(PureCommandeType::class, $commande);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $commande->setPureUser($this->getUser());
+
+            $commande->setDateCommande((new \DateTime())->format('d-m-Y H:i:s'));
+
+            $commande->setStatut(null);
+
+            $entityManager->persist($commande);
+            $entityManager->flush();
+            $this->addFlash('success', 'Votre commande a été passée avec succès !');
+
+            return $this->redirectToRoute('annonce_show', ['id' => $pureAnnonce->getId()]);
+        }
+
         return $this->render('pure_annonce/show.html.twig', [
             'pure_annonce' => $pureAnnonce,
+            'form' => $form->createView(),
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, PureAnnonce $pureAnnonce, EntityManagerInterface $entityManager): Response
+
+
+    #[IsGranted('ROLE_VENDEUR')]
+    #[Route('/user/annonce/{id}/edit', name: 'annonce_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, PureAnnonce $pureAnnonce, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $form = $this->createForm(PureAnnonceType::class, $pureAnnonce);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $pureAnnonce->setApprouvee(null);
+
+            $brochureFile = $form['image']->getData();
+
+            if ($brochureFile) {
+                $allowedExtensions = ['jpg', 'jpeg', 'png'];
+                $fileExtension = $brochureFile->guessExtension();
+
+                if (!in_array($fileExtension, $allowedExtensions)) {
+                    $this->addFlash('error', 'Erreur: L\'extension du fichier doit être une des suivantes: ' . implode(', ', $allowedExtensions) . '.');
+                    return $this->redirectToRoute('annonce_edit', ['id' => $pureAnnonce->getId()]);
+                }
+
+                if ($brochureFile->getSize() > 10000000) {
+                    $this->addFlash('error', 'Le fichier est trop volumineux. La taille maximale est de 5 Mo.');
+                    return $this->redirectToRoute('annonce_edit', ['id' => $pureAnnonce->getId()]);
+                }
+
+                if ($pureAnnonce->getImage()) {
+                    $oldFilePath = $this->getParameter('images_directory') . '/' . $pureAnnonce->getImage();
+                    if (file_exists($oldFilePath)) {
+                        unlink($oldFilePath); // Supprime l'ancienne image
+                    }
+                }
+
+                $originalFilename = pathinfo($brochureFile->getClientOriginalName(), PATHINFO_FILENAME);
+
+                $safeFilename = $slugger->slug($originalFilename);
+
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $fileExtension;
+
+                try {
+                    $brochureFile->move(
+                        $this->getParameter('images_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    $this->addFlash('error', 'Échec du téléchargement de l\'image.');
+                    return $this->redirectToRoute('annonce_edit', ['id' => $pureAnnonce->getId()]);
+                }
+
+                $pureAnnonce->setImage($newFilename);
+            }
+
             $entityManager->flush();
 
-            return $this->redirectToRoute('annonce_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('dashboard_mes_annonces', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('pure_annonce/edit.html.twig', [
             'pure_annonce' => $pureAnnonce,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
-    #[Route('/{id}', name: 'delete', methods: ['POST'])]
+
+
+    #[IsGranted('ROLE_VENDEUR')]
+    #[Route('/user/annonce/{id}', name: 'annonce_delete', methods: ['POST'])]
     public function delete(Request $request, PureAnnonce $pureAnnonce, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete' . $pureAnnonce->getId(), $request->get('_token'))) {
 
-            // Récupérer le nom du fichier image associé au annonce
             $imageFilename = $pureAnnonce->getImage();
 
             if ($imageFilename) {
-                // Chemin complet vers le fichier image
                 $imagePath = $this->getParameter('images_directory') . '/' . $imageFilename;
-
-                // Vérifier si le fichier existe avant de le supprimer
                 if (file_exists($imagePath)) {
-                    // Supprimer le fichier du répertoire local
                     unlink($imagePath);
                 }
             }
-
-            // Supprimer le annonce de la base de données
             $entityManager->remove($pureAnnonce);
             $entityManager->flush();
         }
-
         return $this->redirectToRoute('annonce_index', [], Response::HTTP_SEE_OTHER);
     }
 
