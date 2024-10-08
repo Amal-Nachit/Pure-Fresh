@@ -27,8 +27,9 @@ class PureAnnonce
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateCreation = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
+
 
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2)]
     private ?string $prix = null;

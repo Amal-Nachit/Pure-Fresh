@@ -16,6 +16,12 @@ class PureStatutRepository extends ServiceEntityRepository
         parent::__construct($registry, PureStatut::class);
     }
 
+    // Méthode pour récupérer tous les statuts
+    public function findAllStatuts(): array
+    {
+        return $this->findAll();
+    }
+
     //    /**
     //     * @return PureStatut[] Returns an array of PureStatut objects
     //     */

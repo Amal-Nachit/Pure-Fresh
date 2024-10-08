@@ -15,6 +15,14 @@ class PureCommandeRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, PureCommande::class);
     }
+    public function findByAnnonceId(int $annonceId)
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.pureAnnonce = :annonceId')
+            ->setParameter('annonceId', $annonceId)
+            ->getQuery()
+            ->getResult();
+    }
 
 //    /**
 //     * @return PureCommande[] Returns an array of PureCommande objects

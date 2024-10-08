@@ -7,11 +7,11 @@
 {% endblock %}
 
 {% block body %}
-{% if error %}
+{# {% if error %}
             <div class="bg-red-500 text-white p-4 rounded-lg mb-6">
                 {{ error.messageKey|trans(error.messageData, 'security') }}
             </div>
-        {% endif %}
+        {% endif %} #}
 <main class="bg-lime-900 min-h-screen flex flex-col">
 <div class="bg-gray-700 bg-opacity-40">
     <header>
@@ -27,13 +27,13 @@
     </div>
 
     <div class="w-full mb-6">
-        <img src="../../table.jpg" alt="Main tenant un radis frais, représentant l'agriculture biologique" loading="lazy"
+        <img src="../../table.jpg" alt="Table de fruits et lègumes" loading="lazy"
      class="w-full h-auto object-contain rounded-lg shadow-md">
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 p-4 mb-6">
         <div class="flex items-center space-x-6 p-4 bg-lime-800 rounded-lg shadow-lg">
-            <img src="../../icon-svg/fr.svg" alt="" class="h-14 w-14 sm:h-12 sm:w-12 md:h-16 md:w-16 lg:h-20 lg:w-20 xl:h-24 xl:w-24 object-contain filter-white">
+            <img src="../../icon-svg/fr.svg" alt="icone de carte française" class="h-14 w-14 sm:h-12 sm:w-12 md:h-16 md:w-16 lg:h-20 lg:w-20 xl:h-24 xl:w-24 object-contain filter-white">
             <div>
                 <h2 class="text-xl sm:text-2xl text-yellow-400 font-bold">
                     Des produits locaux partout en France
@@ -45,7 +45,7 @@
         </div>
 
         <div class="flex items-center space-x-6 p-4 bg-lime-800 rounded-lg shadow-lg">
-            <img src="../../icon-svg/basket-shopping-solid.svg" alt="" class="h-16 w-16 object-contain filter-white">
+            <img src="../../icon-svg/basket-shopping-solid.svg" alt="icone de panier" class="h-16 w-16 object-contain filter-white">
             <div>
                 <h2 class="text-xl sm:text-2xl text-yellow-400 font-bold">
                     Le plaisir des saveurs authentiques
@@ -57,7 +57,7 @@
         </div>
 
         <div class="flex items-center space-x-6 p-4 bg-lime-800 rounded-lg shadow-lg">
-            <img src="../../icon-svg/handshake.svg" alt="" class="h-16 w-16 object-contain filter-white">
+            <img src="../../icon-svg/handshake.svg" alt="icone de main dans la main" class="h-16 w-16 object-contain filter-white">
             <div>
                 <h2 class="text-xl sm:text-2xl text-yellow-400 font-bold">
                     Un échange bénéfique pour tous
@@ -69,7 +69,7 @@
         </div>
 
         <div class="flex items-center space-x-6 p-4 bg-lime-800 rounded-lg shadow-lg">
-            <img src="../../icon-svg/trash.svg" alt="" class="h-16 w-16 object-contain filter-white">
+            <img src="../../icon-svg/trash.svg" alt="icone de corbeille" class="h-16 w-16 object-contain filter-white">
             <div>
                 <h2 class="text-xl sm:text-2xl text-yellow-400 font-bold">
                     Un engagement contre le gaspillage alimentaire

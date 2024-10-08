@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PureStatut index{% endblock %}
+
+{% block body %}
+    <h1>PureStatut index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Intitule</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for pure_statut in pure_statuts %}
+            <tr>
+                <td>{{ pure_statut.id }}</td>
+                <td>{{ pure_statut.intitule }}</td>
+                <td>
+                    <a href="{{ path('app_pure_statut_show', {'id': pure_statut.id}) }}">show</a>
+                    <a href="{{ path('app_pure_statut_edit', {'id': pure_statut.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_pure_statut_new') }}">Create new</a>
+{% endblock %}

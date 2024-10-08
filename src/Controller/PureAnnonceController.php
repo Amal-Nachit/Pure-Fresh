@@ -95,6 +95,8 @@ final class PureAnnonceController extends AbstractController
                     throw new \Exception('Echec lors de la tentative de sauvegarde du fichier.');
                 }
                 $pureAnnonce->setImage($newFilename);
+            } else {
+                $pureAnnonce->setImage('default.jpg');
             }
 
             $entityManager->persist($pureAnnonce);

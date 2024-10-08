@@ -96,6 +96,7 @@ class PureCommande
         return $this->pureAnnonce;
     }
 
+
     public function setPureAnnonce(?PureAnnonce $pureAnnonce): static
     {
         $this->pureAnnonce = $pureAnnonce;
