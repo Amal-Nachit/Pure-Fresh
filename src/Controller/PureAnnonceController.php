@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\PureAnnonce;
 use App\Entity\PureCategorie;
 use App\Entity\PureCommande;
+use App\Entity\PureStatut;
 use App\Form\PureAnnonceType;
 use App\Form\PureCommandeType;
 use App\Repository\PureAnnonceRepository;
@@ -117,13 +118,13 @@ final class PureAnnonceController extends AbstractController
 
         $form = $this->createForm(PureCommandeType::class, $commande);
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted()) {
             $commande->setPureUser($this->getUser());
 
             $commande->setDateCommande((new \DateTime())->format('d-m-Y H:i:s'));
 
-            $commande->setStatut(null);
-
+            $statut = $entityManager->getRepository(PureStatut::class)->find(1);
+            $commande->setStatut($statut);
             $entityManager->persist($commande);
             $entityManager->flush();
             $this->addFlash('success', 'Votre commande a été passée avec succès !');

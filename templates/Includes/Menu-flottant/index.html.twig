@@ -1,43 +1,40 @@
-<!-- Menu flottant -->
 <div class="bg-black bg-opacity-50">
 <div class="fixed bottom-0 left-0 w-full bg-lime-900 flex justify-around p-3 md:hidden">
-    <!-- Accueil -->
     <div class="group relative flex flex-col items-center">
-        <button class="flex flex-col items-center focus:outline-none" onclick="activateIcon(this)">
-            <img src="{{ asset('../../../icon-svg/home.svg') }}" alt="Accueil" class="h-8 w-8 text-yellow-400 transition-transform duration-300"/>
-            <span class="mt-2 text-yellow-400 opacity-0 transition-opacity duration-300 text-sm">Accueil</span>
-        </button>
+        <button class="flex flex-col items-center focus:outline-none" onclick="window.location.href='{{ path('home') }}'; activateIcon(this)">
+    <img src="{{ asset('../../../icon-svg/home.svg') }}" alt="Accueil" class="h-8 w-8 text-yellow-400 transition-transform duration-300"/>
+    <span class="mt-2 text-yellow-400 opacity-0 transition-opacity duration-300 text-sm">Accueil</span>
+</button>
+
     </div>
 
-    <!-- Légumes -->
     <div class="group relative flex flex-col items-center">
-        <button class="flex flex-col items-center focus:outline-none" onclick="activateIcon(this)">
+        <button class="flex flex-col items-center focus:outline-none" onclick=" window.location.href='{{ path('annonce_index') }}'; activateIcon(this)">
             <img src="{{ asset('../../../icon-svg/vegetables.svg') }}" alt="Ventes" class="h-8 w-8 text-yellow-400 transition-transform duration-300"/>
             <span class="mt-2 text-yellow-400 opacity-0 transition-opacity duration-300 text-sm">Ventes</span>
         </button>
     </div>
 
-    <!-- Panier -->
     <div class="group relative flex flex-col items-center">
-        <button class="flex flex-col items-center focus:outline-none" onclick="activateIcon(this)">
+        <button class="flex flex-col items-center focus:outline-none" onclick="window.location.href='{{ path('commande_index') }}'; activateIcon(this)">
             <img src="{{ asset('../../../icon-svg/panier.svg') }}" alt="Panier" class="h-8 w-8 text-yellow-400 transition-transform duration-300"/>
             <span class="mt-2 text-yellow-400 opacity-0 transition-opacity duration-300 text-sm">Panier</span>
         </button>
     </div>
 
-    <!-- Compte -->
+
     <div class="group relative flex flex-col items-center">
-        <button class="flex flex-col items-center focus:outline-none" onclick="activateIcon(this)">
+        <button class="flex flex-col items-center focus:outline-none" onclick="window.location.href='{{ path('dashboard') }}'; activateIcon(this)">
             <img src="{{ asset('../../../icon-svg/user.svg') }}" alt="Compte" class="h-8 w-8 text-yellow-400 transition-transform duration-300"/>
             <span class="mt-2 text-yellow-400 opacity-0 transition-opacity duration-300 text-sm">Compte</span>
         </button>
     </div>
 </div>
 </div>
-<!-- JavaScript -->
+
 <script>
     function activateIcon(button) {
-        // Désactiver toutes les icônes et les textes
+
         const buttons = document.querySelectorAll('.group button');
         buttons.forEach(btn => {
             const img = btn.querySelector('img');
@@ -54,12 +51,11 @@
     }
 </script>
 
-<!-- Tailwind CSS classes -->
 <style>
     .translate-y-2 {
-        transform: translateY(-0.5rem); /* Décale légèrement vers le haut */
+        transform: translateY(-0.5rem); 
     }
     .opacity-100 {
-        opacity: 1; /* Rendre le span visible */
+        opacity: 1; 
     }
 </style>

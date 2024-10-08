@@ -53,7 +53,9 @@ class PureAnnonceType extends AbstractType
             ->add('prix', NumberType::class, [
                 'attr' => [
                     'class' => 'form-input bg-gray-700 text-white border-gray-600 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-yellow-400 mb-6',
-                    'placeholder' => 'Entrez le prix du produit'
+                    'placeholder' => 'Entrez le prix du produit',
+                    'min' => 0,
+                    'max' => 99
                 ],
                 'label' => 'Prix',
                 'label_attr' => [

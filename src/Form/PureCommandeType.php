@@ -2,12 +2,10 @@
 
 namespace App\Form;
 
-use App\Entity\PureAnnonce;
 use App\Entity\PureCommande;
-use App\Entity\PureStatut;
-use App\Entity\PureUser;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -15,12 +13,21 @@ class PureCommandeType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder
-            ->add('quantite') 
-            ->add('total', null, [
-                'attr' => ['readonly' => true] 
+         
+    $builder
+    ->add('quantite', IntegerType::class, [
+        'label' => 'Quantité (en kg) :',
+        'attr' => [
+            'class' => 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm',
+            'min' => 1,
+            'placeholder' => 'Entrez la quantité',
+        ],
+    ])
+            ->add('total', TextType::class, [
+                'label' => 'Prix total',
+                'attr' => ['readonly' => true], // pour que le champ soit en lecture seule
             ]);
-    }
+    ;}
 
     public function configureOptions(OptionsResolver $resolver): void
     {

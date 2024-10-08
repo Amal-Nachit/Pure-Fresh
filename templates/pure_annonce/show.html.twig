@@ -5,14 +5,14 @@
     <header class="bg-lime-900">
         {{ include('Includes/Header/index.html.twig') }}
     </header>
-    <div class="bg-gray-100 py-12">
+    <div class="bg-gray-100 pt-12">
         <div class="container mx-auto px-4 lg:px-8 flex justify-center">
             <div class="bg-white shadow-2xl rounded-2xl p-4 lg:p-6 mb-10 max-w-lg">
-                {% if app.session.flashBag.get('success') %}
-                    <div class="alert alert-success mb-4">
-                        {{ app.session.flashBag.get('success')[0] }}
-                    </div>
-                {% endif %}
+                {% for message in app.flashes('success') %}
+    <div class="alert alert-success mb-4">
+        {{ message }}
+    </div>
+{% endfor %}
 
                 <div class="flex justify-center mb-6">
                     {% if pure_annonce.image %}
@@ -55,29 +55,36 @@
                     </div>
                 </div>
 
+                {% if is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_ACHETEUR') %}
                 <div class="flex justify-center mt-8">
                     <h2 class="text-3xl font-bold text-lime-800 mb-6 text-center">Commander</h2>
                 </div>
 
-                {{ form_start(form) }}
+               {{ form_start(form, { 'method': 'POST' }) }}
 
                 <div class="mb-4">
-                    {{ form_label(form.quantite, 'Quantité (en kg) :', {'label_attr': {'class': 'block text-lg font-semibold text-gray-700 quantite' }}) }}
-                    {{ form_widget(form.quantite, {'attr': {'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm', 'oninput': 'updatePrice()'}}) }}
+                    {{ form_label(form.quantite, 'Quantité (en kg) :', {'label_attr': {'class': 'block text-lg font-semibold text-gray-700' }}) }}
+                    {{ form_widget(form.quantite, {'attr': {'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm', 'id': 'quantite'}}) }}
                 </div>
 
                 <div class="mb-4">
-                    {{ form_label(form.total, 'Prix Total :', {'label_attr': {'class': 'block text-lg font-semibold text-gray-700' }}) }}
-                    {{ form_widget(form.total, {'attr': {'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm', 'id': 'prix-total', 'readonly': 'readonly'}}) }}
+                    {{ form_label(form.total, 'Prix total :', {'label_attr': {'class': 'block text-lg font-semibold text-gray-700' }}) }}
+                    {{ form_widget(form.total, {'attr': {'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm prixTotal', 'readonly': 'readonly'}}) }}
                 </div>
 
+            <div>
                 <div class="flex justify-center">
                     <button type="submit" class="px-4 py-2 bg-lime-800 text-white font-semibold rounded-lg shadow-md hover:bg-lime-700">Passer la commande</button>
                 </div>
 
                 {{ form_end(form) }}
-
             </div>
+            {% else %}
+            <div class="flex justify-center pt-8">
+            <button class="px-4 py-2 bg-lime-800 text-white font-semibold rounded-lg shadow-md hover:bg-lime-700">
+                <a href="{{ path('app_login') }}" class="text-white">Passer commande</a></button>
+            </div>
+            {% endif %}
         </div>
     </div>
 
@@ -85,32 +92,35 @@
         {{ include('Includes/Footer/index.html.twig') }}
     </footer>
 
-   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-    const quantiteInput = document.querySelector('input[name="pure_commande[quantite]"]');
-    const prixTotalInput = document.getElementById('prix-total');    
-    if (prixTotalInput) {
-        quantiteInput.addEventListener('input', updatePrice);
-    }
-        console.log(prixTotalInput); 
-        console.log('Prix unitaire :', {{ pure_annonce.prix }});
-       
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const quantiteInput = document.querySelector('input[id*="quantite"]');
+    const prixTotalInput = document.querySelector('.prixTotal');
+    const prixUnitaire = {{ pure_annonce.prix|json_encode|raw }};
 
+    if (quantiteInput && prixTotalInput) {
+        quantiteInput.value = quantiteInput.value || 1;
+        quantiteInput.min = 1;
+
+        updatePrice();
+
+        quantiteInput.addEventListener('input', updatePrice);
+
+        document.querySelector('form').addEventListener('submit', function() {
+            prixTotalInput.removeAttribute('readonly');
+        });
+    } else {
+        console.error("Le champ 'quantite' ou 'prixTotal' est introuvable.");
+    }
+
+    function updatePrice() {
+        let quantity = parseFloat(quantiteInput.value) || 1;
+        quantity = Math.max(quantity, 1); 
+        const totalPrice = (prixUnitaire * quantity).toFixed(2);
+        prixTotalInput.value = totalPrice;
+    }
 });
 
-function updatePrice() {
-    const quantiteInput = document.querySelector('input[name="pure_commande[quantite]"]');
-    const prixTotalInput = document.getElementById('prix-total');
-    const prixUnitaire = {{ pure_annonce.prix }};
-
-    let quantity = parseInt(quantiteInput.value) || 0;
-    const totalPrice = (prixUnitaire * quantity).toFixed(2);
-    
-    prixTotalInput.value = totalPrice + ' €';
-}
-
 </script>
-
-
     {% endblock %}
 

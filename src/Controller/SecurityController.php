@@ -11,14 +11,8 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
-    #[Route(path: '/user/connexion', name: 'app_login', priority: 10)]
-    public function login(AuthenticationUtils $authenticationUtils): Response
+    #[Route(path: '/user/connexion', name: 'app_login', priority: 10)] public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        $user = $this->getUser();
-        if ($user) {
-            return $this->redirectToRoute('home');
-        }
-
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
 

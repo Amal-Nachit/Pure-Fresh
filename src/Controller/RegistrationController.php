@@ -31,13 +31,11 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $email = $user->getEmail(); // Récupérez l'email saisi dans le formulaire
+            $email = $user->getEmail();
             $existingUser = $entityManager->getRepository(PureUser::class)->findOneBy(['email' => $email]);
 
-            // Vérifiez si l'email existe déjà
             if ($existingUser) {
-                if (!$existingUser->isVerified()) { // Supposons que vous avez une méthode isVerified()
-                    // L'email existe et l'utilisateur n'est pas vérifié
+                if (!$existingUser->isVerified()) {
                     $this->emailVerifier->sendEmailConfirmation(
                         'app_verify_email',
                         $existingUser,
@@ -48,14 +46,12 @@ class RegistrationController extends AbstractController
                             ->htmlTemplate('registration/confirmation_email.html.twig')
                     );
 
-                    return $this->redirectToRoute('check_your_email'); // Rediriger vers la page d'information
+                    return $this->redirectToRoute('check_your_email');
                 } else {
-                    // L'email existe déjà et l'utilisateur est vérifié
                     $this->addFlash('error', 'Cet email est déjà enregistré et vérifié. Vous pouvez vous connecter.');
-                    return $this->redirectToRoute('app_login'); // Rediriger vers la page de connexion
+                    return $this->redirectToRoute('app_login');
                 }
             } else {
-                // Aucun utilisateur existant, procéder à l'inscription
                 $selectedRole = $form->get('role')->getData();
                 $user->setRoles([$selectedRole]);
 
@@ -65,7 +61,6 @@ class RegistrationController extends AbstractController
                 $entityManager->persist($user);
                 $entityManager->flush();
 
-                // Envoyer l'email de confirmation
                 $this->emailVerifier->sendEmailConfirmation(
                     'app_verify_email',
                     $user,
@@ -88,11 +83,9 @@ class RegistrationController extends AbstractController
     #[Route('/user/verifier-mon-email', name: 'app_verify_email')]
     public function verifyUserEmail(Request $request, TranslatorInterface $translator): Response
     {
-        // Essayer d'obtenir l'utilisateur, mais ne pas refuser l'accès s'il n'est pas authentifié.
         $user = $this->getUser();
 
         if (!$user) {
-            // Si l'utilisateur n'est pas authentifié, redirigez-le vers la page de confirmation d'email.
             return $this->redirectToRoute('email_confirme');
         }
 

@@ -15,7 +15,12 @@ class UserDashboardController extends AbstractController
     public function index(): Response
 {
     $user = $this->getUser();
-
+        if ($user->getId()) {
+            if (!$user->isVerified()) {
+                $this->addFlash('verify_email_error', 'Veuillez confirmer votre email avant de vous connecter');
+                return $this->redirectToRoute('app_logout');
+            }
+        }
     if ($user) {
         if (in_array('ROLE_ACHETEUR', $user->getRoles())) {
             return $this->render('dashboard/acheteur.html.twig');

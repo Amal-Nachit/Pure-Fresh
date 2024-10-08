@@ -22,7 +22,7 @@ security:
       lazy: true
       provider: app_user_provider
       custom_authenticator: App\Security\AuthAuthenticator
-      entry_point: form_login # Utiliser le formulaire de connexion comme point d'entrée
+      entry_point: form_login
       logout:
         path: app_logout
       remember_me:
@@ -49,7 +49,7 @@ security:
       lazy: true
       provider: app_user_provider
       custom_authenticator: App\Security\AuthAuthenticator
-      entry_point: form_login # Utiliser le formulaire de connexion comme point d'entrée
+      entry_point: form_login
       logout:
         path: app_logout
       remember_me:
