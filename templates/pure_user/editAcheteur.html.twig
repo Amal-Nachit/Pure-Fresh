@@ -20,36 +20,22 @@
         {% endif %}
 
         <div class="space-y-6">
-            <div>
-                {{ form_label(form.prenom, 'Prénom', {'label_attr': {'class': 'block text-gray-300 text-sm font-semibold mb-1'}}) }}
-                {{ form_widget(form.prenom, {'attr': {'class': 'w-full p-3 bg-gray-700 text-white rounded-lg shadow-md focus:ring-2 focus:ring-yellow-500 focus:outline-none'}}) }}
-            </div>
+            {% for field in form %}
+                {% if field.vars.name != '_token' %}
+                    <div>
+                        {{ form_label(field, null, {'label_attr': {'class': 'block text-gray-300 text-sm font-semibold mb-1'}}) }}
+                        {{ form_widget(field, {'attr': {'class': 'w-full p-3 bg-gray-700 text-white rounded-lg shadow-md focus:ring-2 focus:ring-yellow-500 focus:outline-none'}}) }}
 
-            <div>
-                {{ form_label(form.nom, 'Nom', {'label_attr': {'class': 'block text-gray-300 text-sm font-semibold mb-1'}}) }}
-                {{ form_widget(form.nom, {'attr': {'class': 'w-full p-3 bg-gray-700 text-white rounded-lg shadow-md focus:ring-2 focus:ring-yellow-500 focus:outline-none'}}) }}
-            </div>
-
-            <div>
-                {{ form_label(form.adresse, 'Adresse', {'label_attr': {'class': 'block text-gray-300 text-sm font-semibold mb-1'}}) }}
-                {{ form_widget(form.adresse, {'attr': {'class': 'w-full p-3 bg-gray-700 text-white rounded-lg shadow-md focus:ring-2 focus:ring-yellow-500 focus:outline-none autocomplete-address'}}) }}
-                <div id="suggestions-box" class="suggestions"></div>
-            </div>
-
-            <div>
-                {{ form_label(form.telephone, 'Téléphone', {'label_attr': {'class': 'block text-gray-300 text-sm font-semibold mb-1'}}) }}
-                {{ form_widget(form.telephone, {'attr': {'class': 'w-full p-3 bg-gray-700 text-white rounded-lg shadow-md focus:ring-2 focus:ring-yellow-500 focus:outline-none'}}) }}
-            </div>
-
-            <div>
-                {{ form_label(form.email, 'Email', {'label_attr': {'class': 'block text-gray-300 text-sm font-semibold mb-1'}}) }}
-                {{ form_widget(form.email, {'attr': {'class': 'w-full p-3 bg-gray-700 text-white rounded-lg shadow-md focus:ring-2 focus:ring-yellow-500 focus:outline-none'}}) }}
-            </div>
-
-            <div>
-                {{ form_label(form.password, 'Mot de passe', {'label_attr': {'class': 'block text-gray-300 text-sm font-semibold mb-1'}}) }}
-                {{ form_widget(form.password, {'attr': {'class': 'w-full p-3 bg-gray-700 text-white rounded-lg shadow-md focus:ring-2 focus:ring-yellow-500 focus:outline-none'}}) }}
-            </div>
+                        {% if field.vars.errors|length > 0 %}
+                            <div class="text-red-600">
+                                {% for error in field.vars.errors %}
+                                    <p>{{ error.message }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endfor %}
         </div>
 
         <div class="mt-8">
@@ -60,11 +46,14 @@
         {{ form_end(form) }}
     </div>
 </main>
+
 {% block javascripts %}
     {{ parent() }}
     <script src="{{ asset('../assets/js/adresse.js') }}"></script>
 {% endblock %}
+
 <footer class="bg-lime-900">
     {{ include('Includes/Footer/index.html.twig') }}
 </footer>
 {% endblock %}
+

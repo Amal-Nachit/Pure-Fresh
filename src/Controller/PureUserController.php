@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\DTO\PureUserDTO;
 use App\Entity\PureUser;
 use App\Entity\ResetPasswordRequest;
 use App\Form\PureUserType;
@@ -24,7 +25,7 @@ final class PureUserController extends AbstractController
             'pure_users' => $pureUserRepository->findAll(),
         ]);
     }
-    #[Route('/admin/utilisateur/{id}', name: 'user_show', methods: ['GET'])]
+    #[Route('/admin/utilisateur', name: 'user_show', methods: ['GET'])]
     // #[IsGranted('ROLE_ADMIN')]
     public function show(PureUser $pureUser): Response
     {
@@ -32,49 +33,60 @@ final class PureUserController extends AbstractController
             'pure_user' => $pureUser,
         ]);
     }
-    // #[Route('/user/{id}', name: 'user_show', methods: ['GET'])]
-    // #[IsGranted('ROLE_ACHETEUR')]
-    // #[IsGranted('ROLE_VENDEUR')]
-    // public function showUser(PureUser $pureUser): Response
-    // {
-    //     return $this->render('pure_user/show.html.twig', [
-    //         'pure_user' => $pureUser,
-    //     ]);
-    // }
 
 
-    #[Route('/user/vendeur/{id}/modifier', name: 'user_editVendeur', methods: ['GET', 'POST'])]
-    public function editVendeur(Request $request, PureUser $pureUser, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
+    #[Route('/user/vendeur/modifier', name: 'user_editVendeur', methods: ['GET', 'POST'])]
+    public function editVendeur(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
     {
-        $form = $this->createForm(PureUserType::class, $pureUser);
+        $user = $this->getUser();
+        $userMod = PureUserDTO::createFromUser($user);
+
+        $form = $this->createForm(PureUserType::class, $userMod);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
-            if ($form->isValid()) {
-                $entityManager->flush();
-                $this->addFlash('success', 'Vos informations ont été mises à jour avec succès.');
-                return $this->redirectToRoute('dashboard_mon_compte', [], Response::HTTP_SEE_OTHER);
-            } else {
-                $this->addFlash('error', 'Veuillez renseigner tous les champs.');
+        if ($form->isSubmitted() && $form->isValid()) {
+            $plainPassword = $form->get('password')->getData();
+            $user->setNom($userMod->getNom());
+            $user->setPrenom($userMod->getPrenom());
+            $user->setTelephone($userMod->getTelephone());
+            $user->setEmail($userMod->getEmail());
+            $user->setAdresse($userMod->getAdresse());
+            if (!empty($plainPassword)) {
+                $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
+                $user->setPassword($hashedPassword);
             }
+            
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Vos informations ont été mises à jour avec succès.');
+
+            return $this->redirectToRoute('dashboard_mon_compte', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('pure_user/editVendeur.html.twig', [
-            'pure_user' => $pureUser,
+            'pure_user' => $user,
             'form' => $form,
         ]);
     }
 
     #[IsGranted('ROLE_ACHETEUR')]
-    #[Route('/user/acheteur/{id}/modifier', name: 'user_editAcheteur', methods: ['GET', 'POST'])]
-    public function editAcheteur(Request $request, PureUser $user, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
+    #[Route('/user/acheteur/modifier', name: 'user_editAcheteur', methods: ['GET', 'POST'])]
+    public function editAcheteur(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
     {
-        $form = $this->createForm(PureUserType::class, $user);
+        $user = $this->getUser();
+        $userMod = PureUserDTO::createFromUser($user);
+
+        $form = $this->createForm(PureUserType::class, $userMod);
         $form->handleRequest($request);
+        
         if ($form->isSubmitted() && $form->isValid()) {
-            
             $plainPassword = $form->get('password')->getData();
-            
+            $user->setNom($userMod->getNom());
+            $user->setPrenom($userMod->getPrenom());
+            $user->setTelephone($userMod->getTelephone());
+            $user->setEmail($userMod->getEmail());
+            $user->setAdresse($userMod->getAdresse());
             if (!empty($plainPassword)) {
                 $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
                 $user->setPassword($hashedPassword);
@@ -89,7 +101,7 @@ final class PureUserController extends AbstractController
         }
 
         return $this->render('pure_user/editAcheteur.html.twig', [
-            'pure_user' => $user,
+            'pure_user' => $userMod,
             'form' => $form,
         ]);
     }

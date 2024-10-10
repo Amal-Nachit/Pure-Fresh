@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\PureCommande;
 use App\Entity\PureUser;
 use App\Form\PureStatutType;
 use App\Repository\PureAnnonceRepository;
@@ -17,26 +18,31 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class UserDashboardController extends AbstractController
 {
     #[Route('/', name: '')]
-    public function index(): Response
-{
-    $user = $this->getUser();
-    if ($user instanceof PureUser) {
-        if ($user->getId()) {
-            if (!$user->isVerified()) {
+    public function index(PureCommandeRepository $pureCommandeRepository): Response
+    {
+        $user = $this->getUser();
+
+        if ($user instanceof PureUser) {
+            if ($user->getId() && !$user->isVerified()) {
                 $this->addFlash('verify_email_error', 'Veuillez confirmer votre email avant de vous connecter');
                 return $this->redirectToRoute('app_logout');
             }
+
+            if (in_array('ROLE_ACHETEUR', $user->getRoles())) {
+                // Récupérer les achats de l'acheteur
+                $achats = $pureCommandeRepository->findBy(['pureUser' => $user]);
+
+                return $this->render('dashboard/acheteur.html.twig', [
+                    'achats' => $achats, // Passer la variable 'achats' ici
+                ]);
+            } elseif (in_array('ROLE_VENDEUR', $user->getRoles())) {
+                return $this->render('dashboard/vendeur.html.twig');
+            }
         }
+
+        return $this->render('home/index.html.twig');
     }
-    if ($user) {
-        if (in_array('ROLE_ACHETEUR', $user->getRoles())) {
-            return $this->render('dashboard/acheteur.html.twig');
-        } elseif (in_array('ROLE_VENDEUR', $user->getRoles())) {
-            return $this->render('dashboard/vendeur.html.twig');
-        }
-    }
-    return $this->render('home/index.html.twig');
-}
+
 
     #[IsGranted('ROLE_VENDEUR')]
     #[Route('/mes-annonces', name: '_mes_annonces')]
@@ -66,6 +72,28 @@ class UserDashboardController extends AbstractController
         return $this->redirectToRoute('home');
     }
 
+    #[Route('/update-status/{id}', name: '_route_name_for_updating_status', methods: ['POST'])]
+    public function updateStatus(
+        Request $request,
+        PureCommande $vente,
+        EntityManagerInterface $entityManager
+    ): Response {
+        $form = $this->createForm(PureStatutType::class, $vente);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($vente);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Le statut de la commande a été mis à jour.');
+        } else {
+            $this->addFlash('error', 'Une erreur est survenue lors de la mise à jour du statut.');
+        }
+
+        return $this->redirectToRoute('dashboard_mes_ventes');
+    }
+
+
 
     #[IsGranted('ROLE_VENDEUR')]
     #[Route('/mes-ventes', name: '_mes_ventes')]
@@ -73,6 +101,7 @@ class UserDashboardController extends AbstractController
         PureAnnonceRepository $pureAnnonceRepository,
         PureCommandeRepository $pureCommandeRepository,
         PureStatutRepository $pureStatutRepository,
+        EntityManagerInterface $entityManager,
         Request $request
     ): Response {
         $user = $this->getUser();
@@ -80,25 +109,16 @@ class UserDashboardController extends AbstractController
             $annonces = $pureAnnonceRepository->findBy(['pureUser' => $user]);
             $annonceIds = array_map(fn($annonce) => $annonce->getId(), $annonces);
             $ventes = $pureCommandeRepository->findBy(['pureAnnonce' => $annonceIds]);
-            
-            // Récupérer tous les statuts
+
             $statuts = $pureStatutRepository->findAll();
-            
+
             $forms = [];
             foreach ($ventes as $vente) {
-                $form = $this->createForm(PureStatutType::class, null, [
-                    'statuts' => $statuts,
+                $formName = 'statut_form_' . $vente->getId();
+                $form = $this->createForm(PureStatutType::class, $vente, [
+                    'action' => $this->generateUrl('dashboard_route_name_for_updating_status', ['id' => $vente->getId()]),
+                    'method' => 'POST',
                 ]);
-                // dd($form);
-                
-                $form->handleRequest($request);
-                if ($form->isSubmitted() && $form->isValid()) {
-                    $statut = $form->get('statut')->getData();
-                    $vente->setStatut($statut);
-                    $entityManager = $this->getDoctrine()->getManager();
-                    $entityManager->persist($vente);
-                    $entityManager->flush();
-                }
 
                 $forms[$vente->getId()] = $form->createView();
             }
@@ -106,26 +126,30 @@ class UserDashboardController extends AbstractController
             return $this->render('dashboard/mes_ventes.html.twig', [
                 'ventes' => $ventes,
                 'forms' => $forms,
+                'statuts' => $statuts
             ]);
         }
 
         return $this->redirectToRoute('home');
     }
 
+  
 
     #[IsGranted('ROLE_ACHETEUR')]
-    #[Route('/mes-achats', name: '_mes_achats')]
-    public function mesachats(PureCommandeRepository $pureCommandeRepository): Response
-    {
-        $user = $this->getUser();
-        if ($user && in_array('ROLE_ACHETEUR', $user->getRoles(), true)) {
-            $achats = $pureCommandeRepository->findBy(['pureUser' => $user]);
-            return $this->render('dashboard/mes_achats.html.twig', [
-                'achats' => $achats
-            ]);
-        }
-        return $this->redirectToRoute('home');
+    #[Route('/mes-achats', name: '_mes_achats')]public function mesachats(PureCommandeRepository $pureCommandeRepository): Response
+{
+    $user = $this->getUser();
+    if ($user && in_array('ROLE_ACHETEUR', $user->getRoles(), true)) {
+        $achats = $pureCommandeRepository->findBy(['pureUser' => $user]);
+        return $this->render('dashboard/mes_achats.html.twig', [
+            'achats' => $achats
+        ]);
     }
+    return $this->redirectToRoute('home');
+}
+
+
+
     #[IsGranted('ROLE_VENDEUR')]
     #[Route('/mon-compte', name: '_mon_compte')]
     public function monCompte(PureUser $user): Response

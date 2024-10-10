@@ -100,7 +100,7 @@ class RegistrationFormType extends AbstractType
                             'message' => 'Entrez un mot de passe',
                         ]),
                         new Length([
-                            'min' => 6,
+                            'min' => 8,
                             'minMessage' => 'Ton mot de passe doit contenir au moins {{ limit }} caractères',
                             'max' => 4096,
                         ]),

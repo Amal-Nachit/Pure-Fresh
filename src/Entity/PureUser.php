@@ -13,8 +13,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PureUserRepository::class)]
-// #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
-// #[UniqueEntity(fields: ['email'], message: 'Il existe déjà un compte avec cette adresse email.')]
+#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+#[UniqueEntity(fields: ['email'], message: 'Il existe déjà un compte avec cette adresse email.')]
 
 class PureUser implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -24,35 +24,35 @@ class PureUser implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
-    // #[Assert\Email(message: 'L\'adresse email n\'est pas valide.')]
-    // #[Assert\NotBlank(message: 'L\'email ne doit pas être vide.')]
+    #[Assert\Email(message: 'L\'adresse email n\'est pas valide.')]
+    #[Assert\NotBlank(message: 'L\'email ne doit pas être vide.')]
     private ?string $email = null;
 
     #[ORM\Column]
     private array $roles = [];
 
     #[ORM\Column]
-    // #[Assert\NotBlank(message: 'Le mot de passe ne doit pas être vide.')]
-    // #[Assert\Length(min: 6, minMessage: 'Le mot de passe doit contenir au moins {{ limit }} caractères.')]
+    #[Assert\NotBlank(message: 'Le mot de passe ne doit pas être vide.')]
+    #[Assert\Length(min: 6, minMessage: 'Le mot de passe doit contenir au moins {{ limit }} caractères.')]
     private ?string $password = null;
 
     private $plainPassword;
 
     #[ORM\Column(length: 255)]
-    // #[Assert\NotBlank(message: 'Le prénom ne doit pas être vide.')]
+    #[Assert\NotBlank(message: 'Le prénom ne doit pas être vide.')]
     private ?string $prenom = null;
 
     #[ORM\Column(length: 255)]
-    // #[Assert\NotBlank(message: 'Le nom ne doit pas être vide.')]
+    #[Assert\NotBlank(message: 'Le nom ne doit pas être vide.')]
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
-    // #[Assert\NotBlank(message: 'Le numéro de téléphone ne doit pas être vide.')]
-    // #[Assert\Regex(pattern: '/^\+?[1-9]\d{1,14}$/', message: 'Numéro de téléphone invalide.')]
+    #[Assert\NotBlank(message: 'Le numéro de téléphone ne doit pas être vide.')]
+    #[Assert\Regex(pattern: '/^(\+33|0)[1-9](\d{2}){4}$/', message: 'Numéro de téléphone invalide.')]
     private ?string $telephone = null;
 
     #[ORM\Column(length: 255)]
-    // #[Assert\NotBlank(message: 'L\'adresse ne doit pas être vide.')]
+    #[Assert\NotBlank(message: 'L\'adresse ne doit pas être vide.')]
     private ?string $adresse = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
@@ -82,6 +82,13 @@ class PureUser implements UserInterface, PasswordAuthenticatedUserInterface
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     public function getEmail(): ?string

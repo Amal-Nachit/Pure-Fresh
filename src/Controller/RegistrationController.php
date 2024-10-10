@@ -85,8 +85,15 @@ class RegistrationController extends AbstractController
     {
         $user = $this->getUser();
 
+        // Vérifier si l'utilisateur est connecté
         if (!$user) {
             return $this->redirectToRoute('email_confirme');
+        }
+
+        // Vérifier si l'utilisateur est déjà vérifié
+        if ($user instanceof PureUser && $user
+        ->isVerified()) {
+            return $this->redirectToRoute('email_deja_verifie');
         }
 
         try {
@@ -98,6 +105,7 @@ class RegistrationController extends AbstractController
 
         return $this->redirectToRoute('email_confirme');
     }
+
 
 
     #[Route('/user/email-confirme', name: 'email_confirme')]

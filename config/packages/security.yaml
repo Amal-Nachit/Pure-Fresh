@@ -12,13 +12,27 @@ security:
         property: email
 
   firewalls:
+    home_area:
+      pattern: ^/
+      lazy: true
+      provider: app_user_provider
+      custom_authenticator: App\Security\AuthAuthenticator
+      entry_point: security.authenticator.form_login.user_area
+      logout:
+        path: app_logout
+      remember_me:
+        secret: "%kernel.secret%"
+        lifetime: 604800
+        path: /
+      security: true
+
+
     user_area:
       pattern: ^/user
       form_login:
         login_path: app_login
         check_path: app_login
         default_target_path: dashboard
-
       lazy: true
       provider: app_user_provider
       custom_authenticator: App\Security\AuthAuthenticator
@@ -62,6 +76,7 @@ security:
   # Note: Only the *first* access control that matches will be used
   access_control:
     - { path: ^/admin/dashboard, roles: ROLE_ADMIN }
+    - { path: ^/home, roles: ROLE_USER }
 
 when@test:
   security:

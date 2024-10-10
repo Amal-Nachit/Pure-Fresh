@@ -25,7 +25,7 @@ class PureCommandeType extends AbstractType
     ])
             ->add('total', TextType::class, [
                 'label' => 'Prix total',
-                'attr' => ['readonly' => true], // pour que le champ soit en lecture seule
+                'attr' => ['readonly' => true],
             ]);
     ;}
 

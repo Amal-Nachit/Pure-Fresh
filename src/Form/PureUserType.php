@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\PureUser;
+use App\DTO\PureUserDTO;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -83,7 +83,7 @@ class PureUserType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => PureUser::class,
+            'data_class' => PureUserDTO::class,
         ]);
     }
 }
