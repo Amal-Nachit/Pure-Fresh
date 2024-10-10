@@ -4,14 +4,14 @@ namespace App\Controller;
 
 use App\Entity\PureUser;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
-    #[Route(path: '/user/connexion', name: 'app_login', priority: 10)] public function login(AuthenticationUtils $authenticationUtils): Response
+    #[Route(path: '/user/connexion', name: 'app_login', priority: 10)] 
+    public function login(AuthenticationUtils $authenticationUtils): Response
     {
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
@@ -42,7 +42,6 @@ class SecurityController extends AbstractController
     #[Route(path: '/user/déconnexion', name: 'app_logout')]
     public function logout(): Response
     {
-        // Le logout est géré par Symfony
         return $this->redirectToRoute('app_login');
     }
 

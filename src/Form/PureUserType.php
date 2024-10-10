@@ -25,6 +25,7 @@ class PureUserType extends AbstractType
                 'label_attr' => [
                     'class' => 'w-full block text-yellow-400 font-semibold mb-2'
                 ],
+                'required' => false
             ])
             ->add('password', PasswordType::class, [
                'attr' => [
@@ -46,6 +47,7 @@ class PureUserType extends AbstractType
                 'label_attr' => [
                     'class' => 'block text-yellow-400 font-semibold mb-2'
                 ],
+                'required' => false
             ])
             ->add('nom', TextType::class, [
                 'attr' => [

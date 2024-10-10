@@ -1,17 +1,27 @@
 {% extends 'dashboard/vendeur.html.twig' %}
 
 {% block content %}
-<a href="{{ path('dashboard_mes_annonces') }}" class="inline-block mb-4 bg-gray-200 text-gray-800 font-semibold p-2 rounded-full hover:bg-gray-300 transition duration-300">
-    <svg class="w-5 h-5 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7" />
-    </svg>
-</a>
+<div class="container mx-auto px-4 py-8">
+    <div class="mb-6 flex items-center justify-between">
+        <a href="{{ path('dashboard_mes_annonces') }}" class="flex items-center text-yellow-400 hover:text-yellow-300 transition duration-300">
+            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            <span class="text-lg font-semibold">Retour aux annonces</span>
+        </a>
+    </div>
 
-    <h1 class="text-2xl font-bold mb-4 text-yellow-400">Modifier le produit</h1>
+    <div class="bg-gray-800 rounded-lg shadow-xl p-8">
+        <h1 class="text-3xl font-bold mb-6 text-yellow-400 border-b border-yellow-400 pb-2">Modifier le produit</h1>
 
-    {{ include('pure_annonce/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+        <div class="mb-8">
+            {{ include('pure_annonce/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+        </div>
 
-
-
-    {{ include('pure_annonce/_delete_form.html.twig') }}
+        <div class="mt-12 pt-4 border-t border-gray-700">
+            <h2 class="text-xl font-semibold mb-4 text-red-500">Zone de danger</h2>
+            {{ include('pure_annonce/_delete_form.html.twig') }}
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -99,6 +99,8 @@ final class PureAnnonceController extends AbstractController
                 $pureAnnonce->setImage('default.jpg');
             }
 
+            $pureAnnonce->computeSlug($slugger);
+
             $entityManager->persist($pureAnnonce);
             $entityManager->flush();
 
@@ -112,7 +114,7 @@ final class PureAnnonceController extends AbstractController
     }
 
 
-    #[Route('annonce/{id}', name: 'annonce_show', methods: ['GET', 'POST'])]
+    #[Route('annonce/{slug}', name: 'annonce_show', methods: ['GET', 'POST'])]
     public function show(PureAnnonce $pureAnnonce, Request $request, EntityManagerInterface $entityManager): Response
     {
         $commande = new PureCommande();
@@ -120,18 +122,20 @@ final class PureAnnonceController extends AbstractController
 
         $form = $this->createForm(PureCommandeType::class, $commande);
         $form->handleRequest($request);
-        if ($form->isSubmitted()) {
-            $commande->setPureUser($this->getUser());
+        if ($form->isSubmitted() && $form->isValid()) {
 
+            $commande->setPureUser($this->getUser());
             $commande->setDateCommande((new \DateTime())->format('d-m-Y H:i:s'));
 
             $statut = $entityManager->getRepository(PureStatut::class)->find(1);
             $commande->setStatut($statut);
+
             $entityManager->persist($commande);
             $entityManager->flush();
+
             $this->addFlash('success', 'Votre commande a été passée avec succès !');
 
-            return $this->redirectToRoute('annonce_show', ['id' => $pureAnnonce->getId()]);
+            return $this->redirectToRoute('annonce_show', ['slug' => $pureAnnonce->getSlug()]);
         }
 
         return $this->render('pure_annonce/show.html.twig', [
@@ -139,6 +143,7 @@ final class PureAnnonceController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
 
 
 

@@ -7,11 +7,11 @@
 {% endblock %}
 
 {% block body %}
-{# {% if error %}
+{% if error %}
             <div class="bg-red-500 text-white p-4 rounded-lg mb-6">
                 {{ error.messageKey|trans(error.messageData, 'security') }}
             </div>
-        {% endif %} #}
+        {% endif %}
 <main class="bg-lime-900 min-h-screen flex flex-col">
 <div class="bg-gray-700 bg-opacity-40">
     <header>

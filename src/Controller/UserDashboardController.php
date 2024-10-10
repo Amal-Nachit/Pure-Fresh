@@ -29,11 +29,11 @@ class UserDashboardController extends AbstractController
             }
 
             if (in_array('ROLE_ACHETEUR', $user->getRoles())) {
-                // Récupérer les achats de l'acheteur
+
                 $achats = $pureCommandeRepository->findBy(['pureUser' => $user]);
 
                 return $this->render('dashboard/acheteur.html.twig', [
-                    'achats' => $achats, // Passer la variable 'achats' ici
+                    'achats' => $achats,
                 ]);
             } elseif (in_array('ROLE_VENDEUR', $user->getRoles())) {
                 return $this->render('dashboard/vendeur.html.twig');
@@ -72,7 +72,7 @@ class UserDashboardController extends AbstractController
         return $this->redirectToRoute('home');
     }
 
-    #[Route('/update-status/{id}', name: '_route_name_for_updating_status', methods: ['POST'])]
+    #[Route('/update-statut/{id}', name: '_update_statut', methods: ['POST'])]
     public function updateStatus(
         Request $request,
         PureCommande $vente,
@@ -116,7 +116,7 @@ class UserDashboardController extends AbstractController
             foreach ($ventes as $vente) {
                 $formName = 'statut_form_' . $vente->getId();
                 $form = $this->createForm(PureStatutType::class, $vente, [
-                    'action' => $this->generateUrl('dashboard_route_name_for_updating_status', ['id' => $vente->getId()]),
+                    'action' => $this->generateUrl('dashboard_update_statut', ['id' => $vente->getId()]),
                     'method' => 'POST',
                 ]);
 

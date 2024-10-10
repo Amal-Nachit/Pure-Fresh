@@ -1,33 +1,43 @@
 {% extends 'dashboard/vendeur.html.twig' %}
 {% block content %}
 <div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-extrabold mb-6 text-yellow-500">Mes Annonces</h1>
+    <h1 class="text-3xl font-extrabold mb-8 text-yellow-500">Mes Annonces</h1>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
         {% for data in annoncesData %}
-            <div class="p-4 bg-gray-900 rounded-xl shadow-lg hover:shadow-2xl transition duration-300">
-                <h2 class="text-xl text-yellow-400 font-semibold mb-2">{{ data.annonce.nom }}</h2>
-                <div class="mb-4">
-                    <img src="{{ asset(data.imagePath) }}" alt="{{ data.annonce.nom }}" class="w-full h-32 object-cover rounded-lg">
-                    <p class="text-gray-300"><span class="font-bold text-white">Description :</span> {{ data.annonce.description | nl2br }}</p>
-                    <p class="text-gray-300"><span class="font-bold text-white">Date de publication :</span> {{ data.annonce.dateCreation ? data.annonce.dateCreation|date('d M Y, H:i') : 'Non publiée' }}</p>
+            <div class="bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300 flex flex-col">
+                <div class="relative">
+                    <img src="{{ asset(data.imagePath) }}" alt="{{ data.annonce.nom }}" class="w-full h-48 object-cover">
+                    <div class="absolute top-0 right-0 bg-yellow-500 text-black px-2 py-1 m-2 rounded-md text-sm font-bold">
+                        {{ data.annonce.prix }} €
+                    </div>
                 </div>
-
-                <div class="mb-6">
-                    <span class="text-gray-300 font-bold">Statut :</span>
-                    {% if data.annonce.approuvee %}
-                        <span class="text-green-500 font-bold">Approuvée</span>
-                    {% else %}
-                        <span class="text-red-500 font-bold">En attente d'approbation</span>
-                    {% endif %}
+                <div class="p-4 flex-grow">
+                    <h2 class="text-xl text-yellow-400 font-semibold mb-2 truncate">{{ data.annonce.nom }}</h2>
+                    <p class="text-gray-300 text-sm mb-2 line-clamp-2">{{ data.annonce.description | nl2br }}</p>
+                    <p class="text-gray-400 text-xs mb-4">Publié le {{ data.annonce.dateCreation ? data.annonce.dateCreation|date('d M Y') : 'Non publiée' }}</p>
+                    <div class="mb-4">
+                        <span class="text-sm font-bold 
+                            {% if data.annonce.approuvee %}
+                                text-green-500
+                            {% else %}
+                                text-red-500
+                            {% endif %}
+                        ">
+                            {{ data.annonce.approuvee ? 'Approuvée' : 'En attente d\'approbation' }}
+                        </span>
+                    </div>
                 </div>
-                
-                <a href="{{ path('annonce_edit', {'id': data.annonce.id}) }}" class="block w-full text-center py-2 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-400 transition duration-300">Modifier</a>
+                <div class="px-4 pb-4">
+                    <a href="{{ path('annonce_edit', {'id': data.annonce.id}) }}" class="block w-full text-center py-2 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-400 transition duration-300">Modifier</a>
+                </div>
             </div>
         {% else %}
-            <p class="col-span-3 text-center text-white text-lg">Vous n'avez pas encore d'annonces.</p>
+            <p class="col-span-full text-center text-white text-lg">Vous n'avez pas encore d'annonces.</p>
         {% endfor %}
     </div>
-    <a href="{{ path('annonce_new') }}" class="mt-6 inline-block py-2 px-4 bg-yellow-500 text-black rounded-lg hover:bg-yellow-400 transition duration-300">Créer une nouvelle annonce</a>
+    <div class="mt-8 text-center">
+        <a href="{{ path('annonce_new') }}" class="inline-block py-3 px-6 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-400 transition duration-300">Créer une nouvelle annonce</a>
+    </div>
 </div>
 {% endblock %}

@@ -13,12 +13,11 @@
         {{ message }}
     </div>
 {% endfor %}
-
                 <div class="flex justify-center mb-6">
                     {% if pure_annonce.image %}
                         <img src="{{ '/uploads/images/' ~ pure_annonce.image }}" alt="{{ pure_annonce.nom }}" class="w-full h-auto object-cover rounded-xl shadow-lg">
                     {% else %}
-                        <img src="/path/to/default/image.jpg" alt="Image par défaut" class="w-full h-auto object-cover rounded-xl shadow-lg">
+                        <img src="/uploads/images/default.jpg" alt="Image par défaut" class="w-full h-auto object-cover rounded-xl shadow-lg">
                     {% endif %}
                 </div>
 

@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\UX\Turbo\Attribute\Broadcast;
 
 #[ORM\Entity(repositoryClass: PureAnnonceRepository::class)]
@@ -20,6 +21,9 @@ class PureAnnonce
 
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
+
+    #[ORM\Column(length: 255, unique: true)]
+    private ?string $slug = null;
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
@@ -53,7 +57,7 @@ class PureAnnonce
     public function __construct()
     {
         $this->dateCreation = new \DateTime('now', new \DateTimeZone('Europe/Paris'));
-        $this->commande = new ArrayCollection();    
+        $this->commande = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -71,6 +75,25 @@ class PureAnnonce
         $this->nom = $nom;
 
         return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): static
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function computeSlug(SluggerInterface $slugger)
+    {
+        if (!$this->slug || '-' === $this->slug) {
+            $this->slug = (string) $slugger->slug((string) $this->nom)->lower();
+        }
     }
 
     public function getDescription(): ?string

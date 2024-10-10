@@ -31,19 +31,19 @@
                 {% for pure_annonce in pure_annonces %}
                     <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300">
                         <div class="relative mb-4">
-                            <a href="{{ path('annonce_show', {'id': pure_annonce.id}) }}" class="block">
+                            <a href="{{ path('annonce_show', {'slug': pure_annonce.slug}) }}" class="block">
                                 <img src="{{ '/uploads/images/' ~ pure_annonce.image }}" alt="{{ pure_annonce.nom }}" class="w-full h-48 object-cover rounded-t-lg">
                                 <div class="absolute bottom-2 right-2 bg-lime-600 text-white text-xs px-2 py-1 rounded">Nouveau</div>
                             </a>
                         </div>
                         <div class="px-4 py-2">
-                            <a href="{{ path('annonce_show', {'id': pure_annonce.id}) }}" class="block">
+                            <a href="{{ path('annonce_show', {'slug': pure_annonce.slug}) }}" class="block">
                                 <h2 class="text-xl font-semibold text-lime-900 mb-2">{{ pure_annonce.nom }}</h2>
                             </a>
                             <p class="text-gray-600 text-sm mb-4">{{ pure_annonce.description|slice(0, 100) }}...</p>
                             <p class="text-gray-500 text-xs">{{ pure_annonce.dateCreation ? pure_annonce.dateCreation|date('d-m-Y') : '' }}</p>
                             <div class="mt-4 flex justify-between items-center">
-                                <a href="{{ path('annonce_show', {'id': pure_annonce.id}) }}" class="bg-lime-600 text-white text-sm py-2 px-4 rounded hover:bg-lime-700 transition-colors duration-300">Voir Détails</a>
+                                <a href="{{ path('annonce_show', {'slug': pure_annonce.slug}) }}" class="bg-lime-600 text-white text-sm py-2 px-4 rounded hover:bg-lime-700 transition-colors duration-300">Voir Détails</a>
                                 <span class="text-lime-900 font-semibold">{{ pure_annonce.prix }} €</span>
                             </div>
                         </div>
