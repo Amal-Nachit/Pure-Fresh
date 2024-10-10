@@ -36,4 +36,8 @@
         </div>
     </div>
     
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('../assets/js/adresse.js') }}"></script>
+{% endblock %}
 {% endblock %}
