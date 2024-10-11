@@ -21,7 +21,6 @@
         </div>
     </header>
 
-    <!-- Main Content -->
     <main class="flex-1 p-6">
         <h1 class="text-3xl font-bold mb-6 text-center">Annonces à approuver</h1>
         <div class="mb-4 text-center">
@@ -48,7 +47,7 @@
                                     <a href="{{ path('user_show', {'id': annonce.pureUser.id}) }}" class="hover:underline">{{ annonce.pureUser.prenom }} {{ annonce.pureUser.nom }}</a>
                                 </td>
                                 <td class="py-3 px-4 text-sm text-gray-200">
-                                    <a href="{{ path('annonce_show', {'id': annonce.id}) }}" class="hover:underline">{{ annonce.nom }}</a>
+                                    <a href="{{ path('annonce_show', {'slug': annonce.slug}) }}" class="hover:underline">{{ annonce.nom }}</a>
                                 </td>
                                 <td class="py-3 px-4 text-sm text-gray-200">{{ annonce.description }}</td>
                                 <td class="py-3 px-4 text-sm text-gray-200">{{ annonce.dateCreation ? annonce.dateCreation|date('d-m-Y') : '' }}</td>

@@ -12,71 +12,44 @@ security:
         property: email
 
   firewalls:
-    home_area:
+    admin_area:
+        pattern: ^/admin
+        lazy: true
+        provider: app_user_provider
+        custom_authenticator: App\Security\AdminAuthenticator
+        entry_point: App\Security\AdminAuthenticator
+        logout:
+            path: admin_logout
+        remember_me:
+            secret: "%kernel.secret%"
+            lifetime: 604800
+            path: /admin
+
+    main:
       pattern: ^/
       lazy: true
       provider: app_user_provider
       custom_authenticator: App\Security\AuthAuthenticator
-      entry_point: security.authenticator.form_login.user_area
+      entry_point: App\Security\AuthAuthenticator
       logout:
         path: app_logout
       remember_me:
         secret: "%kernel.secret%"
         lifetime: 604800
         path: /
-      security: true
 
-
-    user_area:
-      pattern: ^/user
-      form_login:
-        login_path: app_login
-        check_path: app_login
-        default_target_path: dashboard
-      lazy: true
-      provider: app_user_provider
-      custom_authenticator: App\Security\AuthAuthenticator
-      entry_point: form_login
-      logout:
-        path: app_logout
-      remember_me:
-        secret: "%kernel.secret%"
-        lifetime: 604800
-        path: /
-      security: true
-      # by default, the feature is enabled by checking a checkbox in the
-      # login form, uncomment the following line to always enable it.
-      #always_remember_me: true
-
-      # activate different ways to authenticate
-      # https://symfony.com/doc/current/security.html#the-firewall
-
-      # https://symfony.com/doc/current/security/impersonating_user.html
-      # switch_user: true
-    admin_area:
-      pattern: ^/admin
-      form_login:
-        login_path: admin_login
-        check_path: admin_login
-        default_target_path: admin_dashboard
-
-      lazy: true
-      provider: app_user_provider
-      custom_authenticator: App\Security\AuthAuthenticator
-      entry_point: form_login
-      logout:
-        path: app_logout
-      remember_me:
-        secret: "%kernel.secret%"
-        lifetime: 604800
-        path: /
-      security: true
-
-  # Easy way to control access for large sections of your site
-  # Note: Only the *first* access control that matches will be used
   access_control:
+    - { path: ^/admin/connexion, roles: PUBLIC_ACCESS }
     - { path: ^/admin/dashboard, roles: ROLE_ADMIN }
-    - { path: ^/home, roles: ROLE_USER }
+    - { path: ^/connexion, roles: PUBLIC_ACCESS }
+    - { path: ^/user, roles: ROLE_USER }
+    - { path: ^/, roles: PUBLIC_ACCESS }
+  
+  role_hierarchy:
+        ROLE_ADMIN: [ROLE_VENDEUR, ROLE_ACHETEUR]
+        ROLE_VENDEUR: ROLE_USER
+        ROLE_ACHETEUR: ROLE_USER
+
 
 when@test:
   security:

@@ -47,13 +47,11 @@
                 const statusBadge = card.querySelector('[data-status-badge]');
                 const borderDiv = card.querySelector('[data-border]');
                 
-                // Remove all possible color classes
                 Object.values(statusColors).forEach(colors => {
                     statusBadge.classList.remove(colors.bg, colors.text);
                     borderDiv.classList.remove(colors.border);
                 });
 
-                // Add new color classes
                 if (statusColors[statusId]) {
                     statusBadge.classList.add(statusColors[statusId].bg, statusColors[statusId].text);
                     borderDiv.classList.add(statusColors[statusId].border);
@@ -76,14 +74,12 @@
                 }, 3000);
             }
 
-            // Initial setup
             document.querySelectorAll('.vente-card').forEach(card => {
                 const statusId = card.dataset.statutId;
                 const statusText = card.querySelector('[data-status-badge]').textContent.trim();
                 updateCardAppearance(card, statusId, statusText);
             });
 
-            // Form submission
             document.querySelectorAll('.update-status-form').forEach(form => {
                 form.addEventListener('submit', function(e) {
                     e.preventDefault();
@@ -94,28 +90,26 @@
                     const newStatusText = statusSelect.options[statusSelect.selectedIndex].text;
 
                     fetch(form.action, {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            updateCardAppearance(card, newStatusId, newStatusText);
+    method: 'POST',
+    body: formData
+})
+.then(response => response.json())
+.then(data => {
+    if (data.success) {
+        updateCardAppearance(card, data.newStatusId, data.newStatusText);
+        card.classList.add('scale-105');
+        setTimeout(() => card.classList.remove('scale-105'), 300);
+        showNotification(data.message, 'success');
+    } else {
+        console.error('Erreur lors de la mise à jour du statut:', data.message);
+        showNotification(data.message, 'error');
+    }
+})
+.catch(error => {
+    console.error('Erreur:', error);
+    showNotification('Une erreur est survenue', 'error');
+});
 
-                            // Animation effect
-                            card.classList.add('scale-105');
-                            setTimeout(() => card.classList.remove('scale-105'), 300);
-
-                            showNotification('Statut mis à jour avec succès !');
-                        } else {
-                            console.error('Erreur lors de la mise à jour du statut');
-                            showNotification('Erreur lors de la mise à jour du statut', 'error');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Erreur:', error);
-                        showNotification('Une erreur est survenue', 'error');
-                    });
                 });
             });
         });

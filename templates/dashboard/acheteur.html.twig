@@ -11,22 +11,16 @@
         <h1 class="text-3xl sm:text-4xl font-bold text-yellow-400 mb-6">Tableau de bord</h1>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-
             <section class="bg-lime-800 p-6 rounded-lg shadow-lg">
                 <h2 class="text-2xl font-bold text-yellow-400 mb-4">Mes commandes</h2>
                 <ul class="text-white space-y-4">
+                    {% for commande in commandes %}
                     <li class="flex justify-between items-center p-4 bg-gray-700 rounded-lg shadow-md">
-                        <span>Commande #12345</span>
-                        <span class="text-yellow-400">Livrée</span>
+                        <span>Commande #{{ commande.id }}</span>
+                        <span id="statut-commande-{{ commande.id }}" class="text-yellow-400">{{ commande.statut.intitule }}</span>
+                        <button onclick="openCommandeModal({{ commande.id }})" class="text-blue-400 hover:underline">Détails</button>
                     </li>
-                    <li class="flex justify-between items-center p-4 bg-gray-700 rounded-lg shadow-md">
-                        <span>Commande #67890</span>
-                        <span class="text-yellow-400">En cours</span>
-                    </li>
-                    <li class="flex justify-between items-center p-4 bg-gray-700 rounded-lg shadow-md">
-                        <span>Commande #54321</span>
-                        <span class="text-yellow-400">Annulée</span>
-                    </li>
+                    {% endfor %}
                 </ul>
             </section>
 
@@ -44,7 +38,72 @@
         </div>
     </div>
 </main>
+
+<div id="commandeModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3 text-center" id="modalContent">
+        </div>
+    </div>
+</div>
+
 <footer class="bg-lime-900">
     {{ include('Includes/Footer/index.html.twig') }}
 </footer>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+    function openCommandeModal(commandeId) {
+        fetch(`{{ path('dashboard_commande_details', {'id': 'COMMANDE_ID'}) }}`.replace('COMMANDE_ID', commandeId))
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('modalContent').innerHTML = html;
+                document.getElementById('commandeModal').classList.remove('hidden');
+            });
+    }
+
+    function closeCommandeModal() {
+        document.getElementById('commandeModal').classList.add('hidden');
+    }
+
+    function calculateTotal() {
+        const quantite = document.getElementById('quantite').value;
+        const prixUnitaire = document.getElementById('prixUnitaire').value;
+        const total = quantite * prixUnitaire;
+        document.getElementById('total').value = total.toFixed(2);
+    }
+
+    {% for commande in commandes %}
+        function updateStatut{{ commande.id }}() {
+            fetch('{{ path('dashboard_commande_statut', {'id': commande.id}) }}')
+                .then(response => response.json())
+                .then(data => {
+                    const statutElement = document.getElementById('statut-commande-{{ commande.id }}');
+                    if (statutElement) {
+                        statutElement.textContent = data.statusText;
+                        statutElement.className = getStatusColor(data.statusText);
+                    }
+                })
+                .catch(error => console.error('Erreur:', error));
+        }
+    
+        setInterval(updateStatut{{ commande.id }}, 30000);
+    {% endfor %}
+
+    function getStatusColor(status) {
+        switch(status.toLowerCase()) {
+            case 'En attente':
+                return 'text-yellow-400';
+            case 'En cours de préparation':
+                return 'text-blue-400';
+            case 'Prête':
+                return 'text-green-400';
+            case 'Annulée':
+                return 'text-red-400';
+            default:
+                return 'text-gray-400';
+        }
+    }
+    </script>
 {% endblock %}

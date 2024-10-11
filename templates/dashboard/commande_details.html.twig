@@ -1,0 +1,49 @@
+<h2 class="text-2xl font-bold text-gray-900 mb-4">Détails de la commande #{{ commande.id }}</h2>
+
+<form action="{{ path('dashboard_modifier_quantite', {'id': commande.id}) }}" method="post" class="space-y-4" onsubmit="return validateForm()">
+    <div class="text-left">
+        <p><strong>Date de commande :</strong> {{ commande.dateCommande|date('d/m/Y') }}</p>
+        <p><strong>Statut :</strong> <span id="statut-modal-{{ commande.id }}">{{ commande.statut.intitule }}</span></p>
+        <p><strong>Produit :</strong> {{ commande.pureAnnonce.nom }}</p>
+    </div>
+
+    <div>
+        <label for="quantite" class="block text-sm font-medium text-gray-700">Quantité :</label>
+        <input type="number" id="quantite" name="quantite" value="{{ commande.quantite }}" min="1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" {% if commande.statut.intitule != 'En attente' %}readonly{% endif %} onchange="calculateTotal()">
+    </div>
+
+    <div>
+        <label for="prixUnitaire" class="block text-sm font-medium text-gray-700">Prix unitaire :</label>
+        <input type="number" id="prixUnitaire" name="prixUnitaire" value="{{ commande.pureAnnonce.prix }}" step="0.01" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" readonly>
+    </div>
+
+    <div>
+        <label for="total" class="block text-sm font-medium text-gray-700">Prix total :</label>
+        <input type="number" id="total" name="total" value="{{ commande.total }}" step="0.01" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" readonly>
+    </div>
+
+    {% if commande.statut.intitule == 'En attente' %}
+        <div>
+            <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">Modifier</button>
+        </div>
+    {% endif %}
+</form>
+<div id="notification" class="fixed bottom-4 right-4 p-4 rounded-lg shadow-lg hidden"></div>
+
+<button onclick="closeCommandeModal()" class="mt-4 w-full bg-gray-300 text-gray-800 p-2 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50">Fermer</button>
+
+<script>
+function calculateTotal() {
+    const quantite = document.getElementById('quantite').value;
+    const prixUnitaire = document.getElementById('prixUnitaire').value;
+    const total = quantite * prixUnitaire;
+    document.getElementById('total').value = total.toFixed(2);
+}
+
+function validateForm() {
+    calculateTotal();
+    return true;
+}
+
+document.getElementById('quantite').addEventListener('input', calculateTotal);
+</script>

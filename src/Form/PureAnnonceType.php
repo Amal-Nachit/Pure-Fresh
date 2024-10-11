@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 
 class PureAnnonceType extends AbstractType
 {
@@ -27,6 +28,7 @@ class PureAnnonceType extends AbstractType
                 'label_attr' => [
                     'class' => 'block text-yellow-400 font-semibold mb-2'
                 ],
+                'required' => false
             ])
             ->add('description', TextareaType::class, [
                 'attr' => [
@@ -37,6 +39,7 @@ class PureAnnonceType extends AbstractType
                 'label_attr' => [
                     'class' => 'block text-yellow-400 font-semibold mb-2'
                 ],
+                'required' => false
             ])
 
             ->add('image', FileType::class, [
@@ -49,6 +52,17 @@ class PureAnnonceType extends AbstractType
                 'label_attr' => [
                     'class' => 'block text-yellow-400 font-semibold mb-2'
                 ],
+                'constraints' => [
+                    new File([
+                        'maxSize' => '5M',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'image/jpg',
+                        ],
+                        'mimeTypesMessage' => 'Veuillez télécharger une image valide (JPG, PNG ou JPEG).',
+                    ])
+                ]
             ])
             ->add('prix', NumberType::class, [
                 'attr' => [
@@ -61,6 +75,7 @@ class PureAnnonceType extends AbstractType
                 'label_attr' => [
                     'class' => 'block text-yellow-400 font-semibold mb-2'
                 ],
+                'required' => false
             ])
             ->add('categorie', EntityType::class, [
                 'class' => PureCategorie::class,

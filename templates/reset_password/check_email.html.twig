@@ -3,10 +3,30 @@
 {% block title %}Email de réinitialisation du mot de passe envoyé{% endblock %}
 
 {% block body %}
-    <p>
-        Si un compte correspondant à votre e-mail existe, un e-mail contenant un lien pour réinitialiser votre mot de passe vient d'être envoyé.
-        Ce lien expire dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
-    </p>
-    <p>Si vous ne recevez pas d'e-mail, veuillez vérifier votre dossier de spams ou <a href="{{ path('app_forgot_password_request') }}">réessayer</a>.</p>
-{% endblock %}
+<div class="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-md">
+        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Email de réinitialisation envoyé
+        </h2>
+    </div>
 
+    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+            <div class="text-sm text-gray-600">
+                <p class="mb-4">
+                    Si un compte correspondant à votre e-mail existe, un e-mail contenant un lien pour réinitialiser votre mot de passe vient d'être envoyé.
+                </p>
+                <p class="mb-4">
+                    Ce lien expire dans <span class="font-medium">{{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}</span>.
+                </p>
+                <p>
+                    Si vous ne recevez pas d'e-mail, veuillez vérifier votre dossier de spams ou 
+                    <a href="{{ path('app_forgot_password_request') }}" class="font-medium text-indigo-600 hover:text-indigo-500">
+                        réessayer
+                    </a>.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

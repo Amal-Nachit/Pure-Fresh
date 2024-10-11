@@ -1,27 +1,58 @@
-{% extends 'dashboard/vendeur.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block content %}
-<div class="container mx-auto px-4 py-8">
-    <div class="mb-6 flex items-center justify-between">
-        <a href="{{ path('dashboard_mes_annonces') }}" class="flex items-center text-yellow-400 hover:text-yellow-300 transition duration-300">
-            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            <span class="text-lg font-semibold">Retour aux annonces</span>
-        </a>
-    </div>
+{% block title %}Mise à jour du profil{% endblock %}
+{% block body %}
+<header class="bg-lime-900">
+    {{ include('Includes/Header/index.html.twig') }}
+</header>
 
-    <div class="bg-gray-800 rounded-lg shadow-xl p-8">
-        <h1 class="text-3xl font-bold mb-6 text-yellow-400 border-b border-yellow-400 pb-2">Modifier le produit</h1>
+<main class="bg-lime-900 min-h-screen p-6">
+    <div class="max-w-lg mx-auto bg-gray-700 bg-opacity-60 rounded-lg shadow-lg p-6">
+        <h1 class="text-3xl sm:text-4xl font-bold text-yellow-400 mb-6">Mise à jour du profil</h1>
+        
+        {{ form_start(form) }}
 
-        <div class="mb-8">
-            {{ include('pure_annonce/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+        {% if form_errors(form) %}
+            <div class="bg-red-600 text-white p-4 rounded-lg mb-6">
+                {{ form_errors(form) }}
+            </div>
+        {% endif %}
+
+        <div class="space-y-6">
+            {% for field in form %}
+                {% if field.vars.name != '_token' %}
+                    <div>
+                        {{ form_label(field, null, {'label_attr': {'class': 'block text-gray-300 text-sm font-semibold mb-1'}}) }}
+                        {{ form_widget(field, {'attr': {'class': 'w-full p-3 bg-gray-700 text-white rounded-lg shadow-md focus:ring-2 focus:ring-yellow-500 focus:outline-none'}}) }}
+
+                        {% if field.vars.errors|length > 0 %}
+                            <div class="text-red-600">
+                                {% for error in field.vars.errors %}
+                                    <p>{{ error.message }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endfor %}
         </div>
 
-        <div class="mt-12 pt-4 border-t border-gray-700">
-            <h2 class="text-xl font-semibold mb-4 text-red-500">Zone de danger</h2>
-            {{ include('pure_annonce/_delete_form.html.twig') }}
+        <div class="mt-8">
+            <button type="submit" class="px-5 py-3 bg-yellow-500 text-gray-900 rounded-lg shadow-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-700">
+                Sauvegarder
+            </button>
         </div>
+        {{ form_end(form) }}
     </div>
-</div>
+</main>
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('../assets/js/adresse.js') }}"></script>
 {% endblock %}
+
+<footer class="bg-lime-900">
+    {{ include('Includes/Footer/index.html.twig') }}
+</footer>
+{% endblock %}
+

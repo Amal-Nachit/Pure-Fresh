@@ -11,6 +11,7 @@ use App\Form\PureCommandeType;
 use App\Repository\PureAnnonceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -96,7 +97,7 @@ final class PureAnnonceController extends AbstractController
                 }
                 $pureAnnonce->setImage($newFilename);
             } else {
-                $pureAnnonce->setImage('default.jpg');
+                $pureAnnonce->setImage('default-image.jpg');
             }
 
             $pureAnnonce->computeSlug($slugger);
@@ -115,8 +116,14 @@ final class PureAnnonceController extends AbstractController
 
 
     #[Route('annonce/{slug}', name: 'annonce_show', methods: ['GET', 'POST'])]
-    public function show(PureAnnonce $pureAnnonce, Request $request, EntityManagerInterface $entityManager): Response
+    public function show(PureAnnonce $pureAnnonce, Request $request, EntityManagerInterface $entityManager, string $slug): Response
     {
+        $pureAnnonce = $entityManager->getRepository(PureAnnonce::class)->findOneBy(['slug' => $slug, 'approuvee' => true]);
+
+        if (!$pureAnnonce) {
+            $this->addFlash('error', 'Annonce non trouvée ou non approuvée');
+            return $this->redirectToRoute('annonce_index');
+        }
         $commande = new PureCommande();
         $commande->setPureAnnonce($pureAnnonce);
 
@@ -144,13 +151,16 @@ final class PureAnnonceController extends AbstractController
         ]);
     }
 
-
-
-
     #[IsGranted('ROLE_VENDEUR')]
     #[Route('/user/annonce/{id}/edit', name: 'annonce_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, PureAnnonce $pureAnnonce, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_VENDEUR');
+        $currentUser = $this->getUser();
+        if ($currentUser !== $pureAnnonce->getPureUser()) {
+           $this->addFlash('error','Vous n\'êtes pas autorisé à modifier cette annonce.');
+           return $this->redirectToRoute('dashboard_mes_annonces');
+        }
         $form = $this->createForm(PureAnnonceType::class, $pureAnnonce);
         $form->handleRequest($request);
 
@@ -176,7 +186,7 @@ final class PureAnnonceController extends AbstractController
                 if ($pureAnnonce->getImage()) {
                     $oldFilePath = $this->getParameter('images_directory') . '/' . $pureAnnonce->getImage();
                     if (file_exists($oldFilePath)) {
-                        unlink($oldFilePath); // Supprime l'ancienne image
+                        unlink($oldFilePath);
                     }
                 }
 
@@ -194,7 +204,8 @@ final class PureAnnonceController extends AbstractController
                 } catch (FileException $e) {
                     $this->addFlash('error', 'Échec du téléchargement de l\'image.');
                     return $this->redirectToRoute('annonce_edit', ['id' => $pureAnnonce->getId()]);
-                }
+                } 
+
 
                 $pureAnnonce->setImage($newFilename);
             }
@@ -216,6 +227,12 @@ final class PureAnnonceController extends AbstractController
     #[Route('/user/annonce/{id}', name: 'annonce_delete', methods: ['POST'])]
     public function delete(Request $request, PureAnnonce $pureAnnonce, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_VENDEUR');
+        $currentUser = $this->getUser();
+        if ($currentUser !== $pureAnnonce->getPureUser()) {
+            $this->addFlash('error', 'Vous n\'êtes pas autorisé à supprimer cette annonce.');
+            return $this->redirectToRoute('dashboard_mes_annonces');
+        }
         if ($this->isCsrfTokenValid('delete' . $pureAnnonce->getId(), $request->get('_token'))) {
 
             $imageFilename = $pureAnnonce->getImage();
@@ -228,8 +245,12 @@ final class PureAnnonceController extends AbstractController
             }
             $entityManager->remove($pureAnnonce);
             $entityManager->flush();
+            $this->addFlash('success', 'L\'annonce a été supprimée avec succès.');
+        } else {
+            // Message en cas d'échec de la validation CSRF
+            $this->addFlash('error', 'Erreur lors de la suppression de l\'annonce.');
         }
-        return $this->redirectToRoute('annonce_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('dashboard_mes_annonces', [], Response::HTTP_SEE_OTHER);
     }
 
 }

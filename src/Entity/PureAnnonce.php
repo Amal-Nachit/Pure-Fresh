@@ -9,6 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\UX\Turbo\Attribute\Broadcast;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PureAnnonceRepository::class)]
 #[Broadcast]
@@ -20,22 +21,34 @@ class PureAnnonce
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le nom ne peut pas être vide")]
+    #[Assert\Length(min: 3, max: 255, minMessage: "Le nom doit contenir au moins {{ limit }} caractères", maxMessage: "Le nom ne peut pas dépasser {{ limit }} caractères")]
     private ?string $nom = null;
 
     #[ORM\Column(length: 255, unique: true)]
     private ?string $slug = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank(message: "La description ne peut pas être vide")]
+    #[Assert\Length(min: 10, minMessage: "La description doit contenir au moins {{ limit }} caractères")]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateCreation = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\File(
+        maxSize: "5M",
+        mimeTypes: ["image/jpeg", "image/png", "image/gif"],
+        mimeTypesMessage: "Veuillez télécharger une image valide (JPG, PNG ou GIF)."
+    )]
     private ?string $image = null;
 
 
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2)]
+    #[Assert\NotBlank(message: "Le prix ne peut pas être vide")]
+    #[Assert\Positive(message: "Le prix doit être positif")]
+    #[Assert\LessThan(value: 1000, message: "Le prix ne peut pas dépasser 99.99")]
     private ?string $prix = null;
 
     #[ORM\ManyToOne(targetEntity: PureCategorie::class, inversedBy: 'pureAnnonce', cascade: ['persist'])]
