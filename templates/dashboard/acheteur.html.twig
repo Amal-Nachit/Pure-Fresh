@@ -6,32 +6,36 @@
 <header class="bg-lime-900">
     {{ include('Includes/Header/index.html.twig') }}
 </header>
-<main class="bg-lime-900 min-h-screen p-6">
-    <div class="bg-gray-700 bg-opacity-70 rounded-lg shadow-lg p-6">
-        <h1 class="text-3xl sm:text-4xl font-bold text-yellow-400 mb-6">Tableau de bord</h1>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <section class="bg-lime-800 p-6 rounded-lg shadow-lg">
-                <h2 class="text-2xl font-bold text-yellow-400 mb-4">Mes commandes</h2>
-                <ul class="text-white space-y-4">
-                    {% for commande in commandes %}
-                    <li class="flex justify-between items-center p-4 bg-gray-700 rounded-lg shadow-md">
-                        <span>Commande #{{ commande.id }}</span>
-                        <span id="statut-commande-{{ commande.id }}" class="text-yellow-400">{{ commande.statut.intitule }}</span>
-                        <button onclick="openCommandeModal({{ commande.id }})" class="text-blue-400 hover:underline">Détails</button>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </section>
+<main class="bg-lime-900 min-h-screen p-4 sm:p-6">
+    <div class="bg-gray-700 bg-opacity-70 rounded-lg shadow-lg p-4 sm:p-6">
+        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-yellow-400 mb-4 sm:mb-6">Tableau de bord</h1>
 
-            <section class="bg-lime-800 p-6 rounded-lg shadow-lg">
-                <h2 class="text-2xl font-bold text-yellow-400 mb-4">Mon compte</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+            <section class="bg-lime-800 p-4 sm:p-6 rounded-lg shadow-lg">
+    <h2 class="text-xl sm:text-2xl font-bold text-yellow-400 mb-3 sm:mb-4">Mes commandes</h2>
+    <ul class="text-white space-y-3 sm:space-y-4">
+        {% for commande in commandes %}
+        <li class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 sm:p-4 bg-gray-700 rounded-lg shadow-md">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center">
+                <span class="mb-2 sm:mb-0 sm:mr-4">Commande #{{ commande.id }}</span>
+                <span class="text-sm text-gray-400 mb-2 sm:mb-0">{{ commande.dateCommande|date('d/m/Y') }}</span>
+            </div>
+            <span id="statut-commande-{{ commande.id }}" class="text-yellow-400 mb-2 sm:mb-0">{{ commande.statut.intitule }}</span>
+            <button onclick="OuvrirModalCommande({{ commande.id }})" class="text-blue-400 hover:underline">Détails</button>
+        </li>
+        {% endfor %}
+    </ul>
+</section>
+
+
+            <section class="bg-lime-800 p-4 sm:p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl sm:text-2xl font-bold text-yellow-400 mb-3 sm:mb-4">Mon compte</h2>
                 <div class="text-white">
-                    <p class="mb-4"><strong>Nom et prénom :</strong> {{ app.user.nom }} {{ app.user.prenom }}</p>
-                    <p class="mb-4"><strong>Email :</strong> {{ app.user.email }}</p>
-                    <p class="mb-4"><strong>Adresse :</strong> {{ app.user.adresse }}</p>
-                    <p class="mb-4"><strong>Téléphone :</strong> {{ app.user.telephone }}</p>
-                    <p class="mb-4"><strong>Mot de passe :</strong> *********</p>
+                    <p class="mb-3 sm:mb-4"><strong>Nom et prénom :</strong> {{ app.user.nom }} {{ app.user.prenom }}</p>
+                    <p class="mb-3 sm:mb-4"><strong>Email :</strong> {{ app.user.email }}</p>
+                    <p class="mb-3 sm:mb-4"><strong>Adresse :</strong> {{ app.user.adresse }}</p>
+                    <p class="mb-3 sm:mb-4"><strong>Téléphone :</strong> {{ app.user.telephone }}</p>
+                    <p class="mb-3 sm:mb-4"><strong>Mot de passe :</strong> *********</p>
                     <a href="{{ path('user_editAcheteur', {'id': app.user.id}) }}" class="text-yellow-400 hover:underline">Modifier mes informations personnelles</a>
                 </div>
             </section>
@@ -40,8 +44,8 @@
 </main>
 
 <div id="commandeModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
-    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-        <div class="mt-3 text-center" id="modalContent">
+    <div class="relative top-20 mx-auto p-4 sm:p-5 border w-11/12 max-w-md shadow-lg rounded-md bg-white">
+        <div class="mt-3 text-center" id="contenuModal">
         </div>
     </div>
 </div>
@@ -49,61 +53,67 @@
 <footer class="bg-lime-900">
     {{ include('Includes/Footer/index.html.twig') }}
 </footer>
+
+{{ include('Includes/Menu-flottant/index.html.twig') }}
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     <script>
-    function openCommandeModal(commandeId) {
+    function OuvrirModalCommande(commandeId) {
         fetch(`{{ path('dashboard_commande_details', {'id': 'COMMANDE_ID'}) }}`.replace('COMMANDE_ID', commandeId))
             .then(response => response.text())
             .then(html => {
-                document.getElementById('modalContent').innerHTML = html;
+                document.getElementById('contenuModal').innerHTML = html;
                 document.getElementById('commandeModal').classList.remove('hidden');
             });
     }
 
-    function closeCommandeModal() {
+    function fermerModalCommande() {
         document.getElementById('commandeModal').classList.add('hidden');
     }
 
-    function calculateTotal() {
+    function calculerTotal() {
         const quantite = document.getElementById('quantite').value;
         const prixUnitaire = document.getElementById('prixUnitaire').value;
         const total = quantite * prixUnitaire;
         document.getElementById('total').value = total.toFixed(2);
     }
 
-    {% for commande in commandes %}
-        function updateStatut{{ commande.id }}() {
-            fetch('{{ path('dashboard_commande_statut', {'id': commande.id}) }}')
-                .then(response => response.json())
-                .then(data => {
-                    const statutElement = document.getElementById('statut-commande-{{ commande.id }}');
-                    if (statutElement) {
-                        statutElement.textContent = data.statusText;
-                        statutElement.className = getStatusColor(data.statusText);
-                    }
-                })
-                .catch(error => console.error('Erreur:', error));
-        }
+   {% for commande in commandes %}
+    function updateStatut{{ commande.id }}() {
+        fetch('{{ path('dashboard_commande_statut', {'id': commande.id}) }}')
+            .then(response => response.json())
+            .then(data => {
+                const statutElement = document.getElementById('statut-commande-{{ commande.id }}');
+                if (statutElement) {
+                    statutElement.textContent = data.statusText;
+                    statutElement.classList.remove('text-yellow-400', 'text-blue-400', 'text-green-400', 'text-red-400');
+                    statutElement.classList.add(getStatusColor(data.statusText));
+                }
+            })
+    }
+
+    updateStatut{{ commande.id }}();
     
-        setInterval(updateStatut{{ commande.id }}, 30000);
-    {% endfor %}
+    setInterval(updateStatut{{ commande.id }}, 30000);
+{% endfor %}
+
 
     function getStatusColor(status) {
-        switch(status.toLowerCase()) {
-            case 'En attente':
-                return 'text-yellow-400';
-            case 'En cours de préparation':
-                return 'text-blue-400';
-            case 'Prête':
-                return 'text-green-400';
-            case 'Annulée':
-                return 'text-red-400';
-            default:
-                return 'text-gray-400';
-        }
+    switch(status.toLowerCase()) {
+        case 'en attente':
+            return 'text-yellow-400';
+        case 'en cours de préparation':
+            return 'text-blue-400';
+        case 'prête':
+            return 'text-green-400';
+        case 'annulée':
+            return 'text-red-400';
+        default:
+            return 'text-white';
     }
+}
+
     </script>
 {% endblock %}

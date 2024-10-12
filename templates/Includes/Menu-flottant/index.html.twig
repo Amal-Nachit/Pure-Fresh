@@ -1,55 +1,64 @@
-<div class="bg-black bg-opacity-50">
-<div class="fixed bottom-0 left-0 w-full bg-lime-900 flex justify-around p-3 md:hidden">
+<div class="fixed bottom-0 left-0 w-full bg-lime-900 bg-opacity-90 backdrop-blur-sm shadow-lg flex justify-around p-4 md:hidden">
     <div class="group relative flex flex-col items-center">
-        <button class="flex flex-col items-center focus:outline-none" onclick="window.location.href='{{ path('home') }}'; activateIcon(this)">
-    <img src="{{ asset('../../../icon-svg/home.svg') }}" alt="icone Accueil" class="h-8 w-8 text-yellow-400 transition-transform duration-300"/>
-    <span class="mt-2 text-yellow-400 opacity-0 transition-opacity duration-300 text-sm">Accueil</span>
-</button>
-
-    </div>
-
-    <div class="group relative flex flex-col items-center">
-        <button class="flex flex-col items-center focus:outline-none" onclick=" window.location.href='{{ path('annonce_index') }}'; activateIcon(this)">
-            <img src="{{ asset('../../../icon-svg/vegetables.svg') }}" alt="icones de fruits et lègumes" class="h-8 w-8 text-yellow-400 transition-transform duration-300"/>
-            <span class="mt-2 text-yellow-400 opacity-0 transition-opacity duration-300 text-sm">Ventes</span>
+        <button class="flex flex-col items-center focus:outline-none {% if active_page == 'home' %}active{% endif %}" onclick="activateIcon(this); window.location.href='{{ path('home') }}';">
+            <img src="{{ asset('../../../icon-svg/home.svg') }}" alt="icone Accueil" class="h-10 w-10 text-yellow-400 transition-transform duration-300 {% if active_page == 'home' %}translate-y-2{% endif %}"/>
+            <span class="mt-2 text-yellow-400 {% if active_page == 'home' %}opacity-100{% else %}opacity-0{% endif %} transition-opacity duration-300 text-sm font-medium">Accueil</span>
         </button>
     </div>
 
     <div class="group relative flex flex-col items-center">
-        <button class="flex flex-col items-center focus:outline-none" onclick="window.location.href='{{ path('commande_index') }}'; activateIcon(this)">
-            <img src="{{ asset('../../../icon-svg/panier.svg') }}" alt="icone Panier" class="h-8 w-8 text-yellow-400 transition-transform duration-300"/>
-            <span class="mt-2 text-yellow-400 opacity-0 transition-opacity duration-300 text-sm">Panier</span>
+        <button class="flex flex-col items-center focus:outline-none {% if active_page == 'annonce_index' %}active{% endif %}" onclick="activateIcon(this); window.location.href='{{ path('annonce_index') }}';">
+            <img src="{{ asset('../../../icon-svg/vegetables.svg') }}" alt="icones de fruits et lègumes" class="h-10 w-10 text-yellow-400 transition-transform duration-300 {% if active_page == 'annonce_index' %}translate-y-2{% endif %}"/>
+            <span class="mt-2 text-yellow-400 {% if active_page == 'annonce_index' %}opacity-100{% else %}opacity-0{% endif %} transition-opacity duration-300 text-sm font-medium">Ventes</span>
         </button>
     </div>
 
-
     <div class="group relative flex flex-col items-center">
-        <button class="flex flex-col items-center focus:outline-none" onclick="window.location.href='{{ path('dashboard') }}'; activateIcon(this)">
-            <img src="{{ asset('../../../icon-svg/user.svg') }}" alt="icone Compte" class="h-8 w-8 text-yellow-400 transition-transform duration-300"/>
-            <span class="mt-2 text-yellow-400 opacity-0 transition-opacity duration-300 text-sm">Compte</span>
+        <button class="flex flex-col items-center focus:outline-none {% if active_page == 'dashboard' %}active{% endif %}" onclick="activateIcon(this); window.location.href='{% if is_granted('IS_AUTHENTICATED_FULLY') %}{{ path('dashboard') }}{% else %}{{ path('app_login') }}{% endif %}';">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#F7C35F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-300 {% if active_page == 'dashboard' %}translate-y-2{% endif %}">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <span class="mt-2 text-yellow-400 {% if active_page == 'dashboard' %}opacity-100{% else %}opacity-0{% endif %} transition-opacity duration-300 text-sm font-medium">
+                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                    Compte
+                {% else %}
+                    Connexion
+                {% endif %}
+            </span>
         </button>
     </div>
 </div>
-</div>
+
+
 
 <script>
-    function activateIcon(button) {
+function activateIcon(button) {
+    const buttons = document.querySelectorAll('.group button');
+    buttons.forEach(btn => {
+        btn.classList.remove('active');
+        const icon = btn.querySelector('img, svg');
+        const span = btn.querySelector('span');
+        icon.classList.remove('translate-y-2');
+        span.classList.remove('opacity-100');
+    });
+    
+    button.classList.add('active');
+    const icon = button.querySelector('img, svg');
+    const span = button.querySelector('span');
+    icon.classList.add('translate-y-2');
+    span.classList.add('opacity-100');
+}
 
-        const buttons = document.querySelectorAll('.group button');
-        buttons.forEach(btn => {
-            const img = btn.querySelector('img');
-            const span = btn.querySelector('span');
-            img.classList.remove('translate-y-2');
-            span.classList.remove('opacity-100');
-        });
-        
-        // Activer l'icône et le texte cliqués
-        const img = button.querySelector('img');
-        const span = button.querySelector('span');
-        img.classList.add('translate-y-2');
-        span.classList.add('opacity-100');
+document.addEventListener('DOMContentLoaded', function() {
+    const activeButton = document.querySelector('.group button.active');
+    if (activeButton) {
+        activateIcon(activeButton);
     }
+});
 </script>
+
+
 
 <style>
     .translate-y-2 {

@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Transactions{% endblock %}
+
+{% block body %}
+<div class="bg-gray-900 text-gray-200 min-h-screen flex flex-col">
+    {{ include('Includes/Header/adminHeader.html.twig') }}
+    
+    <main class="flex-1 p-6">
+        <h1 class="text-3xl font-bold mb-6 text-center text-lime-400">Transactions</h1>
+
+        <div class="overflow-x-auto bg-gray-800 rounded-lg shadow">
+            <table class="min-w-full divide-y divide-gray-700">
+                <thead>
+                    <tr>
+                        <th class="px-6 py-3 text-left text-md font-medium text-gray-300 uppercase tracking-wider">ID</th>
+                        <th class="px-6 py-3 text-left text-md font-medium text-gray-300 uppercase tracking-wider">Date</th>
+                        <th class="px-6 py-3 text-left text-md font-medium text-gray-300 uppercase tracking-wider">Acheteur</th>
+                        <th class="px-6 py-3 text-left text-md font-medium text-gray-300 uppercase tracking-wider">Vendeur</th>
+                        <th class="px-6 py-3 text-left text-md font-medium text-gray-300 uppercase tracking-wider">Annonce</th>
+                        <th class="px-6 py-3 text-left text-md font-medium text-gray-300 uppercase tracking-wider">Quantité</th>
+                        <th class="px-6 py-3 text-left text-md font-medium text-gray-300 uppercase tracking-wider">Prix Total</th>
+                        <th class="px-6 py-3 text-left text-md font-medium text-gray-300 uppercase tracking-wider">Statut</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-700">
+                    {% for transaction in transactions %}
+                        <tr class="hover:bg-gray-700 transition-colors duration-200">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-white">{{ transaction.id }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-white">{{ transaction.dateCommande|date('Y-m-d H:i') }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-white">{{ transaction.pureUser.email }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-white">{{ transaction.pureAnnonce.pureUser.email }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-white">{{ transaction.pureAnnonce.nom }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-white">{{ transaction.quantite }} kg</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-white">{{ transaction.total }} €</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-white">
+                                <span class="px-2 inline-flex text-md leading-5 font-semibold rounded-full bg-blue-900 text-blue-200">
+                                    {{ transaction.statut.intitule }}
+                                </span>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="8" class="px-6 py-4 text-center text-gray-400">Aucune transaction trouvée.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+{% endblock %}

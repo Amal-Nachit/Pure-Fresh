@@ -37,11 +37,6 @@ class PureAnnonce
     private ?\DateTimeInterface $dateCreation = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\File(
-        maxSize: "5M",
-        mimeTypes: ["image/jpeg", "image/png", "image/gif"],
-        mimeTypesMessage: "Veuillez télécharger une image valide (JPG, PNG ou GIF)."
-    )]
     private ?string $image = null;
 
 

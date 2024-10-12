@@ -1,25 +1,9 @@
 {% extends 'base.html.twig' %}
 {% block body %}
+<header>
+    {{ include('Includes/Header/adminHeader.html.twig') }}
+</header>
 <div class="bg-gray-900 text-gray-200 min-h-screen flex flex-col">
-    <!-- Top Bar -->
-    <header class="bg-gray-800 p-4 shadow-md">
-        <div class="container mx-auto flex justify-between items-center">
-            <h2 class="text-2xl font-bold">Dashboard</h2>
-            <nav>
-                <ul class="flex space-x-6">
-                    <li>
-                        <a href="{{ path('admin_dashboard') }}" class="text-lg hover:text-lime-400">Annonces à approuver</a>
-                    </li>
-                    <li>
-                        <a href="{{ path('user_index') }}" class="text-lg hover:text-lime-400">Utilisateurs</a>
-                    </li>
-                    <li>
-                        <a href="" class="text-lg hover:text-lime-400">Transactions</a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </header>
 
     <main class="flex-1 p-6">
         <h1 class="text-3xl font-bold mb-6 text-center">Annonces à approuver</h1>
@@ -32,29 +16,29 @@
                 <table class="min-w-full bg-gray-800 border border-gray-700">
                     <thead>
                         <tr class="bg-gray-700 border-b">
-                            <th class="py-3 px-4 text-left text-sm font-medium text-gray-300">Vendeur</th>
-                            <th class="py-3 px-4 text-left text-sm font-medium text-gray-300">Nom</th>
-                            <th class="py-3 px-4 text-left text-sm font-medium text-gray-300">Description</th>
-                            <th class="py-3 px-4 text-left text-sm font-medium text-gray-300">Date de Publication</th>
-                            <th class="py-3 px-4 text-left text-sm font-medium text-gray-300">Image</th>
-                            <th class="py-3 px-4 text-left text-sm font-medium text-gray-300">Actions</th>
+                            <th class="py-3 px-4 text-left text-md font-medium text-gray-300">Vendeur</th>
+                            <th class="py-3 px-4 text-left text-md font-medium text-gray-300">Nom</th>
+                            <th class="py-3 px-4 text-left text-md font-medium text-gray-300">Description</th>
+                            <th class="py-3 px-4 text-left text-md font-medium text-gray-300">Date de Publication</th>
+                            <th class="py-3 px-4 text-left text-md font-medium text-gray-300">Image</th>
+                            <th class="py-3 px-4 text-left text-md font-medium text-gray-300">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="annonce-list">
                         {% for annonce in annonces %}
                             <tr class="border-b border-gray-600 hover:bg-gray-700" id="annonce-{{ annonce.id }}">
-                                <td class="py-3 px-4 text-sm text-gray-200">
+                                <td class="py-3 px-4 text-md text-gray-200">
                                     <a href="{{ path('user_show', {'id': annonce.pureUser.id}) }}" class="hover:underline">{{ annonce.pureUser.prenom }} {{ annonce.pureUser.nom }}</a>
                                 </td>
-                                <td class="py-3 px-4 text-sm text-gray-200">
+                                <td class="py-3 px-4 text-md text-gray-200">
                                     <a href="{{ path('annonce_show', {'slug': annonce.slug}) }}" class="hover:underline">{{ annonce.nom }}</a>
                                 </td>
-                                <td class="py-3 px-4 text-sm text-gray-200">{{ annonce.description }}</td>
-                                <td class="py-3 px-4 text-sm text-gray-200">{{ annonce.dateCreation ? annonce.dateCreation|date('d-m-Y') : '' }}</td>
-                                <td class="py-3 px-4 text-sm text-gray-200">
+                                <td class="py-3 px-4 text-md text-gray-200">{{ annonce.description }}</td>
+                                <td class="py-3 px-4 text-md text-gray-200">{{ annonce.dateCreation ? annonce.dateCreation|date('d-m-Y') : '' }}</td>
+                                <td class="py-3 px-4 text-md text-gray-200">
                                     <img src="{{ '/uploads/images/' ~ annonce.image }}" alt="{{ annonce.nom }}" class="w-16 h-16 object-cover rounded-lg">
                                 </td>
-                                <td class="py-3 px-4 text-sm text-gray-200">
+                                <td class="py-3 px-4 text-md text-gray-200">
                                     <button class="approuver-btn text-green-400 hover:text-green-500" data-id="{{ annonce.id }}">Approuver</button>
                                     <button class="refuser-btn text-red-400 hover:text-red-500 ml-2" data-id="{{ annonce.id }}">Refuser</button>
                                 </td>
@@ -64,7 +48,7 @@
                 </table>
             </div>
         {% else %}
-            <p class="text-gray-400">Aucune annonce à approuver.</p>
+            <p class="text-gray-400 py-3">Aucune annonce à approuver.</p>
         {% endif %}
     </main>
 </div>

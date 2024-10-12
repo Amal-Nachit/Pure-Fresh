@@ -25,14 +25,23 @@ final class PureUserController extends AbstractController
             'pure_users' => $pureUserRepository->findAll(),
         ]);
     }
-    #[Route('/admin/utilisateur', name: 'user_show', methods: ['GET'])]
-    // #[IsGranted('ROLE_ADMIN')]
-    public function show(PureUser $pureUser): Response
-    {
-        return $this->render('pure_user/show.html.twig', [
-            'pure_user' => $pureUser,
-        ]);
+
+    #[IsGranted('ROLE_ADMIN')]
+#[Route('/admin/utilisateur', name: 'user_show', methods: ['POST'])]
+public function show(Request $request, PureUserRepository $userRepository): Response
+{
+    $id = $request->request->get('id');
+    $user = $userRepository->find($id);
+
+    if (!$user) {
+        throw $this->createNotFoundException('Utilisateur non trouvé');
     }
+
+    return $this->render('pure_user/show.html.twig', [
+        'pure_user' => $user,
+    ]);
+}
+
 
 
     #[Route('/user/vendeur/modifier', name: 'user_editVendeur', methods: ['GET', 'POST'])]
@@ -107,10 +116,18 @@ final class PureUserController extends AbstractController
     }
 
     #[IsGranted('ROLE_ADMIN')]
-    #[Route('/admin/supprimer/{id}', name: 'user_delete', methods: ['POST'])]
-    public function delete(Request $request, PureUser $pureUser, EntityManagerInterface $entityManager): Response
+    #[Route('/admin/utilisateur/{id}', name: 'user_delete', methods: ['POST'])]
+    public function delete(int $id, Request $request, EntityManagerInterface $entityManager, PureUserRepository $pureUserRepository): Response
     {
+        $pureUser = $pureUserRepository->find($id);
+
+        if (!$pureUser) {
+            $this->addFlash('error', 'Utilisateur non trouvé.');
+            return $this->redirectToRoute('user_index');
+        }
+
         if ($this->isCsrfTokenValid('delete' . $pureUser->getId(), $request->request->get('_token'))) {
+            // Suppression des autres entités liées
             $resetPasswordRequests = $entityManager->getRepository(ResetPasswordRequest::class)
                 ->findBy(['user' => $pureUser]);
 

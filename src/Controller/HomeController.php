@@ -18,6 +18,7 @@ class HomeController extends AbstractController
         return $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',
             'error' => $error,
+            'active_page' => 'home'
         ]);
     }
 
@@ -30,6 +31,16 @@ class HomeController extends AbstractController
         return $this->render('home/rgpd.html.twig', [
             'controller_name' => 'HomeController',
             'user' => $user,
+            'active_page' => 'home'
+        ]);
+    }
+
+    #[Route('/mentions-legales', name: 'mentions_legales')]
+    public function mentionsLegales(): Response
+    {
+        return $this->render('home/mentions-legales.html.twig', [
+            'controller_name' => 'HomeController',
+            'active_page' => 'home'
         ]);
     }
 }

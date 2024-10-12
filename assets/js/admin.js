@@ -29,7 +29,6 @@ document.addEventListener("DOMContentLoaded", function () {
             checkIfEmpty();
           }
         })
-        .catch((error) => console.error("Erreur:", error));
     });
   });
 
@@ -48,7 +47,6 @@ document.addEventListener("DOMContentLoaded", function () {
             checkIfEmpty();
           }
         })
-        .catch((error) => console.error("Erreur:", error));
     });
   });
 });
@@ -60,10 +58,9 @@ function fetchAnnonces() {
       const nbAnnoncesPubliees = document.querySelector(".annonceCount");
       nbAnnoncesPubliees.innerHTML = `Annonces publiées : ${data.nbAnnoncesPubliees}`;
     })
-    .catch((error) => console.error("Erreur:", error));
 }
 
 fetchAnnonces();
-setInterval(fetchAnnonces, 30000);
+setInterval(fetchAnnonces, 30000  );
 
 

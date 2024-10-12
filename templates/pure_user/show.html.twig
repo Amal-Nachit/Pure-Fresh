@@ -3,19 +3,24 @@
 {% block title %}Détails de l'utilisateur{% endblock %}
 
 {% block body %}
-<div class="bg-gray-900 min-h-screen flex flex-col items-center justify-center py-8 px-4">
-    <h1 class="text-3xl font-bold text-white mb-6">Détails de l'utilisateur</h1>
+<div class="bg-gray-900 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-lime-400">Détails de l'utilisateur</h1>
+        </div>
 
-    <div class="overflow-x-auto">
-        <table class="min-w-full bg-gray-800 border border-gray-700 rounded-lg shadow-lg">
-            <tbody class="divide-y divide-gray-700">
-                <tr>
-                    <th class="py-3 px-4 text-left text-gray-300 font-medium">Email</th>
-                    <td class="py-3 px-4 text-white">{{ pure_user.email }}</td>
-                </tr>
-                <tr>
-                    <th class="py-3 px-4 text-left text-gray-300 font-medium">Roles</th>
-                    <td class="py-3 px-4 text-white">
+        <div class="bg-gray-800 shadow-xl rounded-lg overflow-hidden">
+            <div class="p-6 border-b border-gray-700">
+                <h2 class="text-xl font-semibold text-lime-400">Informations personnelles</h2>
+            </div>
+            <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <p class="text-md font-medium text-gray-400">Email</p>
+                    <p class="mt-1 text-md text-white">{{ pure_user.email }}</p>
+                </div>
+                <div>
+                    <p class="text-md font-medium text-gray-400">Roles</p>
+                    <div class="mt-1 flex flex-wrap gap-2">
                         {% set rolesMapping = {
                             'ROLE_USER': '',
                             'ROLE_ADMIN': 'Administrateur',
@@ -23,51 +28,50 @@
                             'ROLE_ACHETEUR': 'Acheteur'
                         } %}
                         {% for role in pure_user.roles %}
-                            {{ rolesMapping[role] is defined ? rolesMapping[role] : role }}
-                            {% if not loop.last %} {% endif %}
+                           <p class="mt-1 text-md text-white">
+                                {{ rolesMapping[role] is defined ? rolesMapping[role] : role }}
+                            </p>
                         {% else %}
-                            Aucun rôle attribué
+                            <span class="text-gray-300">Aucun rôle attribué</span>
                         {% endfor %}
-                    </td>
-                </tr>
-                <tr>
-                    <th class="py-3 px-4 text-left text-gray-300 font-medium">Prénom</th>
-                    <td class="py-3 px-4 text-white">{{ pure_user.prenom }}</td>
-                </tr>
-                <tr>
-                    <th class="py-3 px-4 text-left text-gray-300 font-medium">Nom</th>
-                    <td class="py-3 px-4 text-white">{{ pure_user.nom }}</td>
-                </tr>
-                <tr>
-                    <th class="py-3 px-4 text-left text-gray-300 font-medium">Téléphone</th>
-                    <td class="py-3 px-4 text-white">{{ pure_user.telephone }}</td>
-                </tr>
-                <tr>
-                    <th class="py-3 px-4 text-left text-gray-300 font-medium">Adresse</th>
-                    <td class="py-3 px-4 text-white">{{ pure_user.adresse }}</td>
-                </tr>
-                <tr>
-                    <th class="py-3 px-4 text-left text-gray-300 font-medium">Membre depuis :</th>
-                    <td class="py-3 px-4 text-white">{{ pure_user.rgpd ? pure_user.rgpd|date('d-m-Y H:i') : 'Non accepté' }}</td>
-                </tr>
-            </tbody>
-        </table>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-md font-medium text-gray-400">Prénom</p>
+                    <p class="mt-1 text-md text-white">{{ pure_user.prenom }}</p>
+                </div>
+                <div>
+                    <p class="text-md font-medium text-gray-400">Nom</p>
+                    <p class="mt-1 text-md text-white">{{ pure_user.nom }}</p>
+                </div>
+                <div>
+                    <p class="text-md font-medium text-gray-400">Téléphone</p>
+                    <p class="mt-1 text-md text-white">{{ pure_user.telephone }}</p>
+                </div>
+                <div>
+                    <p class="text-md font-medium text-gray-400">Adresse</p>
+                    <p class="mt-1 text-md text-white">{{ pure_user.adresse }}</p>
+                </div>
+                <div class="md:col-span-2">
+                    <p class="text-md font-medium text-gray-400">Membre depuis</p>
+                    <p class="mt-1 text-md text-white">{{ pure_user.rgpd ? pure_user.rgpd|date('d-m-Y') : 'Non accepté' }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-6 flex justify-between">
+            <a href="{{ path('user_index') }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                Retour à la liste
+            </a>
+
+            <form method="post" action="{{ path('user_delete', {'id': pure_user.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur?');">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ pure_user.id) }}">
+                <button type="submit" class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 active:bg-red-700 focus:outline-none focus:ring ring-red-300 disabled:opacity-25 transition ease-in-out duration-150">
+                    Supprimer
+                </button>
+            </form>
+        </div>
+
     </div>
-
-   <div class="mt-6 flex space-x-4">
-    <!-- Bouton Retour à la liste -->
-    <a href="{{ path('user_index') }}" class="inline-flex items-center justify-center px-6 py-2 bg-gray-700 text-white font-semibold rounded hover:bg-gray-600 transition duration-300 ease-in-out">
-        Retour à la liste
-    </a>
-
-    <!-- Formulaire de suppression -->
-    <form method="post" action="{{ path('user_delete', {'id': pure_user.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur?');" class="inline-flex">
-        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ pure_user.id) }}">
-        <button type="submit" class="inline-flex items-center justify-center px-6 py-2 bg-red-500 text-white font-semibold rounded hover:bg-red-400 transition duration-300 ease-in-out">
-            Supprimer l'utilisateur
-        </button>
-    </form>
-</div>
-
 </div>
 {% endblock %}

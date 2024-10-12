@@ -14,11 +14,6 @@ class SecurityController extends AbstractController
     #[Route(path: '/connexion', name: 'app_login', priority: 10)]
     public function login(AuthenticationUtils $authenticationUtils, Request $request): Response
     {
-        // Si l'utilisateur est déjà connecté, redirigez-le
-        // if ($this->getUser()) {
-        //     return $this->redirectToRoute('dashboard', [], Response::HTTP_SEE_OTHER);
-        // }
-
         $targetPath = $request->headers->get('referer');
 
         if (!$targetPath || $targetPath === $this->generateUrl('app_login', [], UrlGeneratorInterface::ABSOLUTE_URL)) {
@@ -34,11 +29,12 @@ class SecurityController extends AbstractController
         return $this->render('security/user_login.html.twig', [
             'last_username' => $lastUsername,
             'error' => $error,
+            'active_page' => 'app_login',
         ]);
     }
 
 
-    #[Route(path: '/admin/connexion', name: 'admin_login')]
+    #[Route(path: '/admin', name: 'admin_login')]
     public function adminLogin(AuthenticationUtils $authenticationUtils): Response
     {
         $user = $this->getUser();

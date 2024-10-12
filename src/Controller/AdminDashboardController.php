@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\PureAnnonce;
 use App\Repository\PureAnnonceRepository;
+use App\Repository\PureCommandeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -72,4 +73,16 @@ class AdminDashboardController extends AbstractController
 
         return new JsonResponse(['success' => true], 200);
     }
+
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route('/admin/transactions', name: 'admin_transactions')]
+    public function transactions(PureCommandeRepository $commandeRepository): Response
+    {
+        $transactions = $commandeRepository->findBy([], ['dateCommande' => 'DESC']);
+
+        return $this->render('admin_dashboard/transactions.html.twig', [
+            'transactions' => $transactions,
+        ]);
+    }
+
 }

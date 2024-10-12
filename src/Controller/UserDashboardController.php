@@ -36,6 +36,7 @@
 
                 return $this->render('dashboard/acheteur.html.twig', [
                     'commandes' => $commandes,
+                    'active_page' => 'dashboard'
                 ]);
             } elseif (in_array('ROLE_VENDEUR', $user->getRoles())) {
                 return $this->render('dashboard/vendeur.html.twig');
@@ -107,7 +108,8 @@
 
                 return $this->render('dashboard/mes_annonces.html.twig', [
                     'annonces' => $annonces,
-                    'annoncesData' => $annoncesData
+                    'annoncesData' => $annoncesData,
+                    'active_page' => 'dashboard/mes_annonces'
                 ]);
             }
             return $this->redirectToRoute('home');

@@ -21,7 +21,6 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 
 final class PureAnnonceController extends AbstractController
 {
-    // #[IsGranted('ROLE_USER')]
     #[Route('annonces', name: 'annonce_index', methods: ['GET'])]
     public function index(Request $request, EntityManagerInterface $entityManager, PureAnnonceRepository $pureAnnonceRepository): Response
     {
@@ -45,7 +44,8 @@ final class PureAnnonceController extends AbstractController
             'categories' => $categories,
             'selectedCategory' => $selectedCategory,
             'pure_annonces' => $pure_annonces,
-            'annoncesApprouvees' => $annoncesApprouvees
+            'annoncesApprouvees' => $annoncesApprouvees,
+            'active_page' => 'annonce_index'
         ]);
     }
 
