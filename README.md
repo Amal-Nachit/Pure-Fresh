@@ -10,15 +10,13 @@ Pure Fresh est une application web de gestion d'annonces, permettant aux utilisa
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Utilisation](#utilisation)
-- [Contributions](#contributions)
-- [License](#license)
 
 ## Fonctionnalités
 
-- Gestion des utilisateurs avec différents rôles (admin, utilisateur)
-- Publication d'annonces par les utilisateurs
-- Interface d'administration pour approuver ou refuser les annonces
-- Notifications en temps réel sur le statut des annonces
+- Gestion des utilisateurs avec différents rôles (acheteur, vendeur, admin)
+- Interface vendeur pour publier des annonces et gérer l'état des commandes
+- Interface acheteur pour passer des commandes
+- Interface d'administration pour approuver ou refuser les annonces et gérer les utilisateurs
 - Suppression logique des annonces refusées
 
 ## Technologies utilisées
