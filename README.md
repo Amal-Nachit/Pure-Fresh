@@ -61,6 +61,8 @@ Avant de commencer, assurez-vous d'avoir installé :
    DATABASE_URL=mysql://username:password@127.0.0.1:3306/purefresh
    ```
 
+## Utilisation
+
 5. Exécutez les migrations :
    ```bash
    php bin/console doctrine:migrations:migrate
