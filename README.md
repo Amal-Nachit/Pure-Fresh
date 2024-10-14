@@ -1,6 +1,6 @@
 # Pure Fresh
 
-Pure Fresh est une application web de gestion d'annonces, permettant aux utilisateurs de publier des annoonces, passer des commandes. Ce projet utilise Symfony pour le backend et Twig pour le rendu des templates.
+Pure Fresh est une application web de gestion d'annonces, permettant aux utilisateurs de publier des annoonces ou passer des commandes. Ce projet utilise Symfony pour le backend et Twig pour le rendu des templates.
 
 ## Table des matières
 
