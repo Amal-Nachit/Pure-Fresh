@@ -1,7 +1,9 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Tableau de bord de l'acheteur{% endblock %}
-
+{% block head %}
+<link rel="stylesheet" href="{{ asset('/css/app.css') }}">
+{% endblock %}
 {% block body %}
 <header class="bg-lime-900">
     {{ include('Includes/Header/index.html.twig') }}

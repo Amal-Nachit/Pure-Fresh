@@ -4,9 +4,16 @@
 {% block meta %}
     <meta name="description" content="Découvrez des produits bio et locaux sur Pure&Fresh, votre plateforme de confiance pour soutenir les agriculteurs." />
     <meta name="keywords" content="bio, local, agriculture, produits frais, Pure&Fresh" />
+    <link rel="preload" href="{{ asset('build/app.css') }}" as="style">
 {% endblock %}
 
 {% block body %}
+<style>
+    .filter-white {
+        filter: brightness(0) invert(1);
+        stroke: white;
+    }
+</style>
 {% if error %}
             <div class="bg-red-500 text-white p-4 rounded-lg mb-6">
                 {{ error.messageKey|trans(error.messageData, 'security') }}
@@ -114,10 +121,5 @@
     </footer>
 </main>
 </div>
-<style>
-    .filter-white {
-        filter: brightness(0) invert(1);
-        stroke: white;
-    }
-</style>
+
 {% endblock %}

@@ -11,7 +11,6 @@ use App\Form\PureCommandeType;
 use App\Repository\PureAnnonceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -93,15 +92,17 @@ final class PureAnnonceController extends AbstractController
                         $newFilename
                     );
                 } catch (FileException $e) {
-                    throw new \Exception('Echec lors de la tentative de sauvegarde du fichier.');
+                    $this->addFlash('error', 'Echec lors de la tentative de sauvegarde du fichier.');
+                    return $this->redirectToRoute('dashboard_mes_annonces');
                 }
+
                 $pureAnnonce->setImage($newFilename);
             } else {
                 $pureAnnonce->setImage('default-image.jpg');
             }
 
             $pureAnnonce->computeSlug($slugger);
-
+            
             $entityManager->persist($pureAnnonce);
             $entityManager->flush();
 
@@ -132,7 +133,7 @@ final class PureAnnonceController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $commande->setPureUser($this->getUser());
-            $commande->setDateCommande((new \DateTime())->format('d-m-Y H:i:s'));
+            $commande->setDateCommande(new \DateTime());
 
             $statut = $entityManager->getRepository(PureStatut::class)->find(1);
             $commande->setStatut($statut);
@@ -148,6 +149,7 @@ final class PureAnnonceController extends AbstractController
         return $this->render('pure_annonce/show.html.twig', [
             'pure_annonce' => $pureAnnonce,
             'form' => $form->createView(),
+            'active_page' => 'annonce_show'
         ]);
     }
 
@@ -158,8 +160,8 @@ final class PureAnnonceController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_VENDEUR');
         $currentUser = $this->getUser();
         if ($currentUser !== $pureAnnonce->getPureUser()) {
-           $this->addFlash('error','Vous n\'êtes pas autorisé à modifier cette annonce.');
-           return $this->redirectToRoute('dashboard_mes_annonces');
+            $this->addFlash('error', 'Vous n\'êtes pas autorisé à modifier cette annonce.');
+            return $this->redirectToRoute('dashboard_mes_annonces');
         }
         $form = $this->createForm(PureAnnonceType::class, $pureAnnonce);
         $form->handleRequest($request);
@@ -204,7 +206,7 @@ final class PureAnnonceController extends AbstractController
                 } catch (FileException $e) {
                     $this->addFlash('error', 'Échec du téléchargement de l\'image.');
                     return $this->redirectToRoute('annonce_edit', ['id' => $pureAnnonce->getId()]);
-                } 
+                }
 
 
                 $pureAnnonce->setImage($newFilename);

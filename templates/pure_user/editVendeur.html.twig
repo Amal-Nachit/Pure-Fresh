@@ -8,22 +8,24 @@
             {{ form_start(form) }}
 
             {% for field in form %}
-            {% if field.vars.name != '_token' %}
-
-                <div class="mb-4">
-                    {{ form_label(field) }}
-                    {{ form_widget(field, {'attr': {'class': 'w-full p-3 bg-gray-700 text-white rounded-lg shadow-md focus:ring-2 focus:ring-yellow-500 focus:outline-none'}}) }}
-                    
-                    {% if field.vars.errors|length > 0 %}
-                        <div class="text-red-600">
-                            {% for error in field.vars.errors %}
-                                <p>{{ error.message }}</p>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
-
-            {% endif %}
+                {% if field.vars.name != '_token' %}
+                    <div class="mb-4">
+                        {{ form_label(field, null, {'label_attr': {'class': 'text-white mb-2 block'}}) }}
+                        {% if field.vars.name == 'password' %}
+                            {{ form_widget(field, {'attr': {'class': 'w-full p-3 bg-gray-700 text-white rounded-lg shadow-md focus:ring-2 focus:ring-yellow-500 focus:outline-none', 'autocomplete': 'new-password'}}) }}
+                        {% else %}
+                            {{ form_widget(field, {'attr': {'class': 'w-full p-3 bg-gray-700 text-white rounded-lg shadow-md focus:ring-2 focus:ring-yellow-500 focus:outline-none'}}) }}
+                        {% endif %}
+                        
+                        {% if field.vars.errors|length > 0 %}
+                            <div class="text-red-600 mt-1">
+                                {% for error in field.vars.errors %}
+                                    <p>{{ error.message }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
             {% endfor %}
 
             <div class="mt-4">
@@ -35,9 +37,9 @@
             {{ form_end(form) }}
         </div>
     </div>
-    
+{% endblock %}
+
 {% block javascripts %}
     {{ parent() }}
     <script src="{{ asset('../assets/js/adresse.js') }}"></script>
-{% endblock %}
 {% endblock %}

@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\DTO\PureUserDTO;
-use App\Entity\PureUser;
 use App\Entity\ResetPasswordRequest;
 use App\Form\PureUserType;
 use App\Repository\PureUserRepository;
@@ -42,8 +41,7 @@ public function show(Request $request, PureUserRepository $userRepository): Resp
     ]);
 }
 
-
-
+    #[IsGranted('ROLE_VENDEUR')]
     #[Route('/user/vendeur/modifier', name: 'user_editVendeur', methods: ['GET', 'POST'])]
     public function editVendeur(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
     {
@@ -74,7 +72,7 @@ public function show(Request $request, PureUserRepository $userRepository): Resp
         }
 
         return $this->render('pure_user/editVendeur.html.twig', [
-            'pure_user' => $user,
+            'pure_user' => $userMod,
             'form' => $form,
         ]);
     }

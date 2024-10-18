@@ -1,24 +1,44 @@
-document.querySelector("#adresse_input").addEventListener("input", function () {
-  let query = this.value;
+function loadGoogleMaps(apiKey) {
+  if (
+    document.querySelector(
+      `script[src^="https://maps.googleapis.com/maps/api/js"]`
+    )
+  ) {
+    return;
+  }
 
-  fetch(`/search-address?q=${encodeURIComponent(query)}`)
-    .then((response) => response.json())
-    .then((data) => {
-      let suggestions = data.features; // Les suggestions d'adresses renvoyées par l'API
+  const script = document.createElement("script");
+  script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initAutocomplete`;
+  script.async = true;
+  script.defer = true;
+  document.head.appendChild(script);
+}
 
-      // Affichage des suggestions (par exemple, dans un élément de liste)
-      let suggestionsBox = document.querySelector("#suggestions-box");
-      suggestionsBox.innerHTML = "";
+// Initialiser l'autocompletion
+function initAutocomplete() {
+  const inputCreate = document.getElementById("registration_form_adresse");
+  const inputEdit = document.getElementById("pure_user_adresse");
+  let input = "";
+  if (inputCreate || inputEdit) {
+    input = inputCreate || inputEdit;
+  } else {
+    return;
+  }
 
-      suggestions.forEach(function (feature) {
-        let suggestion = document.createElement("div");
-        suggestion.textContent = feature.properties.label;
-        suggestion.addEventListener("click", function () {
-          document.querySelector("#adresse_input").value =
-            feature.properties.label;
-          suggestionsBox.innerHTML = ""; // Masquer les suggestions après sélection
-        });
-        suggestionsBox.appendChild(suggestion);
-      });
-    });
+  const autocomplete = new google.maps.places.Autocomplete(input, {
+    types: ["address"],
+    componentRestrictions: { country: "fr" },
+  });
+
+  autocomplete.addListener("place_changed", function () {
+    const place = autocomplete.getPlace();
+    if (!place.geometry) {
+      return;
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  const apiKey = "AIzaSyDB7guuh8CY_MJasUE7LC5BV4eBTXWaVco";
+  loadGoogleMaps(apiKey);
 });

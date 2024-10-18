@@ -11,8 +11,6 @@ class PureUserDTO
     #[Assert\NotBlank(message: 'L\'email ne doit pas être vide.')]
     private ?string $email = null;
 
-    #[Assert\NotBlank(message: 'Le mot de passe ne doit pas être vide.')]
-    #[Assert\Length(min: 6, minMessage: 'Le mot de passe doit contenir au moins {{ limit }} caractères.')]
     private ?string $password = null;
 
     #[Assert\NotBlank(message: 'Le prénom ne doit pas être vide.')]

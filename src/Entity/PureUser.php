@@ -32,8 +32,6 @@ class PureUser implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
     #[ORM\Column]
-    #[Assert\NotBlank(message: 'Le mot de passe ne doit pas être vide.')]
-    #[Assert\Length(min: 6, minMessage: 'Le mot de passe doit contenir au moins {{ limit }} caractères.')]
     private ?string $password = null;
 
     private $plainPassword;

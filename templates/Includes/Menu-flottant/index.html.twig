@@ -14,12 +14,12 @@
     </div>
 
     <div class="group relative flex flex-col items-center">
-        <button class="flex flex-col items-center focus:outline-none {% if active_page == 'dashboard' %}active{% endif %}" onclick="activateIcon(this); window.location.href='{% if is_granted('IS_AUTHENTICATED_FULLY') %}{{ path('dashboard') }}{% else %}{{ path('app_login') }}{% endif %}';">
-            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#F7C35F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-300 {% if active_page == 'dashboard' %}translate-y-2{% endif %}">
+        <button class="flex flex-col items-center focus:outline-none {% if active_page == 'dashboard' or active_page == 'app_login' %}active{% endif %}" data-href="{% if is_granted('IS_AUTHENTICATED_FULLY') %}{{ path('dashboard') }}{% else %}{{ path('app_login') }}{% endif %}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#F7C35F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-300 {% if active_page == 'dashboard' or active_page == 'app_login' %}translate-y-2{% endif %}">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                 <circle cx="12" cy="7" r="4"></circle>
             </svg>
-            <span class="mt-2 text-yellow-400 {% if active_page == 'dashboard' %}opacity-100{% else %}opacity-0{% endif %} transition-opacity duration-300 text-sm font-medium">
+            <span class="mt-2 text-yellow-400 {% if active_page == 'dashboard' or active_page == 'app_login' %}opacity-100{% else %}opacity-0{% endif %} transition-opacity duration-300 text-sm font-medium">
                 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                     Compte
                 {% else %}
@@ -30,8 +30,6 @@
     </div>
 </div>
 
-
-
 <script>
 function activateIcon(button) {
     const buttons = document.querySelectorAll('.group button');
@@ -41,13 +39,25 @@ function activateIcon(button) {
         const span = btn.querySelector('span');
         icon.classList.remove('translate-y-2');
         span.classList.remove('opacity-100');
+        span.classList.add('opacity-0');
+        span.style.transition = 'none'; // Désactive la transition pour une disparition immédiate
     });
     
     button.classList.add('active');
     const icon = button.querySelector('img, svg');
     const span = button.querySelector('span');
     icon.classList.add('translate-y-2');
+    span.classList.remove('opacity-0');
     span.classList.add('opacity-100');
+    span.style.transition = 'opacity 300ms'; // Réactive la transition pour l'apparition
+
+    // Réactive les transitions après un court délai
+    setTimeout(() => {
+        buttons.forEach(btn => {
+            const span = btn.querySelector('span');
+            span.style.transition = '';
+        });
+    }, 50);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -55,16 +65,28 @@ document.addEventListener('DOMContentLoaded', function() {
     if (activeButton) {
         activateIcon(activeButton);
     }
+
+    // Ajoute des écouteurs d'événements pour chaque bouton
+    document.querySelectorAll('.group button').forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.preventDefault(); // Empêche la redirection immédiate
+            activateIcon(this);
+            setTimeout(() => {
+                window.location.href = this.getAttribute('onclick').split(';')[1].trim().slice(20, -2);
+            }, 300); // Délai avant la redirection
+        });
+    });
 });
 </script>
-
-
 
 <style>
     .translate-y-2 {
         transform: translateY(-0.5rem); 
     }
+    .opacity-0 {
+        opacity: 0;
+    }
     .opacity-100 {
-        opacity: 1; 
+        opacity: 1;
     }
 </style>

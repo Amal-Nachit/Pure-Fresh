@@ -16,8 +16,8 @@ class PureCommande
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $dateCommande = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $dateCommande = null;
 
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $quantite = null;
@@ -37,6 +37,7 @@ class PureCommande
 
     public function __construct()
     {
+        $this->dateCommande = new \DateTime('now', new \DateTimeZone('Europe/Paris'));
     }
 
     public function getId(): ?int
@@ -44,15 +45,14 @@ class PureCommande
         return $this->id;
     }
 
-    public function getDateCommande(): ?string
+    public function getDateCommande(): ?\DateTimeInterface
     {
         return $this->dateCommande;
     }
 
-    public function setDateCommande(string $dateCommande): static
+    public function setDateCommande(?\DateTimeInterface $dateCommande): self
     {
         $this->dateCommande = $dateCommande;
-
         return $this;
     }
 
@@ -61,21 +61,20 @@ class PureCommande
         return $this->quantite;
     }
 
-    public function setQuantite(int $quantite): static
+    public function setQuantite(int $quantite): self
     {
         $this->quantite = $quantite;
         return $this;
     }
-    
+
     public function getTotal(): ?string
     {
         return $this->total;
     }
 
-    public function setTotal(string $total): static
+    public function setTotal(string $total): self
     {
         $this->total = $total;
-
         return $this;
     }
 
@@ -84,10 +83,9 @@ class PureCommande
         return $this->statut;
     }
 
-    public function setStatut(?PureStatut $statut): static
+    public function setStatut(?PureStatut $statut): self
     {
         $this->statut = $statut;
-
         return $this;
     }
 
@@ -96,11 +94,9 @@ class PureCommande
         return $this->pureAnnonce;
     }
 
-
-    public function setPureAnnonce(?PureAnnonce $pureAnnonce): static
+    public function setPureAnnonce(?PureAnnonce $pureAnnonce): self
     {
         $this->pureAnnonce = $pureAnnonce;
-
         return $this;
     }
 
@@ -109,10 +105,9 @@ class PureCommande
         return $this->pureUser;
     }
 
-    public function setPureUser(?PureUser $pureUser): static
+    public function setPureUser(?PureUser $pureUser): self
     {
         $this->pureUser = $pureUser;
-
         return $this;
     }
 }

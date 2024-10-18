@@ -15,13 +15,13 @@
                 <h1 class="text-2xl font-bold text-white mb-4 text-center">Inscription</h1>
 
                 {% for flash_error in app.flashes('verify_email_error') %}
-                    <div class="bg-red-500 text-white p-4 rounded-lg mb-6" role="alert">{{ flash_error }}</div>
+                    <div class="bg-text-red-400 text-white p-4 rounded-lg mb-6" role="alert">{{ flash_error }}</div>
                 {% endfor %}
 
                 {{ form_start(registrationForm) }}
 
                 {% if form_errors(registrationForm) %}
-                    <div class="bg-red-500 text-white p-4 rounded-lg mb-6">
+                    <div class="bg-text-red-400 text-white p-4 rounded-lg mb-6">
                         {{ form_errors(registrationForm) }}
                     </div>
                 {% endif %}
@@ -30,47 +30,101 @@
                     <div>
                         {{ form_label(registrationForm.prenom, 'Prénom', {'label_attr': {'class': 'block text-white text-sm font-medium mb-1'}}) }}
                         {{ form_widget(registrationForm.prenom, {'attr': {'class': 'w-full p-2 bg-lime-100 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent'}}) }}
+                        {% if form_errors(registrationForm.prenom) %}
+                            <div class="text-red-400 text-sm mt-1">
+                                {{ form_errors(registrationForm.prenom) }}
+                            </div>
+                        {% endif %}
                     </div>
 
                     <div>
                         {{ form_label(registrationForm.nom, 'Nom', {'label_attr': {'class': 'block text-white text-sm font-medium mb-1'}}) }}
                         {{ form_widget(registrationForm.nom, {'attr': {'class': 'w-full p-2 bg-lime-100 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent'}}) }}
+                        {% if form_errors(registrationForm.nom) %}
+                            <div class="text-red-400 text-sm mt-1">
+                                {{ form_errors(registrationForm.nom) }}
+                            </div>
+                        {% endif %}
                     </div>
 
                     <div>
                         {{ form_label(registrationForm.adresse, 'Adresse', {'label_attr': {'class': 'block text-white text-sm font-medium mb-1'}}) }}
                         {{ form_widget(registrationForm.adresse, {'attr': {'class': 'w-full p-2 bg-lime-100 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent autocomplete-address', 'id': 'registration_form_adresse'}}) }}
                         <div id="suggestions-box" class="suggestions"></div>
+                        {% if form_errors(registrationForm.adresse) %}
+                            <div class="text-red-400 text-sm mt-1">
+                                {{ form_errors(registrationForm.adresse) }}
+                            </div>
+                        {% endif %}
                     </div>
 
                     <div>
                         {{ form_label(registrationForm.telephone, 'Téléphone', {'label_attr': {'class': 'block text-white text-sm font-medium mb-1'}}) }}
                         {{ form_widget(registrationForm.telephone, {'attr': {'class': 'w-full p-2 bg-lime-100 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent'}}) }}
+                        {% if form_errors(registrationForm.telephone) %}
+                            <div class="text-red-400 text-sm mt-1">
+                                {{ form_errors(registrationForm.telephone) }}
+                            </div>
+                        {% endif %}
                     </div>
 
                     <div>
                         {{ form_label(registrationForm.email, 'Email', {'label_attr': {'class': 'block text-white text-sm font-medium mb-1'}}) }}
                         {{ form_widget(registrationForm.email, {'attr': {'class': 'w-full p-2 bg-lime-100 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent'}}) }}
+                        {% if form_errors(registrationForm.email) %}
+                            <div class="text-red-400 text-sm mt-1">
+                                {{ form_errors(registrationForm.email) }}
+                            </div>
+                        {% endif %}
                     </div>
 
                     <div>
                         {{ form_label(registrationForm.plainPassword.first, 'Mot de passe', {'label_attr': {'class': 'block text-white text-sm font-medium mb-1'}}) }}
                         {{ form_widget(registrationForm.plainPassword.first, {'attr': {'class': 'w-full p-2 bg-lime-100 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent'}}) }}
+                        {% if form_errors(registrationForm.plainPassword.first) %}
+                            <div class="text-red-400 text-sm mt-1">
+                                {{ form_errors(registrationForm.plainPassword.first) }}
+                            </div>
+                        {% endif %}
                     </div>
 
                     <div>
                         {{ form_label(registrationForm.plainPassword.second, 'Confirmer le mot de passe', {'label_attr': {'class': 'block text-white text-sm font-medium mb-1'}}) }}
                         {{ form_widget(registrationForm.plainPassword.second, {'attr': {'class': 'w-full p-2 bg-lime-100 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent'}}) }}
+                        {% if form_errors(registrationForm.plainPassword.second) %}
+                            <div class="text-red-400 text-sm mt-1">
+                                {{ form_errors(registrationForm.plainPassword.second) }}
+                            </div>
+                        {% endif %}
                     </div>
 
                     <div>
-                        {{ form_label(registrationForm.role, 'Vous êtes?', {'label_attr': {'class': 'block text-white text-sm font-medium mb-1'}}) }}
-                        {{ form_widget(registrationForm.role, {'attr': {'class': 'w-full text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent'}}) }}
+                        {{ form_label(registrationForm.role, 'Vous êtes?', {'label_attr': {'class': 'block text-white text-sm font-medium mb-2'}}) }}
+                        <div class="space-y-2">
+                            {% for choice in registrationForm.role %}
+                                <div class="flex items-center">
+                                    {{ form_widget(choice, {'attr': {'class': 'mr-2'}}) }}
+                                    {{ form_label(choice, null, {'label_attr': {'class': 'text-white'}}) }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        {% if form_errors(registrationForm.role) %}
+                            <div class="text-red-400 text-sm mt-1">
+                                {{ form_errors(registrationForm.role) }}
+                            </div>
+                        {% endif %}
                     </div>
 
                     <div>
                         {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'mr-2', 'id': 'registration_form_agreeTerms'}}) }}
-                        <label for="registration_form_agreeTerms" class="text-white text-sm">{{ form_label(registrationForm.agreeTerms, 'Accepter les conditions') }}</label>
+                        <label for="registration_form_agreeTerms" class="text-white text-sm">
+                            Accepter les <a href="{{ path('rgpd') }}" id="terms-link" class="text-lime-100 hover:underline">conditions d'utilisation</a>
+                        </label>
+                        {% if form_errors(registrationForm.agreeTerms) %}
+                            <div class="text-red-400 text-sm mt-1">
+                                {{ form_errors(registrationForm.agreeTerms) }}
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
 
@@ -89,5 +143,5 @@
 {% endblock %}
 
 {% block javascripts %}
-    <script src="{{ asset('../assets/js/adresse.js') }}"></script>
+    <script src="{{ asset('../js/adresse.js') }}"></script>
 {% endblock %}

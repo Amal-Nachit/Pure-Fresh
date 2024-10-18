@@ -18,7 +18,7 @@ services:
         resource: '../src/'
         exclude:
             - '../src/DependencyInjection/'
-            # - '../src/Entity/'
+            # - '../src/Entity/' # Uncomment if you want to exclude Entity directory
             - '../src/Kernel.php'
 
     # add more service definitions when explicit configuration is needed
@@ -27,3 +27,7 @@ services:
     App\EventListener\AccessDeniedListener:
         tags:
             - { name: kernel.event_listener, event: kernel.exception }
+
+    # Making the password hasher public (this might not be necessary in most cases)
+    Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface:
+        public: true

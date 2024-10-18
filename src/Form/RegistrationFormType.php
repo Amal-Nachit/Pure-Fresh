@@ -24,104 +24,127 @@ class RegistrationFormType extends AbstractType
     {
         $builder
             ->add('prenom', TextType::class, [
-                'label' => 'First Name',
+                'label' => 'Prénom',
+                'attr' => ['placeholder' => 'Entrez votre prénom'],
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Votre prénom est obligatoire',
-                    ]),
+                    new NotBlank(['message' => 'Votre prénom est obligatoire']),
                     new Length([
                         'min' => 2,
-                        'minMessage' => 'Ton prénom doit contenir au moins {{ limit }} caractères',
                         'max' => 50,
+                        'minMessage' => 'Votre prénom doit contenir au moins {{ limit }} caractères',
+                        'maxMessage' => 'Votre prénom ne peut pas dépasser {{ limit }} caractères'
                     ]),
+                    new Regex([
+                        'pattern' => '/^[a-zA-Z\s\-]+$/',
+                        'message' => 'Votre prénom ne peut contenir que des lettres, espaces et tirets'
+                    ])
                 ],
             ])
             ->add('nom', TextType::class, [
-                'label' => 'Last Name',
+                'label' => 'Nom',
+                'attr' => ['placeholder' => 'Entrez votre nom'],
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Votre nom est obligatoire',
-                    ]),
+                    new NotBlank(['message' => 'Votre nom est obligatoire']),
                     new Length([
                         'min' => 2,
-                        'minMessage' => 'Ton nom doit contenir au moins {{ limit }} caractères',
                         'max' => 50,
+                        'minMessage' => 'Votre nom doit contenir au moins {{ limit }} caractères',
+                        'maxMessage' => 'Votre nom ne peut pas dépasser {{ limit }} caractères'
                     ]),
+                    new Regex([
+                        'pattern' => '/^[a-zA-Z\s\-]+$/',
+                        'message' => 'Votre nom ne peut contenir que des lettres, espaces et tirets'
+                    ])
                 ],
             ])
             ->add('telephone', TelType::class, [
-                'label' => 'Phone Number',
+                'label' => 'Numéro de téléphone',
+                'attr' => ['placeholder' => 'Ex: +33612345678'],
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Entrez votre numéro de téléphone',
-                    ]),
+                    new NotBlank(['message' => 'Votre numéro de téléphone est obligatoire']),
                     new Regex([
                         'pattern' => '/^\+?[0-9]{10,15}$/',
-                        'message' => 'Entrez un numéro de téléphone valide',
+                        'message' => 'Entrez un numéro de téléphone valide (10 à 15 chiffres, peut commencer par +)'
                     ]),
                 ],
             ])
             ->add('adresse', TextType::class, [
-                'label' => 'Address',
+                'label' => 'Adresse',
                 'attr' => [
                     'class' => 'autocomplete-address',
                     'id' => 'adresse_input',
-                    'placeholder' => 'Entrez votre adresse',
+                    'placeholder' => 'Entrez votre adresse complète',
+                ],
+                'constraints' => [
+                    new NotBlank(['message' => 'Votre adresse est obligatoire']),
+                    new Length([
+                        'min' => 10,
+                        'minMessage' => 'Votre adresse doit être plus détaillée'
+                    ]),
+                    new Regex([
+                        'pattern' => '/^[a-zA-Z0-9\s,\'-]*$/',
+                        'message' => 'Votre adresse contient des caractères non autorisés',
+                    ])
                 ]
             ])
             ->add('email', EmailType::class, [
                 'label' => 'Adresse Email',
+                'attr' => ['placeholder' => 'exemple@domaine.com'],
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Entrez votre adresse email',
-                    ]),
-                    new Email([
-                        'message' => 'Entrez une adresse email valide',
-                    ]), 
-                ],
-            ])
-            ->add('agreeTerms', CheckboxType::class, [
-                'label' => 'Agree to terms',
-                'mapped' => false,
-                'constraints' => [
-                    new IsTrue([
-                        'message' => 'Vous devez accepter les conditions d\'utilisation.',
-                    ]),
+                    new NotBlank(['message' => 'Votre adresse email est obligatoire']),
+                    new Email(['message' => 'Veuillez entrer une adresse email valide']),
                 ],
             ])
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'first_options' => [
-                    'label' => 'Password',
-                    'mapped' => false,
-                    'attr' => ['autocomplete' => 'new-password'],
-                    'constraints' => [
-                        new NotBlank([
-                            'message' => 'Entrez un mot de passe',
-                        ]),
-                        new Length([
-                            'min' => 8,
-                            'minMessage' => 'Ton mot de passe doit contenir au moins {{ limit }} caractères',
-                            'max' => 4096,
-                        ]),
+                    'label' => 'Mot de passe',
+                    'attr' => [
+                        'autocomplete' => 'new-password',
+                        'placeholder' => 'Entrez votre mot de passe'
                     ],
                 ],
                 'second_options' => [
-                    'label' => 'Confirm Password',
-                    'attr' => ['autocomplete' => 'new-password'],
+                    'label' => 'Confirmez le mot de passe',
+                    'attr' => [
+                        'autocomplete' => 'new-password',
+                        'placeholder' => 'Répétez votre mot de passe'
+                    ],
                 ],
-                'invalid_message' => 'Les mots de passe ne sont pas identiques.',
                 'mapped' => false,
+                'constraints' => [
+                    new NotBlank(['message' => 'Le mot de passe est obligatoire']),
+                    new Length([
+                        'min' => 8,
+                        'max' => 4096,
+                        'minMessage' => 'Votre mot de passe doit contenir au moins {{ limit }} caractères'
+                    ]),
+                    new Regex([
+                        'pattern' => '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/',
+                        'message' => 'Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial'
+                    ])
+                ],
+                'invalid_message' => 'Les mots de passe ne correspondent pas.',
             ])
             ->add('role', ChoiceType::class, [
-                'label' => 'Role',
+                'label' => 'Vous êtes',
                 'choices' => [
                     'Vendeur' => 'ROLE_VENDEUR',
                     'Acheteur' => 'ROLE_ACHETEUR',
                 ],
                 'expanded' => true,
                 'multiple' => false,
-                'mapped' => false, 
+                'mapped' => false,
+                'constraints' => [
+                    new NotBlank(['message' => 'Veuillez choisir un rôle'])
+                ]
+            ])
+            ->add('agreeTerms', CheckboxType::class, [
+                'mapped' => false,
+                'label' => false,
+                'constraints' => [
+                    new IsTrue(['message' => 'Vous devez accepter nos conditions d\'utilisation.'])
+                ],
             ])
         ;
     }

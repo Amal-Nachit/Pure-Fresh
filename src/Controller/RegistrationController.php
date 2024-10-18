@@ -23,7 +23,7 @@ class RegistrationController extends AbstractController
     {
     }
 
-    #[Route('/user/register', name: 'app_register')]
+    #[Route('/inscription', name: 'app_register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
         $user = new PureUser();
@@ -77,55 +77,48 @@ class RegistrationController extends AbstractController
 
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form,
+            'active_page' => 'app_register'
         ]);
     }
 
-    #[Route('/user/verifier-mon-email', name: 'app_verify_email')]
+    #[Route('/verifier-mon-email', name: 'app_verify_email')]
     public function verifyUserEmail(Request $request, TranslatorInterface $translator): Response
     {
         $user = $this->getUser();
-
-        // Vérifier si l'utilisateur est connecté
-        if (!$user) {
+        if (!$user instanceof PureUser) {
+            $this->addFlash('error', 'Vous devez être connecté pour vérifier votre adresse e-mail.');
+            return $this->redirectToRoute('app_login');
+        } elseif ($user->isVerified()) {
             return $this->redirectToRoute('email_confirme');
         }
-
-        // Vérifier si l'utilisateur est déjà vérifié
-        if ($user instanceof PureUser && $user
-        ->isVerified()) {
-            return $this->redirectToRoute('email_deja_verifie');
-        }
-
         try {
             $this->emailVerifier->handleEmailConfirmation($request, $user);
         } catch (VerifyEmailExceptionInterface $exception) {
             $this->addFlash('verify_email_error', $translator->trans($exception->getReason(), [], 'VerifyEmailBundle'));
             return $this->redirectToRoute('app_register');
         }
-
         return $this->redirectToRoute('email_confirme');
     }
 
 
-
-    #[Route('/user/email-confirme', name: 'email_confirme')]
+    #[Route('/email-confirme', name: 'email_confirme')]
     public function emailConfirme(): Response
     {
         return $this->render('registration/email_confirme.html.twig');
     }
 
-    #[Route('/user/confirmez-votre-email', name: 'check_your_email')]
+    #[Route('/confirmez-votre-email', name: 'check_your_email')]
     public function index(): Response
     {
         $user = $this->getUser();
-
         return $this->render('registration/check_your_email.html.twig', [
             'controller_name' => 'RegistrationController',
-            'user' => $user
+            'user' => $user,
+            'active_page' => 'check_your_email',
         ]);
     }
 
-    #[Route('/user/renvoyer-email-de-confirmation', name: 'resend_verification_email')]
+    #[Route('/renvoyer-email-de-confirmation', name: 'resend_verification_email')]
     public function resendEmailConfirmation(Request $request, Security $security): Response
     {
         $user = $security->getUser();
