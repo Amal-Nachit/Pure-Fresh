@@ -6,7 +6,9 @@ use App\Entity\PureCommande;
 use App\Entity\PureUser;
 use App\Entity\PureAnnonce;
 use App\Entity\PureStatut;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class CommandeStatutTest extends KernelTestCase
 {
@@ -16,108 +18,123 @@ class CommandeStatutTest extends KernelTestCase
     protected function setUp(): void
     {
         self::bootKernel();
-        $container = self::$kernel->getContainer();
-        $this->entityManager = $container->get('doctrine')->getManager();
-        $this->passwordHasher = $container->get('security.user_password_hasher');
+        $container = self::getContainer();
+        $this->entityManager = $container->get(EntityManagerInterface::class);
+        $this->passwordHasher = $container->get(UserPasswordHasherInterface::class);
     }
 
     public function testCreerCommande()
     {
-        $user = new PureUser();
-        $user->setEmail('acheteu7@yopmail.com');
-        $user->setPrenom('Arthu7');
-        $user->setNom('Test3');
-        $user->setTelephone('0102030405');
-        $user->setAdresse('4 rue de la thur');
+        $acheteurRepo = $this->entityManager->getRepository(PureUser::class);
+        $acheteur = $acheteurRepo->findOneBy(['email' => 'acheteur@test.com']);
 
-        // Encoder le mot de passe
-        $hashedPassword = $this->passwordHasher->hashPassword($user, 'password');
-        $user->setPassword($hashedPassword);
-        $user->setRoles(['ROLE_ACHETEUR']);
+        if (!$acheteur) {
+            $acheteur = new PureUser();
+            $acheteur->setEmail('acheteur@test.com');
+            $acheteur->setPrenom('Acheteur');
+            $acheteur->setNom('Test');
+            $acheteur->setTelephone('0102030405');
+            $acheteur->setAdresse('4 rue de la Réussite');
 
-        $annonce = new PureAnnonce();
-        $annonce->setNom('Test Annonce');
-        $annonce->setSlug('test');
-        $annonce->setDescription('un test');
-        $annonce->setPrix(100);
-        $annonce->setPureUser($user);
-        $annonce->setDateCreation(new \DateTime());
+            $hashedPassword = $this->passwordHasher->hashPassword($acheteur, 'password');
+            $acheteur->setPassword($hashedPassword);
+            $acheteur->setRoles(['ROLE_ACHETEUR']);
+
+            $this->entityManager->persist($acheteur);
+        }
+
+        $vendeurRepo = $this->entityManager->getRepository(PureUser::class);
+        $vendeur = $vendeurRepo->findOneBy(['email' => 'vendeur@test.com']);
+
+        if (!$vendeur) {
+            $vendeur = new PureUser();
+            $vendeur->setEmail('vendeur@test.com');
+            $vendeur->setPrenom('Vendeur');
+            $vendeur->setNom('Test');
+            $vendeur->setTelephone('0203040506');
+            $vendeur->setAdresse('5 rue de la Victoire');
+
+            $hashedPassword = $this->passwordHasher->hashPassword($vendeur, 'password');
+            $vendeur->setPassword($hashedPassword);
+            $vendeur->setRoles(['ROLE_VENDEUR']);
+
+            $this->entityManager->persist($vendeur);
+        }
+
+        $annonceRepo = $this->entityManager->getRepository(PureAnnonce::class);
+        $annonce = $annonceRepo->findOneBy(['slug' => 'test-annonce']);
+
+        if (!$annonce) {
+            $annonce = new PureAnnonce();
+            $annonce->setNom('Test Annonce');
+            $annonce->setSlug('test-annonce');
+            $annonce->setDescription('Ceci est un test');
+            $annonce->setPrix(100);
+            $annonce->setPureUser($vendeur);
+            $annonce->setDateCreation(new \DateTime());
+
+            $this->entityManager->persist($annonce);
+        }
 
         $statut = new PureStatut();
         $statut->setIntitule('En attente');
 
         $commande = new PureCommande();
-        $commande->setPureUser($user);
+        $commande->setPureUser($acheteur);
         $commande->setPureAnnonce($annonce);
         $commande->setStatut($statut);
         $commande->setQuantite(2);
         $commande->setTotal(200);
         $commande->setDateCommande(new \DateTime('2024-10-18'));
 
-        $this->entityManager->persist($user);
-        $this->entityManager->persist($annonce);
         $this->entityManager->persist($statut);
         $this->entityManager->persist($commande);
         $this->entityManager->flush();
 
         $this->assertNotNull($commande->getId());
-        $this->assertEquals($user, $commande->getPureUser());
+        $this->assertEquals($acheteur, $commande->getPureUser());
         $this->assertEquals($annonce, $commande->getPureAnnonce());
         $this->assertEquals($statut, $commande->getStatut());
         $this->assertEquals(2, $commande->getQuantite());
         $this->assertEquals(200, $commande->getTotal());
     }
 
-    // public function testMettreAJourStatutCommande()
-    // {
-    //     $user = new PureUser();
-    //     $user->setEmail('acheteur8@yopmail.com');
-    //     $user->setPrenom('Arthur8');
-    //     $user->setNom('Test8');
-    //     $user->setTelephone('0102030405');
-    //     $user->setAdresse('4 rue de la thur');
+    public function testMettreAJourStatutCommande()
+    {
+        $acheteurRepo = $this->entityManager->getRepository(PureUser::class);
+        $acheteur = $acheteurRepo->findOneBy(['email' => 'acheteur@test.com']);
 
-    //     // Encoder le mot de passe
-    //     $hashedPassword = $this->passwordHasher->hashPassword($user, 'password');
-    //     $user->setPassword($hashedPassword);
-    //     $user->setRoles(['ROLE_VENDEUR']);
+        $vendeurRepo = $this->entityManager->getRepository(PureUser::class);
+        $vendeur = $vendeurRepo->findOneBy(['email' => 'vendeur@test.com']);
 
-    //     $annonce = new PureAnnonce();
-    //     $annonce->setNom('Test Annonce');
-    //     $annonce->setSlug('test');
-    //     $annonce->setDescription('un test');
-    //     $annonce->setPrix(100);
-    //     $annonce->setPureUser($user);
-    //     $annonce->setDateCreation(new \DateTime());
+        $annonceRepo = $this->entityManager->getRepository(PureAnnonce::class);
+        $annonce = $annonceRepo->findOneBy(['slug' => 'test-annonce']);
 
-    //     $statutInitial = new PureStatut();
-    //     $statutInitial->setIntitule('En attente');
+        $statutRepo = $this->entityManager->getRepository(PureStatut::class);
+        $statutInitial = $statutRepo->findOneBy(['intitule' => 'En attente']);
 
-    //     $commande = new PureCommande();
-    //     $commande->setPureUser($user);
-    //     $commande->setPureAnnonce($annonce);
-    //     $commande->setStatut($statutInitial);
-    //     $commande->setQuantite(1);
-    //     $commande->setTotal(100);
-    //     $commande->setDateCommande(new \DateTime('2024-10-18'));
+        $commande = new PureCommande();
+        $commande->setPureUser($acheteur);
+        $commande->setPureAnnonce($annonce);
+        $commande->setStatut($statutInitial);
+        $commande->setQuantite(1);
+        $commande->setTotal(100);
+        $commande->setDateCommande(new \DateTime('2024-10-18'));
 
-    //     $this->entityManager->persist($user);
-    //     $this->entityManager->persist($annonce);
-    //     $this->entityManager->persist($statutInitial);
-    //     $this->entityManager->persist($commande);
-    //     $this->entityManager->flush();
+        $this->entityManager->persist($commande);
+        $this->entityManager->flush();
 
-    //     $nouveauStatut = new PureStatut();
-    //     $nouveauStatut->setIntitule('En cours de traitement');
-    //     $this->entityManager->persist($nouveauStatut);
-    //     $this->entityManager->flush();
+        $nouveauStatut = new PureStatut();
+        $nouveauStatut->setIntitule('En cours de traitement');
+        $this->entityManager->persist($nouveauStatut);
+        $this->entityManager->flush();
 
-    //     $commande->setStatut($nouveauStatut);
-    //     $this->entityManager->flush();
+        $commande->setStatut($nouveauStatut);
+        $this->entityManager->flush();
 
-    //     $this->assertEquals($nouveauStatut, $commande->getStatut());
-    //     $this->assertEquals('En cours de traitement', $commande->getStatut()->getIntitule());
-    // }
+        $this->assertEquals($nouveauStatut, $commande->getStatut());
+        $this->assertEquals('En cours de traitement', $commande->getStatut()->getIntitule());
+    }
 
     protected function tearDown(): void
     {
